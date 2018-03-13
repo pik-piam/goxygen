@@ -17,6 +17,14 @@
 
 extractDocumentation <- function(path, start_type=NULL, comment="*'") {
   
+  if(length(path)>1) {
+    out <- list()
+    for(p in path) {
+      out <- append(out,extractDocumentation(p,start_type=start_type, comment=comment))
+    }
+    return(mergeDocumentation(out))
+  }
+  
   escapeRegex <- function(x) {
     return(gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", x))
   }
@@ -49,7 +57,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     
     while(length(x)>1 & x[1]=="")  x <- x[-1]
     while(length(x)>1 & tail(x,1)=="") x <- x[-length(x)]
-    if(length(x)==1) if(is.na(x)) x <- NULL
+    if(length(x)==1) if(is.na(x) | x=="") x <- NULL
     out <- list()
     out[[type]] <- x
     return(out)
@@ -69,5 +77,5 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
   for(i in 1:length(blocks_start)) {
     blocks <- c(blocks,extract_block(x[blocks_start[i]:blocks_end[i]], comment))
   }
-  return(blocks)
+  return(mergeDocumentation(blocks))
 }

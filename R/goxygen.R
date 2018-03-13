@@ -9,13 +9,13 @@
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
 #' @importFrom lucode codeCheck modules_interfaceplot
+#' @importFrom pander pandoc.table.return
 #' @importFrom utils tail
 #' @seealso \code{\link{codeCheck}}
 #' @export
 
 
 goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
-  if (!requireNamespace("pander", quietly = TRUE)) stop("The package pander is not available! Install it first before running goxygen!")
   cwd <- getwd()
   on.exit(setwd(cwd))
   
@@ -75,7 +75,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
       if(is.null(x)) return(NULL)
       if(nrow(x)==0) return(NULL)
       rownames(x) <- NULL
-      return(pander::pandoc.table.return(x, "pandoc", caption=caption, split.table=160))
+      return(pandoc.table.return(x, "pandoc", caption=caption, split.tables=160))
     }
     interfaceTables <- function(cc, module) {
       # collect information about module interfaces
