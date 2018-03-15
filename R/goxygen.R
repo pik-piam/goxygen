@@ -37,7 +37,9 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
                "modules/*/*/*.png",
                "modules/*/*.jpg",
                "modules/*/*/*.jpg")
-  file.copy(Sys.glob(paths),docfolder,overwrite = TRUE)
+    imagefolder <- paste0(docfolder,"/images")
+    if(!dir.exists(imagefolder)) dir.create(imagefolder, recursive=TRUE)
+    file.copy(Sys.glob(paths),imagefolder,overwrite = TRUE)
   }
   
   copyimages(docfolder)
@@ -143,9 +145,11 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     return(seealso)
   }
   
-  writeModulePage <- function(name,data,module,seealso) {
+ buildModulePage <- function(name,data,module,seealso) {
     
-    zz <- file(paste0(name,".md"), "w")
+    #zz <- file(paste0(name,".md"), "w")
+    out <- NULL
+    zz <- textConnection("out",open = "w", local=TRUE)
     
     .empty <- function(zz) {
       writeLines("",zz)
@@ -169,7 +173,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     }
     
     .interfaceplot <- function(name,zz) {
-      file <- paste0("interfaces_",sub("^.*_","",name),".png")
+      file <- paste0("images/interfaces_",sub("^.*_","",name),".png")
       if(file.exists(file)) {
        .write(paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"),zz)
       } else {
@@ -219,15 +223,60 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     .header("References",2,zz)
     
     close(zz)
+    
+    return(out)
   }
    
   out <- collectTables(cc)
+  moduleNames <- cc$modulesInfo[,"folder"]
 
+  .updateImagePaths <- function(x){
+    return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
+  }
+  
   # write doc files
-  for(m in setdiff(names(out),"core")) {
+  full <- list()
+  for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
     seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    writeModulePage(m,out[[m]],mr,seealso)
+    tmp <- buildModulePage(m,out[[m]],mr,seealso)
+    full[[m]] <- .updateImagePaths(tmp)
   }
+  
+  returnReferences <- function(moduleNames,type) {
+    x <- NULL
+    for(m in moduleNames) {
+      x <- c(x,paste0("[",m,"]: ",m,".",type))
+    }
+    writeLines(x,paste0(type,".ref"))  
   }
+  
+  returnMarkdown <- function(x, moduleNames) {
+    for(n in names(x)) {
+      writeLines(x[[n]],paste0(n,".md"))
+    }
+  }
+  
+  buildHTML <- function(moduleNames, literature="literature.bib") {
+    if(!file.exists(literature)) writeLines("",literature)
+    test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
+    if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
+    for(m in moduleNames) {
+      system(paste0("pandoc ",m,".md htm.ref -o ",m,".htm --css github-pandoc.css --bibliography=",literature," --metadata link-citations=true --mathjax"))
+    }
+  }
+  
+  buildPDF <- function(literature="literature.bib") {
+    if(!file.exists(literature)) writeLines("",literature)
+    test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
+    if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
+    system(paste0("pandoc *.md -o documentation.pdf --template template.latex --listings --bibliography=",literature))
+  }
+  
+  returnReferences(moduleNames,"md")
+  returnReferences(moduleNames,"htm")
+  returnMarkdown(full)
+  buildHTML(moduleNames)
+  buildPDF()
+}
   
