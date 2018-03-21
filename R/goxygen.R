@@ -28,7 +28,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     interfaces <- cache$interfaces
   } else {
     cc <- codeCheck(debug=TRUE)
-    interfaces <- modules_interfaceplot(cc$interfaceInfo)
+    interfaces <- modules_interfaceplot(cc$interfaceInfo, targetfolder= paste0(docfolder,"/images"), writetable=FALSE)
     saveRDS(list(cc=cc,interfaces=interfaces),cachefile)
   }
   
@@ -147,7 +147,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   
  buildModulePage <- function(name,data,module,seealso) {
     
-    #zz <- file(paste0(name,".md"), "w")
     out <- NULL
     zz <- textConnection("out",open = "w", local=TRUE)
     
@@ -155,14 +154,15 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
       writeLines("",zz)
     }
     
-    .write <- function(data,zz) {
+    .write <- function(zz,data) {
       if(!is.null(data)) writeLines(data,zz)
       .empty(zz)
     }
     
-    .header <- function(title,level,zz) {
+    .header <- function(zz,title,level,id=NULL) {
+      if(!is.null(id)) id <- paste0(" {#id-",id,"}")
       if(level<3) {
-        writeLines(title,zz)
+        writeLines(paste0(title,id),zz)
         symbol <- ifelse(level==1,"=","-")
         writeLines(paste(rep(symbol,nchar(title)), collapse=""),zz)
       } else {
@@ -172,55 +172,55 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
       .empty(zz)
     }
     
-    .interfaceplot <- function(name,zz) {
+    .interfaceplot <- function(zz,name) {
       file <- paste0("images/interfaces_",sub("^.*_","",name),".png")
       if(file.exists(file)) {
-       .write(paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"),zz)
+       .write(zz,paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"))
       } else {
-       .write("**Interface plot missing!**",zz) 
+       .write(zz,"**Interface plot missing!**") 
       }
     }
     
-    .limitations <- function(limitations,zz) {
+    .limitations <- function(zz,limitations) {
       if(is.null(limitations)) limitations <- "There are no known limitations."
       limitations <- c("**Limitations**",limitations)
       limitations <- paste(">",limitations)
-      .write(limitations,zz)
+      .write(zz,limitations)
     }
     
-    .header(paste0(module$doc$title," (",name,")"),1,zz)
-    .header("Description",2,zz)
-    .write(module$doc$description,zz)
+    .header(zz,paste0(module$doc$title," (",name,")"),1, id=name)
+    .header(zz,"Description",2)
+    .write(zz,module$doc$description)
     
-    .header("Interfaces",2,zz)
+    .header(zz,"Interfaces",2)
     
-    .interfaceplot(name,zz)
+    .interfaceplot(zz,name)
     
-    .header("Input",3,zz)
-    .write(data$input, zz)
+    .header(zz,"Input",3)
+    .write(zz,data$input)
     
-    .header("Output",3,zz)
-    .write(data$output, zz)
+    .header(zz,"Output",3)
+    .write(zz,data$output)
     
-    .header("Realizations",2,zz)
+    .header(zz,"Realizations",2)
     
     rdata <- module$rdata
     for(r in names(rdata)) {
-      .header(r,3,zz)
-      .write(rdata[[r]]$realization,zz)
-      .limitations(rdata[[r]]$limitations,zz)
+      .header(zz,r,3)
+      .write(zz,rdata[[r]]$realization)
+      .limitations(zz,rdata[[r]]$limitations)
     }
     
-    .header("Definitions",2,zz)
-    .write(data$declarations, zz)
+    .header(zz,"Definitions",2)
+    .write(zz,data$declarations)
     
-    .header("Authors",2,zz)
-    .write(module$doc$authors,zz)
+    .header(zz,"Authors",2)
+    .write(zz,module$doc$authors)
     
-    .header("See Also",2,zz)
-    .write(paste0("[",sort(seealso),"]",collapse=", "),zz)
+    .header(zz,"See Also",2)
+    .write(zz,paste0("[",sort(seealso),"]",collapse=", "))
     
-    .header("References",2,zz)
+    .header(zz,"References",2)
     
     close(zz)
     
@@ -243,38 +243,55 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     full[[m]] <- .updateImagePaths(tmp)
   }
   
-  returnReferences <- function(moduleNames,type) {
+  returnReferences <- function(names,targets,file) {
+    if(length(names)!=length(targets)) stop("names and targets must have the same lengths!")
     x <- NULL
-    for(m in moduleNames) {
-      x <- c(x,paste0("[",m,"]: ",m,".",type))
+    for(i in 1:length(names)) {
+      x <- c(x,paste0("[",names[i],"]: ",targets[i]))
     }
-    writeLines(x,paste0(type,".ref"))  
+    writeLines(x,file)  
   }
   
-  returnMarkdown <- function(x, moduleNames) {
+  returnMarkdown <- function(x, folder="markdown") {
+    if(!dir.exists(folder)) dir.create(folder)
+    returnReferences(names(x),paste0(names(x),".md"),paste0(folder,"/md.ref"))
     for(n in names(x)) {
-      writeLines(x[[n]],paste0(n,".md"))
+      writeLines(x[[n]],paste0(folder,"/",n,".md"))
     }
   }
   
-  buildHTML <- function(moduleNames, literature="literature.bib") {
-    if(!file.exists(literature)) writeLines("",literature)
+  buildHTML <- function(moduleNames, literature="literature.bib", folder="html", mdfolder="markdown") {
+    if(!dir.exists(folder)) dir.create(folder)
     test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
     if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
+    file.copy(system.file("templates","template.css",package="goxygen"),paste0(folder,"/template.css"))
+    ref <- tempfile()
+    returnReferences(moduleNames,paste0(moduleNames,".htm"),ref)
+    bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
     for(m in moduleNames) {
-      system(paste0("pandoc ",m,".md htm.ref -o ",m,".htm --css github-pandoc.css --bibliography=",literature," --metadata link-citations=true --mathjax"))
+      system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",folder,"/",m,
+                    ".htm --css template.css ",bib," --metadata link-citations=true --mathjax"))
     }
+    unlink(ref)
+    file.copy("images",folder,recursive = TRUE, overwrite = TRUE)
   }
   
-  buildPDF <- function(literature="literature.bib") {
+  buildPDF <- function(literature="literature.bib", mdfolder="markdown") {
     if(!file.exists(literature)) writeLines("",literature)
     test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
     if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
-    system(paste0("pandoc *.md -o documentation.pdf --template template.latex --listings --bibliography=",literature))
+    sep <- tempfile()
+    writeLines("\\pagebreak",sep)
+    ref <- tempfile()
+    files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
+    moduleNames <- sub("\\.[^.]*$","",basename(files))
+    returnReferences(moduleNames,paste0("#id-",moduleNames),ref)
+    files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
+    system(paste0("pandoc ",files," -o documentation.pdf --template ",
+           system.file("templates","template.latex",package="goxygen"),
+           " --listings --bibliography=",literature))
   }
   
-  returnReferences(moduleNames,"md")
-  returnReferences(moduleNames,"htm")
   returnMarkdown(full)
   buildHTML(moduleNames)
   buildPDF()
