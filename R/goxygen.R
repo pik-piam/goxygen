@@ -186,23 +186,21 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     
     close(zz)
     
+    out <- .updateImagePaths(out)
+    #out <- .quoteObjects(out,data$declarations[,"names"])
+    
     return(out)
   }
    
   out <- collectTables(cc)
   moduleNames <- cc$modulesInfo[,"folder"]
-
-  .updateImagePaths <- function(x){
-    return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
-  }
   
   # write doc files
   full <- list()
   for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
     seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    tmp <- buildModulePage(m,out[[m]],mr,seealso)
-    full[[m]] <- .updateImagePaths(tmp)
+    full[[m]] <- buildModulePage(m,out[[m]],mr,seealso)
   }
   
   returnReferences <- function(names,targets,file,level=2) {

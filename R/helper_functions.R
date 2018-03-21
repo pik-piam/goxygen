@@ -8,6 +8,10 @@
 }
 
 .header <- function(zz,title,level,id=NULL) {
+  if(length(title)>1) {
+    warning("Multiline entry to title detected. Only first line will be used!")
+    title <- title[1]
+  }
   if(!is.null(id)) id <- paste0(" {#id-",id,"}")
   if(level<3) {
     writeLines(paste0(title,id),zz)
@@ -34,4 +38,13 @@
   limitations <- c("**Limitations**",limitations)
   limitations <- paste(">",limitations)
   .write(zz,limitations)
+}
+
+.updateImagePaths <- function(x){
+  return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
+}
+
+.quoteObjects <- function(x,objects) {
+  pattern <-paste0(" (",paste(objects,collapse="|"),") ")
+  return(gsub(pattern,"`\\1`",x))
 }
