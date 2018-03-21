@@ -130,8 +130,10 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     folder <- cc$modulesInfo[m,"folder"]
     out <- list()
     for(r in rea) {
-      path <- paste0(modules,folder,"/",r,"/equations.gms")
-      if(file.exists(path)) out[[r]] <- extractDocumentation(path, start_type="realization")
+      rmain <- paste0(modules,folder,"/",r,".gms")
+      files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
+      paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
+      out[[r]] <- extractDocumentation(paths, start_type="realization")
     }
     module_description <- extractDocumentation(paste0(modules,folder,"/",folder,".gms"))
     return(list(rdata=out,doc=module_description))
@@ -149,44 +151,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     
     out <- NULL
     zz <- textConnection("out",open = "w", local=TRUE)
-    
-    .empty <- function(zz) {
-      writeLines("",zz)
-    }
-    
-    .write <- function(zz,data) {
-      if(!is.null(data)) writeLines(data,zz)
-      .empty(zz)
-    }
-    
-    .header <- function(zz,title,level,id=NULL) {
-      if(!is.null(id)) id <- paste0(" {#id-",id,"}")
-      if(level<3) {
-        writeLines(paste0(title,id),zz)
-        symbol <- ifelse(level==1,"=","-")
-        writeLines(paste(rep(symbol,nchar(title)), collapse=""),zz)
-      } else {
-        start <- paste(rep("#",level),collapse="")
-        writeLines(paste(start,title),zz)
-      }
-      .empty(zz)
-    }
-    
-    .interfaceplot <- function(zz,name) {
-      file <- paste0("images/interfaces_",sub("^.*_","",name),".png")
-      if(file.exists(file)) {
-       .write(zz,paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"))
-      } else {
-       .write(zz,"**Interface plot missing!**") 
-      }
-    }
-    
-    .limitations <- function(zz,limitations) {
-      if(is.null(limitations)) limitations <- "There are no known limitations."
-      limitations <- c("**Limitations**",limitations)
-      limitations <- paste(">",limitations)
-      .write(zz,limitations)
-    }
     
     .header(zz,paste0(module$doc$title," (",name,")"),1, id=name)
     .header(zz,"Description",2)
@@ -220,8 +184,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     .header(zz,"See Also",2)
     .write(zz,paste0("[",sort(seealso),"]",collapse=", "))
     
-    .header(zz,"References",2)
-    
     close(zz)
     
     return(out)
@@ -243,9 +205,12 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     full[[m]] <- .updateImagePaths(tmp)
   }
   
-  returnReferences <- function(names,targets,file) {
+  returnReferences <- function(names,targets,file,level=2) {
     if(length(names)!=length(targets)) stop("names and targets must have the same lengths!")
     x <- NULL
+    zz <- textConnection("x",open = "w", local=TRUE)
+    .header(zz,"References",level=level)
+    close(zz)
     for(i in 1:length(names)) {
       x <- c(x,paste0("[",names[i],"]: ",targets[i]))
     }
@@ -254,7 +219,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   
   returnMarkdown <- function(x, folder="markdown") {
     if(!dir.exists(folder)) dir.create(folder)
-    returnReferences(names(x),paste0(names(x),".md"),paste0(folder,"/md.ref"))
+    returnReferences(names(x),paste0(names(x),".md"),paste0(folder,"/md.ref"),level=2)
     for(n in names(x)) {
       writeLines(x[[n]],paste0(folder,"/",n,".md"))
     }
@@ -266,7 +231,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
     file.copy(system.file("templates","template.css",package="goxygen"),paste0(folder,"/template.css"))
     ref <- tempfile()
-    returnReferences(moduleNames,paste0(moduleNames,".htm"),ref)
+    returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
     bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
     for(m in moduleNames) {
       system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",folder,"/",m,
@@ -285,11 +250,11 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     ref <- tempfile()
     files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
     moduleNames <- sub("\\.[^.]*$","",basename(files))
-    returnReferences(moduleNames,paste0("#id-",moduleNames),ref)
+    returnReferences(moduleNames,paste0("#id-",moduleNames),ref,level=1)
     files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
     system(paste0("pandoc ",files," -o documentation.pdf --template ",
            system.file("templates","template.latex",package="goxygen"),
-           " --listings --bibliography=",literature))
+           " -V colorlinks --metadata link-citations --listings --bibliography=",literature))
   }
   
   returnMarkdown(full)

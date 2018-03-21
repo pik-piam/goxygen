@@ -4,7 +4,7 @@
 #' of the line. In case of @realization also GAMS code is read and interpreted, in all other cases
 #' only the specific documentation comment is evaluated.  
 #' 
-#' @param path path to the file which should be evaluated
+#' @param path path to the file(s) which should be evaluated
 #' @param start_type set type for first line of code. This can be useful
 #' to extract documentation even if no documentation type has been set (e.g
 #' reading equations.gms as type realization)
@@ -63,6 +63,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     return(out)
   }
   
+  if(!file.exists(path)) return(list())
   x <- readLines(path, warn = FALSE)
   if(!is.null(start_type)) {
     x <- c(paste0(comment," @",start_type," "),x)
