@@ -52,8 +52,12 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
       description <- sub(pattern,"\\1",dec[,"description"])
       unit <- sub(pattern,"\\2",dec[,"description"])
       unit[!grepl(pattern,dec[,"description"])] <- ""
-      unit <- sub("mio.","10^6",unit)
+      unit <- sub("[Mm]i(lli|)on?\\.?","10^6",unit)
       unit <- gsub("\\\\","/",unit)
+      unit <- gsub("$","\\$",unit,fixed=TRUE)
+      unit <- gsub(" per ", "/", unit)
+      unit <- paste0("$",unit,"$")
+      unit[unit=="$$"] <- ""
       return(data.frame(name=dec[,"names"],sets=dec[,"sets"], description=description, unit=unit, stringsAsFactors = FALSE))
     }
     .format <- function(out,aps,ifs=NULL) {
@@ -147,14 +151,14 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     return(seealso)
   }
   
- buildModulePage <- function(name,data,module,seealso) {
+ buildModulePage <- function(name,data,module,seealso,objects) {
     
     out <- NULL
     zz <- textConnection("out",open = "w", local=TRUE)
     
     .header(zz,paste0(module$doc$title," (",name,")"),1, id=name)
     .header(zz,"Description",2)
-    .write(zz,module$doc$description)
+    .write(zz,module$doc$description, quote=objects)
     
     .header(zz,"Interfaces",2)
     
@@ -171,8 +175,8 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     rdata <- module$rdata
     for(r in names(rdata)) {
       .header(zz,r,3)
-      .write(zz,rdata[[r]]$realization)
-      .limitations(zz,rdata[[r]]$limitations)
+      .write(zz,rdata[[r]]$realization, quote=objects)
+      .limitations(zz,rdata[[r]]$limitations, quote=objects)
     }
     
     .header(zz,"Definitions",2)
@@ -187,7 +191,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     close(zz)
     
     out <- .updateImagePaths(out)
-    #out <- .quoteObjects(out,data$declarations[,"names"])
     
     return(out)
   }
@@ -200,7 +203,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
     seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    full[[m]] <- buildModulePage(m,out[[m]],mr,seealso)
+    full[[m]] <- buildModulePage(name=m,data=out[[m]],module=mr,seealso=seealso,objects=rownames(cc$ap$appearance))
   }
   
   returnReferences <- function(names,targets,file,level=2) {
@@ -224,6 +227,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   }
   
   buildHTML <- function(moduleNames, literature="literature.bib", folder="html", mdfolder="markdown") {
+    message("Start HTML creation...")
     if(!dir.exists(folder)) dir.create(folder)
     test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
     if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
@@ -237,9 +241,11 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     }
     unlink(ref)
     file.copy("images",folder,recursive = TRUE, overwrite = TRUE)
+    message("...finished HTML creation!")
   }
   
   buildPDF <- function(literature="literature.bib", mdfolder="markdown") {
+    message("Start PDF creation...")
     if(!file.exists(literature)) writeLines("",literature)
     test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
     if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
@@ -253,6 +259,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     system(paste0("pandoc ",files," -o documentation.pdf --template ",
            system.file("templates","template.latex",package="goxygen"),
            " -V colorlinks --metadata link-citations --listings --bibliography=",literature))
+    message("...finished PDF creation!")
   }
   
   returnMarkdown(full)
