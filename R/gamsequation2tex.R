@@ -135,7 +135,7 @@ gamsequation2tex <- function(x) {
   #x <- gsub("[\n ]*","",x)
   
   # split name and equation
-  pattern <- "^\n*(.*?^\\.) *\\.\\. *(^\\..*?);?$"
+  pattern <- "^\n*(.*?) *\\.\\. *(.*?);?$"
   if(grepl(pattern,x)) {
     name <- sub(pattern,"\\1",x)
     eq <- sub(pattern,"\\2",x)

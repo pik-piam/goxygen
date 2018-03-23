@@ -36,7 +36,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     if(type=="realization") {
       x[1] <- sub(pattern,"\\1 \\3",x[1])
       x <- paste(x,collapse="\n")
-      equation <- "(^|\n).*^\\.\\.\\.(^\\..|\n)*?;"
+      equation <- "(^|\n).*\\.\\.(.|\n)*?;"
       eq <- stri_extract_all_regex(x,equation)[[1]]
       eq <- gamsequation2tex(eq)
       x <- stri_replace_all_regex(x,equation,paste(comment,"\n",comment,"#::.equation.::#","\n",comment,"\n"))
