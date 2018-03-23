@@ -109,7 +109,7 @@ gamsequation2tex <- function(x) {
     
     #check {-bracket balance
     balance <- (stri_count_fixed(out,"{") - stri_count_fixed(out,"}"))
-    if(any(balance!=0)) warning("Fixed illegal line break in ",name,"!")
+    #if(any(balance!=0)) warning("Fixed illegal line break in ",name,"!")
     while(any(balance!=0)) {
       i <- which(balance!=0)[1]
       out[i] <- paste(out[i],out[i+1])

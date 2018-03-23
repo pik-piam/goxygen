@@ -210,18 +210,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     full[[m]] <- buildModulePage(name=m,data=out[[m]],module=mr,seealso=seealso,objects=rownames(cc$ap$appearance))
   }
   
-  returnReferences <- function(names,targets,file,level=2) {
-    if(length(names)!=length(targets)) stop("names and targets must have the same lengths!")
-    x <- NULL
-    zz <- textConnection("x",open = "w", local=TRUE)
-    .header(zz,"References",level=level)
-    close(zz)
-    for(i in 1:length(names)) {
-      x <- c(x,paste0("[",names[i],"]: ",targets[i]))
-    }
-    writeLines(x,file)  
-  }
-  
   returnMarkdown <- function(x, folder="markdown") {
     if(!dir.exists(folder)) dir.create(folder)
     returnReferences(names(x),paste0(names(x),".md"),paste0(folder,"/md.ref"),level=2)
@@ -230,44 +218,8 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     }
   }
   
-  buildHTML <- function(moduleNames, literature="literature.bib", folder="html", mdfolder="markdown") {
-    message("Start HTML creation...")
-    if(!dir.exists(folder)) dir.create(folder)
-    test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
-    if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
-    file.copy(system.file("templates","template.css",package="goxygen"),paste0(folder,"/template.css"))
-    ref <- tempfile()
-    returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
-    bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
-    for(m in moduleNames) {
-      system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",folder,"/",m,
-                    ".htm --css template.css ",bib," --metadata link-citations=true --mathjax"))
-    }
-    unlink(ref)
-    file.copy("images",folder,recursive = TRUE, overwrite = TRUE)
-    message("...finished HTML creation!")
-  }
-  
-  buildPDF <- function(literature="literature.bib", mdfolder="markdown") {
-    message("Start PDF creation...")
-    if(!file.exists(literature)) writeLines("",literature)
-    test <-try(system("pandoc --help",intern = TRUE, ignore.stderr = TRUE),silent = TRUE)
-    if("try-error" %in% class(test)) stop("pandoc not found. Please install pandoc first!")
-    sep <- tempfile()
-    writeLines("\\pagebreak",sep)
-    ref <- tempfile()
-    files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
-    moduleNames <- sub("\\.[^.]*$","",basename(files))
-    returnReferences(moduleNames,paste0("#id-",moduleNames),ref,level=1)
-    files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
-    system(paste0("pandoc ",files," -o documentation.pdf --template ",
-           system.file("templates","template.latex",package="goxygen"),
-           " -V colorlinks --metadata link-citations --listings --bibliography=",literature))
-    message("...finished PDF creation!")
-  }
-  
   returnMarkdown(full)
-  buildHTML(moduleNames)
+  buildHTML(supplementary="images")
   buildPDF()
 }
   
