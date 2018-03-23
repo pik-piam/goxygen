@@ -53,7 +53,7 @@ gamsequation2tex <- function(x) {
       y <- extract_vars(x,braceblock,paste0("b",level,"."))
       y$vars <- gsub("[\\(\\)]","",y$vars)
       y$x <- gsub("\\((#b[0-9.]*#)\\)","\\1",y$x)
-      if(grepl("\\(",y$x)) {
+      if(grepl("\\(.*\\)",y$x)) {
         tmp <- extract_braceblocks(y$x, level=level+1)
         y$x <- tmp$x
         y$vars <- c(tmp$vars,y$vars)
@@ -135,9 +135,15 @@ gamsequation2tex <- function(x) {
   #x <- gsub("[\n ]*","",x)
   
   # split name and equation
-  pattern <- "^\n*(.*?) *\\.\\. *(.*?);?$"
-  name <- sub(pattern,"\\1",x)
-  eq <- sub(pattern,"\\2",x)
+  pattern <- "^\n*(.*?^\\.) *\\.\\. *(^\\..*?);?$"
+  if(grepl(pattern,x)) {
+    name <- sub(pattern,"\\1",x)
+    eq <- sub(pattern,"\\2",x)
+  } else  {
+    name <- "undefined"
+    eq <- x
+  }
+  
   
   if(grepl("(^\\$|\n\\$)",x)) {
     warning("Cannot handle equations with preceeding dollar conditions! Return original code!")
@@ -149,6 +155,9 @@ gamsequation2tex <- function(x) {
   
   #split sides
   pattern <- "^(.*)(=[lgen]=)(.*)$"
+  if(!grepl(pattern,eq)) {
+    
+  }
   left <- sub(pattern,"\\1",eq)
   middle <- sub(pattern,"\\2",eq)
   right <- sub(pattern,"\\3",eq)

@@ -47,18 +47,22 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   
   collectTables <- function(cc) {
     .merge <- function(dec) {
+      .cleanunit <- function(unit) {
+        if(length(unit)==0) return(unit)
+        unit[!grepl(pattern,dec[,"description"])] <- ""
+        unit <- sub("[Mm]i(lli|)on?\\.?","10^6",unit)
+        unit <- gsub("\\\\","/",unit)
+        unit <- gsub("$","\\$",unit,fixed=TRUE)
+        unit <- gsub(" per ", "/", unit)
+        unit <- paste0("$",unit,"$")
+        unit[unit=="$$"] <- ""
+        return(unit)
+      }
       # merge information
       pattern <- "^(.*) \\((.*)\\) *(|\\/.*\\/ *)$"
       description <- sub(pattern,"\\1",dec[,"description"])
       unit <- sub(pattern,"\\2",dec[,"description"])
-      unit[!grepl(pattern,dec[,"description"])] <- ""
-      unit <- sub("[Mm]i(lli|)on?\\.?","10^6",unit)
-      unit <- gsub("\\\\","/",unit)
-      unit <- gsub("$","\\$",unit,fixed=TRUE)
-      unit <- gsub(" per ", "/", unit)
-      unit <- paste0("$",unit,"$")
-      unit[unit=="$$"] <- ""
-      return(data.frame(name=dec[,"names"],sets=dec[,"sets"], description=description, unit=unit, stringsAsFactors = FALSE))
+      return(data.frame(name=dec[,"names"],sets=dec[,"sets"], description=description, unit=.cleanunit(unit), stringsAsFactors = FALSE))
     }
     .format <- function(out,aps,ifs=NULL) {
       if(nrow(out)==0) {
