@@ -24,12 +24,6 @@ gamsequation2tex <- function(x) {
   
   convert_side <- function(x) {
     
-    
-    convert_vars <- function(v) {
-      v <- sub("^AND$","\\\\&",v)
-      return(gsub("\\_","\\\\_",v))
-    }
-    
     extract_vars <- function(x, variable, code="v", protected=c("sum","prod","power")) {
       if(length(x)!=1) stop("Works only for 1 element!")
       vars <- stri_extract_all_regex(x,variable)[[1]]
@@ -40,7 +34,8 @@ gamsequation2tex <- function(x) {
         x <- stri_replace_first_fixed(x,"#:.INSERTHERE.:#",insert)
       }
       vars <- vars[!(vars%in% protected)]
-      vars <- convert_vars(vars)
+      vars <- sub("^AND$","\\\\&",vars)
+      if(code=="v") vars <- gsub("\\_","\\\\_",vars)
       return(list(x=x,vars=vars))
     } 
     
@@ -59,7 +54,7 @@ gamsequation2tex <- function(x) {
     extract_braceblocks <- function(x, level=1) {
       braceblock <- "\\([^\\)\\(]*\\)"
       y <- extract_vars(x,braceblock,paste0("b",level,"."))
-      y$vars <- gsub("[\\(\\)]","",y$vars)
+      y$vars <- gsub("[()]","",y$vars)
       y$x <- gsub("\\((#b[0-9.]*#)\\)","\\1",y$x)
       if(grepl("\\(.*\\)",y$x)) {
         tmp <- extract_braceblocks(y$x, level=level+1)
