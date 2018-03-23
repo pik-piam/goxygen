@@ -24,28 +24,36 @@ gamsequation2tex <- function(x) {
   
   convert_side <- function(x) {
     
-    extract_vars <- function(x, variable, code="v") {
+    
+    convert_vars <- function(v) {
+      v <- sub("^AND$","\\\\&",v)
+      return(gsub("\\_","\\\\_",v))
+    }
+    
+    extract_vars <- function(x, variable, code="v", protected=c("sum","prod","power")) {
       if(length(x)!=1) stop("Works only for 1 element!")
       vars <- stri_extract_all_regex(x,variable)[[1]]
       names(vars) <- paste0("#",code,1:length(vars),"#")
       x <- stri_replace_all_regex(x,variable,"#:.INSERTHERE.:#")
       for(v in names(vars)) {
-        x <- stri_replace_first_fixed(x,"#:.INSERTHERE.:#",v)
+        insert <- ifelse(vars[v] %in% protected, paste0("\\",vars[v]), v)
+        x <- stri_replace_first_fixed(x,"#:.INSERTHERE.:#",insert)
       }
+      vars <- vars[!(vars%in% protected)]
+      vars <- convert_vars(vars)
       return(list(x=x,vars=vars))
     } 
     
     convert_sumprod <- function(x) {
-      sum <- "(#\\w+#)\\(([^(,]+|\\(.*?\\)),"
-      x <- gsub(sum,"\\1_{\\2}(",x)
-      x <- gsub("\\((#v[0-9]*#)\\)","\\1",x)
+      type <- c(sum="\\1_{\\2}(",
+                prod="\\1_{\\2}(",
+                power="(\\2)^(")
+      for(t in names(type)) {
+        pattern <- paste0("(\\\\",t,")\\(([^(,]+|\\(.*?\\)),")
+        x <- gsub(pattern,type[t],x)
+      }
+      x <- gsub("\\( *(#v[0-9]*#) *\\)","\\1",x)
       return(x)
-    }
-    
-    convert_vars <- function(v) {
-      v <- sub("^(sum|prod)$","\\\\\\1",v)
-      v <- sub("^AND$","\\\\&",v)
-      return(gsub("\\_","\\\\_",v))
     }
     
     extract_braceblocks <- function(x, level=1) {
@@ -85,9 +93,8 @@ gamsequation2tex <- function(x) {
     }  
     
     
-    variable <- "[\\w]{2,}(\\([\\w,\"+-]*\\)|)"
+    variable <- "[\\w.]{1,}(\\([\\w,\"'+-]*\\)|)"
     y <- extract_vars(x,variable,"v")
-    y$vars <- convert_vars(y$vars)
     y$x <- convert_sumprod(y$x)
     
     z <- extract_braceblocks(y$x)
@@ -120,7 +127,7 @@ gamsequation2tex <- function(x) {
     # check left/right balance
     balance <- (stri_count_fixed(out,"\\left") - stri_count_fixed(out,"\\right"))
     for(i in which(balance>0)) {
-      out[i] <- paste(out[i],rep("\\right.",balance[i]))
+      out[i] <- paste(out[i],paste(rep("\\right.",balance[i]),collapse=""))
     }
     for(i in which(balance<0)) {
       out[i] <- paste(paste(rep("\\left.",-1*balance[i]),collapse=""),out[i])
@@ -154,7 +161,7 @@ gamsequation2tex <- function(x) {
   multiline <- grepl("\n",eq)
   
   #split sides
-  pattern <- "^(.*)(=[lgen]=)(.*)$"
+  pattern <- "^(.*)(=[lLgGeEnN]=)(.*)$"
   if(!grepl(pattern,eq)) {
     
   }
@@ -162,7 +169,7 @@ gamsequation2tex <- function(x) {
   middle <- sub(pattern,"\\2",eq)
   right <- sub(pattern,"\\3",eq)
   
-  middle <- switch(middle,
+  middle <- switch(tolower(middle),
                    "=e=" = "=",
                    "=l=" = "\\leq",
                    "=g=" = "\\geq",

@@ -29,6 +29,10 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     return(gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", x))
   }
   
+  removeComments <- function(x,comment) {
+   return(grep(paste0("^(",escapeRegex(comment),"|[^*])"),x, value=TRUE)) 
+  }
+  
   extract_block <- function(x,comment) {
     code <- "@(\\w*) (.*)$"
     pattern <- paste0("^(",escapeRegex(comment),") *",code)
@@ -65,6 +69,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
   
   if(!file.exists(path)) return(list())
   x <- readLines(path, warn = FALSE)
+  x <- removeComments(x,comment)
   if(!is.null(start_type)) {
     x <- c(paste0(comment," @",start_type," "),x)
   }
