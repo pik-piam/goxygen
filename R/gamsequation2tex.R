@@ -7,7 +7,7 @@
 #' @return GAMS equation converted to latex code
 #' @author Jan Philipp Dietrich
 #' @export
-#' @importFrom stringi stri_extract_all_regex stri_replace_first_regex stri_replace_first_fixed stri_count_fixed
+#' @importFrom stringi stri_extract_all_regex stri_replace_first_regex stri_replace_first_fixed stri_count_fixed stri_extract_first_regex
 #' @seealso \code{\link{goxygen}}
 #' @examples
 #' 
@@ -39,32 +39,43 @@ gamsequation2tex <- function(x) {
       return(list(x=x,vars=vars))
     } 
     
-    convert_sumprod <- function(x) {
-      type <- c(sum="\\1_{\\2}(",
-                prod="\\1_{\\2}(",
-                power="(\\2)^(")
-      for(t in names(type)) {
-        pattern <- paste0("(\\\\",t,")\\(([^(,]+|\\(.*?\\)),")
-        x <- gsub(pattern,type[t],x)
-      }
-      x <- gsub("\\( *(#v[0-9]*#) *\\)","\\1",x)
-      return(x)
-    }
-    
     extract_braceblocks <- function(x, level=1) {
       braceblock <- "\\([^\\)\\(]*\\)"
       y <- extract_vars(x,braceblock,paste0("b",level,"."))
       y$vars <- gsub("[()]","",y$vars)
       y$x <- gsub("\\((#b[0-9.]*#)\\)","\\1",y$x)
+      z <- c(y$x,y$vars)
       if(grepl("\\(.*\\)",y$x)) {
         tmp <- extract_braceblocks(y$x, level=level+1)
-        y$x <- tmp$x
-        y$vars <- c(tmp$vars,y$vars)
+        z <- c(tmp,z[-1])
       }
-      return(y)
+      return(z)
     }
     
-    convert_blocks <- function(x, addbraces=FALSE) {
+    convert_functions <- function(z) {
+      if(length(z)==1) return(z)
+      
+      .tmp <- function(z,pattern,replacement) {
+        # Code needs to be in \\2!
+        while(grepl(pattern,z[1])) {
+          code <- sub("^[^#]*#([^#]*)#.*$","\\1",stri_extract_first_regex(z[1],pattern))
+          id <- which(names(z)==paste0("#",code,"#"))
+          if(length(id)!=1) stop("Problem with syntax detection!")
+          split <- strsplit(z[id],",")[[1]]
+          if(length(split)!=2) stop("Problem splitting syntax!")
+          names(split) <- paste0("#",code,c("a","b"),"#")
+          z <- c(z[1:(id-1)],split,z[(id+1):length(z)])
+          z[1] <- sub(pattern,replacement,z[1])
+        } 
+        return(z)
+      }
+      z <- .tmp(z,"\\\\(sum|prod)#([^#]*)#","\\\\\\1_{#\\2a#}#\\2b#")
+      z <- .tmp(z,"\\\\(power)#([^#]*)#","#\\2a#^{#\\2b#}")
+      if(length(z)>3) z <- c(z[1],convert_functions(z[-1]))
+      return(z)
+    }
+    
+    convert_blocks <- function(x) {
       names <- names(x)
       # handle exponents
       x <- gsub("\\*\\*([^<>=*+/-]+)","^{\\1}",x)
@@ -77,12 +88,14 @@ gamsequation2tex <- function(x) {
       #handle multiplications
       x <- gsub("*", " \\cdot ", x, fixed=TRUE)
       #add braces back
-      if(addbraces) x <- paste0("\\left(",x,"\\right)")
+      x[-1] <- paste0("\\left(",x[-1],"\\right)")
       names(x) <- names
       return(x)
     }
     
-    merge_back <- function(x,vars) {
+    merge_back <- function(x) {
+      vars <- x[-1]
+      x <- x[1]
       for(i in names(vars)) x <- sub(i,vars[i],x,fixed=TRUE)
       return(x)
     }  
@@ -90,14 +103,13 @@ gamsequation2tex <- function(x) {
     
     variable <- "[\\w.]{1,}(\\([\\w,\"'+-]*\\)|)"
     y <- extract_vars(x,variable,"v")
-    y$x <- convert_sumprod(y$x)
     
     z <- extract_braceblocks(y$x)
     
-    z$x    <- convert_blocks(z$x)
-    z$vars <- convert_blocks(z$vars, addbraces=TRUE)
+    z <- convert_functions(z)
+    z <- convert_blocks(z)
     
-    x <- merge_back(z$x,c(z$vars,y$vars))
+    x <- merge_back(c(z,y$vars))
     
     return(x)
   }
