@@ -155,14 +155,14 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     return(seealso)
   }
   
- buildModulePage <- function(name,data,module,seealso,objects) {
+ buildModulePage <- function(name,data,module,seealso) {
     
     out <- NULL
     zz <- textConnection("out",open = "w", local=TRUE)
     
     .header(zz,paste0(module$doc$title," (",name,")"),1, id=name)
     .header(zz,"Description",2)
-    .write(zz,module$doc$description, quote=objects)
+    .write(zz,module$doc$description)
     
     .header(zz,"Interfaces",2)
     
@@ -179,8 +179,8 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     rdata <- module$rdata
     for(r in names(rdata)) {
       .header(zz,r,3)
-      .write(zz,rdata[[r]]$realization, quote=objects)
-      .limitations(zz,rdata[[r]]$limitations, quote=objects)
+      .write(zz,rdata[[r]]$realization)
+      .limitations(zz,rdata[[r]]$limitations)
     }
     
     .header(zz,"Definitions",2)
@@ -207,7 +207,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
     seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    full[[m]] <- buildModulePage(name=m,data=out[[m]],module=mr,seealso=seealso,objects=rownames(cc$ap$appearance))
+    full[[m]] <- buildModulePage(name=m,data=out[[m]],module=mr,seealso=seealso)
   }
   
   returnMarkdown <- function(x, folder="markdown") {

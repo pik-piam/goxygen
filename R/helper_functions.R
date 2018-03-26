@@ -2,8 +2,7 @@
   writeLines("",zz)
 }
 
-.write <- function(zz,data,quote=NULL) {
-  if(!is.null(quote)) data <- .quoteObjects(data,quote)
+.write <- function(zz,data) {
   if(!is.null(data)) writeLines(data,zz)
   .empty(zz)
 }
@@ -34,20 +33,16 @@
   }
 }
 
-.limitations <- function(zz,limitations, quote=NULL) {
+.limitations <- function(zz,limitations) {
   if(is.null(limitations)) limitations <- "There are no known limitations."
   limitations <- c("**Limitations**",limitations)
   limitations <- paste(">",limitations)
-  .write(zz,limitations, quote=quote)
+  .write(zz,limitations)
 }
 
 .updateImagePaths <- function(x){
   return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
 }
 
-.quoteObjects <- function(x,objects) {
-  objects <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", objects, perl=TRUE)
-  pattern <-paste0("(`*",paste(objects,collapse="|"),"`?)")
-  x <- gsub(pattern,"`\\1`",x, perl=TRUE)
-  return(x)
-}
+
+
