@@ -141,7 +141,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
       rmain <- paste0(modules,folder,"/",r,".gms")
       files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
       paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
-      out[[r]] <- extractDocumentation(paths, start_type="realization")
+      out[[r]] <- extractDocumentation(paths, start_type="equations")
     }
     module_description <- extractDocumentation(paste0(modules,folder,"/",folder,".gms"))
     return(list(rdata=out,doc=module_description))
@@ -179,7 +179,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
     rdata <- module$rdata
     for(r in names(rdata)) {
       .header(zz,r,3)
-      .write(zz,rdata[[r]]$realization)
+      .write(zz,rdata[[r]]$description)
       .limitations(zz,rdata[[r]]$limitations)
     }
     

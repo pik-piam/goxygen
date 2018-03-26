@@ -49,33 +49,49 @@ gamsequation2tex <- function(x) {
         tmp <- extract_braceblocks(y$x, level=level+1)
         z <- c(tmp,z[-1])
       }
-      return(z)
+      return(z[!is.na(z)])
     }
     
     convert_functions <- function(z) {
       if(length(z)==1) return(z)
       
-      .tmp <- function(z,pattern,replacement) {
+      .tmp <- function(z,pattern,replacement,prefix) {
         # Code needs to be in \\2!
+        # prefixes need to be consistent to ids in replacement pattern
+        # prefix "n" can be used to suppress brakets in convert_blocks 
+        # (brakets only set for ids starting with "b")
         while(grepl(pattern,z[1])) {
           code <- sub("^[^#]*#([^#]*)#.*$","\\1",stri_extract_first_regex(z[1],pattern))
           id <- which(names(z)==paste0("#",code,"#"))
           if(length(id)!=1) stop("Problem with syntax detection!")
           split <- strsplit(z[id],",")[[1]]
           if(length(split)!=2) stop("Problem splitting syntax!")
-          names(split) <- paste0("#",code,c("a","b"),"#")
-          z <- c(z[1:(id-1)],split,z[(id+1):length(z)])
+          names(split) <- paste0("#",prefix,code,c("a","b"),"#")
+          if(id==length(z)) {
+            z <- c(z[1:(length(z)-1)],split) 
+          } else {
+            z <- c(z[1:(id-1)],split,z[(id+1):length(z)])
+          }
           z[1] <- sub(pattern,replacement,z[1])
         } 
         return(z)
       }
-      z <- .tmp(z,"\\\\(sum|prod)#([^#]*)#","\\\\\\1_{#\\2a#}#\\2b#")
-      z <- .tmp(z,"\\\\(power)#([^#]*)#","#\\2a#^{#\\2b#}")
+      z <- .tmp(z,"\\\\(sum|prod)#([^#]*)#","\\\\\\1_{#n\\2a#}#n\\2b#",c("n","n"))
+      z <- .tmp(z,"\\\\(power)#([^#]*)#","#\\2a#^{#n\\2b#}",c("","n"))
       if(length(z)>3) z <- c(z[1],convert_functions(z[-1]))
       return(z)
     }
     
     convert_blocks <- function(x) {
+      # reduce number of blocks by substituting blocks which
+      # only contain one other block
+      reduce <- grep("^ *#[^v^#]*# *$",x)
+      for(r in reduce) {
+        id <- gsub(" ","",x[r])
+        x[r] <- x[id]
+        x[id] <- ".:|DELETEME|:."
+      }
+      x <- x[x!=".:|DELETEME|:."]
       names <- names(x)
       # handle exponents
       x <- gsub("\\*\\*([^<>=*+/-]+)","^{\\1}",x)
@@ -87,8 +103,13 @@ gamsequation2tex <- function(x) {
       }
       #handle multiplications
       x <- gsub("*", " \\cdot ", x, fixed=TRUE)
-      #add braces back
-      x[-1] <- paste0("\\left(",x[-1],"\\right)")
+      #add braces back, if required
+      # required, if 
+      # 1) id starts with a "b" (for braket)
+      # 2) block contains more than just a single variable/block
+      add <- (substr(names(x),2,2)=="b")
+      add <- add & !grepl("^ *#[^#]*# *$",x)
+      x[add] <- paste0("\\left(",x[add],"\\right)")
       names(x) <- names
       return(x)
     }

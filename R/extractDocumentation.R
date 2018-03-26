@@ -34,10 +34,10 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
   }
   
   extract_block <- function(x,comment) {
-    code <- "@(\\w*) (.*)$"
+    code <- "@(\\w*) ?(.*)$"
     pattern <- paste0("^(",escapeRegex(comment),") *",code)
     type <- sub(pattern,"\\2",x[1])
-    if(type=="realization") {
+    if(type=="equations") {
       x[1] <- sub(pattern,"\\1 \\3",x[1])
       x <- paste(x,collapse="\n")
       equation <- "(^|\n).*\\.\\.(.|\n)*?;"
@@ -52,7 +52,18 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
         delim <- ifelse(grepl("CONVERSION FAILED!",i,fixed = TRUE), "```","$$")
         x[grep("#::.equation.::#",x)[1]] <- paste0(delim,"\n",eq[i],"\n",delim)
       }
-      
+      type <- "description"
+    } else if(type=="code") {
+      com <- grepl(paste0("^",escapeRegex(comment)," *"),x)
+      x[!com] <- paste0("```\n",x[!com],"\n```")
+      x[com] <- sub(paste0("^",escapeRegex(comment)," *"),"",x[com])
+      x[1] <- sub(code,"\\2",x[1])
+      x <- paste(x,collapse="\n")
+      x <- gsub("\n```\n```\n","\n",x,fixed=TRUE)
+      x <- strsplit(x,"\n")[[1]]
+      type <- "description"
+    } else if(type=="stop") {
+      return(NULL)
     } else {
       x <- grep(paste0("^",escapeRegex(comment)," *"), x, value=TRUE)
       x <- sub(paste0("^",escapeRegex(comment)," *"),"",x)
@@ -74,7 +85,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     x <- c(paste0(comment," @",start_type," "),x)
   }
   
-  blocks_start <- suppressWarnings(grep(paste0("^",escapeRegex(comment)," @[a-z]* "),x))
+  blocks_start <- suppressWarnings(grep(paste0("^",escapeRegex(comment)," @[a-z]*( |$)"),x))
   if(length(blocks_start)==0) return(list())
   
   blocks_end <- c(blocks_start[-1]-1,length(x))
