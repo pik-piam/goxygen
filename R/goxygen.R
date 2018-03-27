@@ -1,8 +1,25 @@
 #' goxygen
 #' 
 #' Documentation function which extracts a full model documentation from a 
-#' modularized gams model. (incomplete --- work in progress!) 
+#' modularized gams model. The function extracts comments used as documentation,
+#' extracts code and can extract and convert GAMS equations as latex code. Output
+#' is returned in Markdown, HTML and PDF format.
 #' 
+#' @note Documentation lines in the code must start with *' to be detected as documentation.
+#' Identifier at the beginning of each block describe what kind of documentation is given. 
+#' All identifiers start with @ followed by the name of the identifier. Currently, following
+#' identifiers are available
+#' \itemize{
+#'  \item @title Title 
+#'  \item @authors List of authors
+#'  \item @description Model description (only the documentation text will be interpreted)
+#'  \item @equations Equation description (documentation text will be extracted and gams equations
+#'  will be converted to latex code)
+#'  \item @code Code description (documentation text and code will be extracted)
+#'  \item @limitations details about limitations of an implementation
+#'  \item @stop everything following will be ignored until the next identifier is mentioned again. Useful
+#'  to stop a section
+#' }
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file

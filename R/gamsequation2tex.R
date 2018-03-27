@@ -56,6 +56,7 @@ gamsequation2tex <- function(x) {
       if(length(z)==1) return(z)
       
       .tmp <- function(z,pattern,replacement,prefix) {
+        if(is.null(z)) return(NULL)
         # Code needs to be in \\2!
         # prefixes need to be consistent to ids in replacement pattern
         # prefix "n" can be used to suppress brakets in convert_blocks 
@@ -63,9 +64,9 @@ gamsequation2tex <- function(x) {
         while(grepl(pattern,z[1])) {
           code <- sub("^[^#]*#([^#]*)#.*$","\\1",stri_extract_first_regex(z[1],pattern))
           id <- which(names(z)==paste0("#",code,"#"))
-          if(length(id)!=1) stop("Problem with syntax detection!")
+          if(length(id)!=1) return(NULL)
           split <- strsplit(z[id],",")[[1]]
-          if(length(split)!=2) stop("Problem splitting syntax!")
+          if(length(split)!=2) return(NULL)
           names(split) <- paste0("#",prefix,code,c("a","b"),"#")
           if(id==length(z)) {
             z <- c(z[1:(length(z)-1)],split) 
@@ -128,6 +129,7 @@ gamsequation2tex <- function(x) {
     z <- extract_braceblocks(y$x)
     
     z <- convert_functions(z)
+    if(is.null(z)) return("#FAILED#")
     z <- convert_blocks(z)
     
     x <- merge_back(c(z,y$vars))
