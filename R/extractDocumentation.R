@@ -72,7 +72,8 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     
     while(length(x)>1 & x[1]=="")  x <- x[-1]
     while(length(x)>1 & tail(x,1)=="") x <- x[-length(x)]
-    if(length(x)==1) if(is.na(x) | x=="") x <- NULL
+    if(length(x)==1) if(is.na(x) | x=="") return(NULL)
+    if(type=="description") x <- c(x,"")
     out <- list()
     out[[type]] <- x
     return(out)
