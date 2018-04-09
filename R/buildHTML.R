@@ -28,7 +28,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
   for(m in moduleNames) {
     system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",folder,"/",m,
-                  ".htm --css template.css ",bib," --metadata link-citations=true --mathjax"))
+                  ".htm --css template.css ",bib," --mathjax --standalone --metadata link-citations=true --metadata title=",m))
   }
   unlink(ref)
   for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)
