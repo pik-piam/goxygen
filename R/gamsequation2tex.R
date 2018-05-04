@@ -7,7 +7,7 @@
 #' @return GAMS equation converted to latex code
 #' @author Jan Philipp Dietrich
 #' @export
-#' @importFrom stringi stri_extract_all_regex stri_replace_first_regex stri_replace_first_fixed stri_count_fixed stri_extract_first_regex
+#' @importFrom stringi stri_extract_all_regex stri_replace_first_regex stri_replace_first_fixed stri_count_fixed stri_extract_first_regex stri_replace_all_fixed
 #' @seealso \code{\link{goxygen}}
 #' @examples
 #' 
@@ -25,17 +25,23 @@ gamsequation2tex <- function(x) {
   convert_side <- function(x) {
     
     extract_vars <- function(x, variable, code="v", protected=c("sum","prod","power")) {
+      
       if(length(x)!=1) stop("Works only for 1 element!")
-      vars <- stri_extract_all_regex(x,variable)[[1]]
+      
+      vars        <- stri_extract_all_regex(x,variable)[[1]]
       names(vars) <- paste0("#",code,1:length(vars),"#")
-      x <- stri_replace_all_regex(x,variable,"#:.INSERTHERE.:#")
+      x           <- stri_replace_all_regex(x,variable,"#:.INSERTHERE.:#")
+      
       for(v in names(vars)) {
         insert <- ifelse(vars[v] %in% protected, paste0("\\",vars[v]), v)
         x <- stri_replace_first_fixed(x,"#:.INSERTHERE.:#",insert)
       }
+      
       vars <- vars[!(vars%in% protected)]
       vars <- sub("^AND$","\\\\&",vars)
+      
       if(code=="v") vars <- gsub("\\_","\\\\_",vars)
+      
       return(list(x=x,vars=vars))
     } 
     
@@ -138,10 +144,14 @@ gamsequation2tex <- function(x) {
   }
   
   fixlines <- function(x, name) {
+    
+    # Fix strange line breaks and set flag for codeline breaks only
     x <- gsub("^\n *","",x)
+    x <- gsub("\n$","",x)
     x <- gsub("\n *\\}","}\n",x)
     x <- gsub("(\\\\frac\\{[^}]*\\}[^{]*?)\\n(.*?\\{)","\\1#codelinebreakonly#\\2",x)
     
+    # Split up equation at line breaks
     out <- strsplit(x,"\n")[[1]]
     
     #check {-bracket balance
@@ -162,9 +172,11 @@ gamsequation2tex <- function(x) {
     for(i in which(balance<0)) {
       out[i] <- paste(paste(rep("\\left.",-1*balance[i]),collapse=""),out[i])
     }
-    out <- paste(out,collapse="\\\\ \n & ")
+    
+    # Merge equation
+    out <- paste(out,collapse="\\\\ \n")
     out <- gsub("#codelinebreakonly#","\n",out,fixed=TRUE)
-    out <- paste("\\begin{aligned}\n",out,"\n\\end{aligned}")
+    #out <- paste("\\begin{aligned}\n",out,"\n\\end{aligned}")
     return(out)
   }
   
@@ -174,7 +186,7 @@ gamsequation2tex <- function(x) {
   # split name and equation
   pattern <- "^\n*(.*?) *\\.\\. *(.*?);?$"
   if(grepl(pattern,x)) {
-    name <- sub(pattern,"\\1",x)
+    name <- stri_replace_all_fixed(sub(pattern,"\\1",x)," ","")
     eq <- sub(pattern,"\\2",x)
   } else  {
     name <- "undefined"
@@ -193,7 +205,9 @@ gamsequation2tex <- function(x) {
   #split sides
   pattern <- "^(.*)(=[lLgGeEnN]=)(.*)$"
   if(!grepl(pattern,eq)) {
-    
+    warning("Cannot handle equations without relational operator! Return original code!")
+    names(x) <- paste(name,"(CONVERSION FAILED!)")
+    return(x)
   }
   left <- sub(pattern,"\\1",eq)
   middle <- sub(pattern,"\\2",eq)
@@ -205,7 +219,7 @@ gamsequation2tex <- function(x) {
                    "=g=" = "\\geq",
                    "=n=" = "\\neq")
   
-  if(multiline) middle <- paste(middle,"&")
+  #if(multiline) middle <- paste(middle,"&")
   
   left <- convert_side(left)
   right <- convert_side(right)
@@ -217,6 +231,7 @@ gamsequation2tex <- function(x) {
   out <- gsub("<=","\\leq", out, fixed=TRUE)
   
   if(multiline) out <- fixlines(out, name)
+  out <- paste("\\begin{multline*}\n",out,"\\\\ \n\\end{multline*}")
   names(out) <- name
   
   if(grepl("#",out)) {

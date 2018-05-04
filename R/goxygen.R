@@ -23,6 +23,7 @@
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
+#' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
 #' @importFrom lucode codeCheck modules_interfaceplot
@@ -32,9 +33,13 @@
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf","tex")) {
   cwd <- getwd()
   on.exit(setwd(cwd))
+  
+  if(any(nomatch <- output!=c("html","pdf","tex"))){
+      warning(paste0("No output format '",output[nomatch],"' available. It will be ignored."))
+    }
   
   setwd(path)
   if(!dir.exists(docfolder)) dir.create(docfolder, recursive = TRUE)
@@ -236,7 +241,9 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE) {
   }
   
   returnMarkdown(full)
-  buildHTML(supplementary="images")
-  buildPDF()
+  
+  if("html"%in%output) buildHTML(supplementary="images")
+  if("pdf" %in%output) buildPDF()
+  if("tex" %in%output) buildTEX()
 }
   

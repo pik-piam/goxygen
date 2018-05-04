@@ -49,7 +49,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
       
       # fill in equations
       for(i in names(eq)) {
-        delim <- ifelse(grepl("CONVERSION FAILED!",i,fixed = TRUE), "```","$$")
+        delim <- ifelse(grepl("CONVERSION FAILED!",i,fixed = TRUE), "```","")
         x[grep("#::.equation.::#",x)[1]] <- paste0(delim,"\n",eq[i],"\n",delim)
       }
       type <- "description"
