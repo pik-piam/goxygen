@@ -40,9 +40,13 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     if(type=="equations") {
       x[1] <- sub(pattern,"\\1 \\3",x[1])
       x <- paste(x,collapse="\n")
-      equation <- "(^|\n).*\\.\\.(.|\n)*?;"
+      equation <- "(^|\n)[^.]*\\.\\.([^.]|\n)*?;"
       eq <- stri_extract_all_regex(x,equation)[[1]]
-      eq <- gamsequation2tex(eq)
+      if(length(eq)==1 && is.na(eq)) {
+        eq <- NULL
+      } else {
+        eq <- gamsequation2tex(eq)
+      }
       x <- stri_replace_all_regex(x,equation,paste(comment,"\n",comment,"#::.equation.::#","\n",comment,"\n"))
       x <- stri_extract_all_regex(x,paste0(escapeRegex(comment),".*(\\n|$)"))[[1]]
       x <- gsub(paste0("(\n|",escapeRegex(comment)," *)"),"",x)
