@@ -25,7 +25,7 @@
 }
 
 .interfaceplot <- function(zz,name) {
-  file <- paste0("images/interfaces_",sub("^.*_","",name),".png")
+  file <- paste0("images/interfaces_",sub("^[^_]*_","",name),".png")
   if(file.exists(file)) {
     .write(zz,paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"))
   } else {
