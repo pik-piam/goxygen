@@ -40,7 +40,7 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     if(type=="equations") {
       x[1] <- sub(pattern,"\\1 \\3",x[1])
       x <- paste(x,collapse="\n")
-      equation <- "(^|\n)[^.]*\\.\\.([^.]|\n)(.|\n)*?;"
+      equation <- "(^|\n)[^.\n]*\\.\\.([^.]|\n)(.|\n)*?;"
       eq <- stri_extract_all_regex(x,equation)[[1]]
       if(length(eq)==1 && is.na(eq)) {
         eq <- NULL
