@@ -4,6 +4,14 @@
    HTML5 display definitions
    ========================================================================== */
 
+th {
+     transform: rotate(180deg);
+	 writing-mode: vertical-rl;
+     text-align: center;
+     vertical-align: top;
+}
+   
+   
 /**
  * Correct `block` display not defined in IE 8/9.
  */
