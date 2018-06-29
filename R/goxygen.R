@@ -75,6 +75,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
         unit <- sub("[Mm]i(lli|)on?\\.?","10^6",unit)
         unit <- gsub("\\\\","/",unit)
         unit <- gsub("$","\\$",unit,fixed=TRUE)
+        unit <- gsub("%","\\%",unit,fixed=TRUE)
         unit <- gsub(" per ", "/", unit)
         unit <- paste0("$",unit,"$")
         unit[unit=="$$"] <- ""
