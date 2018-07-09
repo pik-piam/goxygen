@@ -118,6 +118,8 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       rownames(x) <- make.unique(as.character(x[[1]]))
       rownames(x) <- gsub("\\,([^ ])",", \\1",rownames(x))
       rownames(x) <- sub("(","\\ \n(",rownames(x), fixed=TRUE)
+      x <- x[sort(rownames(x)),]
+      x <- x[!grepl("^o[qv]",rownames(x)),]
       split.cells <- c(15,30,rep(1,length(x)-2))
       return(pandoc.table.return(x[-1], "pandoc", caption=caption, split.tables=100, split.cells=split.cells, 
                                  emphasize.rownames=FALSE,  keep.line.breaks = TRUE))
