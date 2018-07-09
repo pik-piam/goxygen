@@ -104,11 +104,23 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       if(is.null(ifs)) return(fout)
       return(list(input=fout[ifs[names(ifs) == "in"],],output=fout[ifs[names(ifs) == "out"],1:3]))
     }
-    .clean <- function(x,caption) {
+    .clean <- function(x,caption, keep_names=1:3) {
       if(is.null(x)) return(NULL)
       if(nrow(x)==0) return(NULL)
-      rownames(x) <- NULL
-      return(pandoc.table.return(x, "pandoc", caption=caption, split.tables=160))
+      sub <- NULL
+      j <- 1
+      for(i in setdiff(1:length(x),keep_names)) {
+        sub <- c(sub,paste0(toupper(letters[j]),": ",names(x)[i]))
+        names(x)[i] <- toupper(letters[j])
+        j <- j+1
+      }
+      if(!is.null(sub)) caption <- paste0(caption, " (",paste(sub,collapse=" | "),")")
+      rownames(x) <- make.unique(as.character(x[[1]]))
+      rownames(x) <- gsub("\\,([^ ])",", \\1",rownames(x))
+      rownames(x) <- sub("(","\\ \n(",rownames(x), fixed=TRUE)
+      split.cells <- c(15,30,rep(1,length(x)-2))
+      return(pandoc.table.return(x[-1], "pandoc", caption=caption, split.tables=100, split.cells=split.cells, 
+                                 emphasize.rownames=FALSE,  keep.line.breaks = TRUE))
     }
     interfaceTables <- function(cc, module) {
       # collect information about module interfaces
@@ -200,10 +212,13 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     .header(zz,"Realizations",2)
     
     rdata <- module$rdata
+    i <- 1
     for(r in names(rdata)) {
-      .header(zz,r,3)
+      title <- paste0("(",toupper(letters[i]),") ",r)
+      .header(zz,title,3)
       .write(zz,rdata[[r]]$description)
       .limitations(zz,rdata[[r]]$limitations)
+      i <- i+1
     }
     
     .header(zz,"Definitions",2)
