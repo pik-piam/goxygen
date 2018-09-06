@@ -26,6 +26,18 @@ summary {
 #TOC { float: right; border: 1px solid gray; background-color: #F2F2F2; padding-right: 5px; margin-left: 5px;} 
 
 /**
+ * Reduce font size of formulas to same font size as text
+ */
+span.math.inline {
+  font-size: 85%;
+}
+
+span.math.display {
+  font-size: 85%;
+}
+
+
+/**
  * Correct `inline-block` display not defined in IE 8/9.
  */
 
