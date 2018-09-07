@@ -32,6 +32,6 @@ In case of questions / problems please contact Jan Dietrich <dietrich@pik-potsda
 
 ## Citation
 
-not yet available
+[![DOI](https://zenodo.org/badge/125112665.svg)](https://zenodo.org/badge/latestdoi/125112665)
 
 
