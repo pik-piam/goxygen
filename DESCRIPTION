@@ -1,7 +1,7 @@
 Package: goxygen
 Type: Package
 Title: Documentation package for modular GAMS code
-Version: 0.12.0
+Version: 0.12.1
 Date: 2018-09-07
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")))
 Description: A collection of tools which allow to manipulate and analyze code.
@@ -12,4 +12,4 @@ License: BSD_2_clause + file LICENSE
 Encoding: UTF-8
 LazyData: no
 RoxygenNote: 6.1.0
-ValidationKey: 2133720
+ValidationKey: 2151501

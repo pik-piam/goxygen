@@ -19,4 +19,4 @@ citation_doi <- function(package) {
   return(cit)
 }
 
-citation_doi("lucode")
+citation_doi("goxygen")
