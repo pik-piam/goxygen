@@ -76,7 +76,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     if(!is.null(addHTML)) {
       html <- readLines(ofile)
       cut <- which(html=="<body>")
-      html <- c(html[1:cut],addHTML,html[cut+1:(length(html))])
+      html <- c(html[1:cut],addHTML,html[(cut+1):length(html)])
       writeLines(html,ofile)
     }
   }

@@ -30,7 +30,7 @@ buildPDF <- function(file="documentation.pdf", mdfolder="markdown", literature="
   files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
   if(is.null(literature)) bib <- ""
   else bib <- ifelse(file.exists(literature),paste0(" --metadata link-citations --bibliography=",literature),"")
-  system(paste0("pandoc ",files," -o ",file," --template ",
+  system(paste0("pandoc ",files," -o ",file," --toc --template ",
                 system.file("templates","template.latex",package="goxygen"),
                 " -V colorlinks --listings",bib))
   message("...finished PDF creation!")
