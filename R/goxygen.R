@@ -20,6 +20,17 @@
 #'  \item @stop everything following will be ignored until the next identifier is mentioned again. Useful
 #'  to stop a section
 #' }
+#' 
+#' You can supply additional information via a file named goxygen.conf stored in the doc folder of your model.
+#' Currently it can contain model namd and model version. The file should be formatted
+#' as follows:
+#' 
+#' \code{Model: MyModel} \cr 
+#' \code{Version: 1.2.3-beta}
+#' 
+#' In addition you can store a model logo (100px height) as \code{doc/images/logo.png} which then will be used in the
+#' HTML version of the documentation.
+#' 
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
