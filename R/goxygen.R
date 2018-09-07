@@ -249,12 +249,33 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     
     return(out)
   }
+
+ buildIndexPage <- function(path="../main.gms",authorsfile="../AUTHORS") {
+   index <- extractDocumentation(path)
+   authors <- .modelAuthors(authorsfile)
+   out <- NULL
+   zz <- textConnection("out",open = "w", local=TRUE)
    
+   if(!is.null(index$title)) .header(zz,index$title,1)
+   .write(zz,index$description)
+   
+   if(!is.null(authors)) {
+     .header(zz,"Authors (alphabetically)",2)
+     .write(zz,paste(sort(authors),collapse=", "))
+   }
+   
+   close(zz)
+   out <- .updateImagePaths(out)
+   return(out)
+ }
+    
   out <- collectTables(cc)
   moduleNames <- cc$modulesInfo[,"folder"]
   
   # write doc files
   full <- list()
+  full[["index"]] <- buildIndexPage("../main.gms")
+  
   for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
     seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)

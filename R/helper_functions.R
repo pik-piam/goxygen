@@ -44,5 +44,13 @@
   return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
 }
 
+.modelAuthors <- function(authorsfile) {
+  if(!file.exists(authorsfile)) return(NULL)
+  a <- readLines(authorsfile)
+  a <- grep("@",a, value=TRUE)
+  a <- gsub(" <.*$","",a)
+  return(a)
+}
+
 
 

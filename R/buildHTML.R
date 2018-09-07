@@ -33,6 +33,15 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
   returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
   
   returnHTMLNav <- function(names, targets, id="TOCL") {
+    
+    if("index"%in%names) {
+      #bring index page to the front
+      targets <- targets[order(names!="index")]
+      names   <- names[order(names!="index")]
+      #rename index to overview
+      names[names=="index"] <- "Overview"
+    }
+    
     out <- paste0('<div id="',id,'">','<ul>')
     for(i in 1:length(names)) {
       out <- c(out,paste0('<li><a href="',targets[i],'">',names[i],'</a></li>'))
@@ -45,7 +54,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     cfg <- readConf(goxygen_conf)
   
     if(file.exists("images/logo.png")) {
-      logo <- '  <img id="logo" src="images/logo.png" height="100" alt="model logo" />'
+      logo <- '  <a href="index.htm"><img id="logo" src="images/logo.png" height="100" alt="model logo" /></a>'
     } else {
       logo <- NULL
     }
