@@ -24,6 +24,8 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   writeLines("\\pagebreak",sep)
   ref <- tempfile()
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
+  #bring index to the front
+  files <- files[order(!grepl("index.md",files))]
   moduleNames <- sub("\\.[^.]*$","",basename(files))
   returnReferences(moduleNames,paste0("#id-",moduleNames),ref,level=1)
   files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
