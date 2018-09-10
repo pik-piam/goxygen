@@ -48,7 +48,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
   cwd <- getwd()
   on.exit(setwd(cwd))
   
-  if(any(nomatch <- output!=c("html","pdf","tex"))){
+  if(any(nomatch <- !(output %in% c("html","pdf","tex")))){
       warning(paste0("No output format '",output[nomatch],"' available. It will be ignored."))
     }
   
