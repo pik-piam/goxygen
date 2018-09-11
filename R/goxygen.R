@@ -88,6 +88,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
         unit <- gsub("$","\\$",unit,fixed=TRUE)
         unit <- gsub("%","\\%",unit,fixed=TRUE)
         unit <- gsub(" per ", "/", unit)
+        unit <- gsub("USD([0-9]*(PPP|MER))","USD_{\\1}", unit)
         unit <- paste0("$",unit,"$")
         unit[unit=="$$"] <- ""
         return(unit)
