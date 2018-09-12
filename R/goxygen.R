@@ -41,6 +41,7 @@
 #' @importFrom lucode codeCheck modules_interfaceplot
 #' @importFrom pander pandoc.table.return
 #' @importFrom citation read_cff cff2bibentry
+#' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
 #' @seealso \code{\link{codeCheck}}
 #' @export
@@ -279,7 +280,10 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
      
      .header(zz, "How to cite",2)
      .write(zz,capture.output(citbib))
+     .header(zz, "Bibtex format",3)
      .write(zz,c("```",toBibtex(citbib),"```"))
+     .header(zz, "Citation File Format",3)
+     .write(zz,c("```",as.yaml(citation),"```"))
    }
    
    close(zz)
