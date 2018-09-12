@@ -10,10 +10,7 @@
 #' @param mdfolder path to the markdown folder to be used as source
 #' @param literature path to a bibliography, if available (will be ignored
 #' if file does not exist)
-#' @param goxygen_conf path to a goxygen configuration file (will be ignored if file does not exist). The file
-#' can be used to supply additional information about the model such as name or version number. 
-#' Allowed settings are: Name (name of the model) and Version (model version).
-#' Entries are supplied in the format "Name: content", each entry must be a single line. 
+#' @param citation Citation information in citation file format (optional)
 #' @param supplementary a vector of files and/or folders required for the conversion
 #' (e.g. an images subdirectory with figures to be shown in the documents)
 #' @param addHTML character vector with HTML code which should be added to the body of each HTML file.
@@ -22,7 +19,7 @@
 #' @importFrom utils packageVersion
 #' @export
 
-buildHTML <- function(folder="html", mdfolder="markdown", literature="literature.bib", goxygen_conf="goxygen.conf", supplementary=NULL, addHTML=NULL) {
+buildHTML <- function(folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary=NULL, addHTML=NULL) {
   message("Start HTML creation...")
   check_pandoc()
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
@@ -31,6 +28,8 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
   file.copy(system.file("templates","template.css",package="goxygen"),paste0(folder,"/template.css"))
   ref <- tempfile()
   returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
+  
+  if(is.character(citation) && file.exists(citation)) citation <- read_cff(citation)
   
   returnHTMLNav <- function(names, targets, id="TOCL") {
     
@@ -50,8 +49,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     return(out)
   }
   
-  addMainHeaderHTML <- function(goxygen_conf) {
-    cfg <- readConf(goxygen_conf)
+  addMainHeaderHTML <- function(citation) {
   
     if(file.exists("images/logo.png")) {
       logo <- '  <a href="index.htm"><img id="logo" src="images/logo.png" height="100" alt="model logo" /></a>'
@@ -59,8 +57,8 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
       logo <- NULL
     }
     
-    if(!is.null(cfg$Version)) {
-      version <- paste0(" | Version ",cfg$Version)
+    if(!is.null(citation$version)) {
+      version <- paste0(" | Version ",citation$version)
     } else {
       version <- NULL
     }
@@ -74,7 +72,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     return(out)
   }
   
-  addHTML <- c(addHTML,addMainHeaderHTML(goxygen_conf),returnHTMLNav(moduleNames, paste0(moduleNames,".htm")))
+  addHTML <- c(addHTML,addMainHeaderHTML(citation),returnHTMLNav(moduleNames, paste0(moduleNames,".htm")))
   
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
   for(m in moduleNames) {
@@ -84,6 +82,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     # Add additional code to html file
     if(!is.null(addHTML)) {
       html <- readLines(ofile)
+      html <- sub("(<title>)(.*)(</title>)",paste0("\\1",citation$title," | \\2\\3"),html)
       cut <- which(html=="<body>")
       html <- c(html[1:cut],addHTML,html[(cut+1):length(html)])
       writeLines(html,ofile)

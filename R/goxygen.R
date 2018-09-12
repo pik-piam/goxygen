@@ -35,16 +35,18 @@
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
 #' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
+#' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
 #' @importFrom lucode codeCheck modules_interfaceplot
 #' @importFrom pander pandoc.table.return
-#' @importFrom utils tail
+#' @importFrom citation read_cff cff2bibentry
+#' @importFrom utils tail toBibtex capture.output
 #' @seealso \code{\link{codeCheck}}
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf","tex")) {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf","tex"), cff="CITATION.cff") {
   cwd <- getwd()
   on.exit(setwd(cwd))
   
@@ -53,6 +55,13 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     }
   
   setwd(path)
+  
+  if(file.exists(cff)) {
+    citation <- read_cff(cff)
+  } else {
+    citation <- NULL
+  }
+  
   if(!dir.exists(docfolder)) dir.create(docfolder, recursive = TRUE)
   cachefile <- paste0(docfolder,"/doc.rds")
   if(cache & file.exists(cachefile)) {
@@ -251,31 +260,39 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     return(out)
   }
 
- buildIndexPage <- function(path="../main.gms",authorsfile="../AUTHORS") {
+ buildIndexPage <- function(path="../main.gms",citation=NULL) {
    index <- extractDocumentation(path)
-   authors <- .modelAuthors(authorsfile)
    out <- NULL
    zz <- textConnection("out",open = "w", local=TRUE)
    
    if(!is.null(index$title)) .header(zz,index$title,1)
    .write(zz,index$description)
    
-   if(!is.null(authors)) {
-     .header(zz,"Authors (alphabetically)",2)
-     .write(zz,paste(sort(authors),collapse=", "))
+   if(!is.null(citation)) {
+     citbib <- cff2bibentry(citation)
+     
+     authors <- citbib$author
+     if(!is.null(authors)) {
+       .header(zz,"Authors",2)
+       .write(zz,paste(as.character(authors),collapse=", \n"))
+     }
+     
+     .header(zz, "How to cite",2)
+     .write(zz,capture.output(citbib))
+     .write(zz,c("```",toBibtex(citbib),"```"))
    }
    
    close(zz)
    out <- .updateImagePaths(out)
    return(out)
  }
-    
+ 
   out <- collectTables(cc)
   moduleNames <- cc$modulesInfo[,"folder"]
   
   # write doc files
   full <- list()
-  full[["index"]] <- buildIndexPage("../main.gms")
+  full[["index"]] <- buildIndexPage("../main.gms", citation)
   
   for(m in setdiff(sort(names(out)),"core")) {
     mr <- collectRealizations(m,cc)
@@ -293,7 +310,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
   
   returnMarkdown(full)
   
-  if("html"%in%output) buildHTML(supplementary="images")
+  if("html"%in%output) buildHTML(supplementary="images", citation=citation)
   if("pdf" %in%output) buildPDF()
   if("tex" %in%output) buildTEX()
 }
