@@ -70,7 +70,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     cc <- cache$cc
     interfaces <- cache$interfaces
   } else {
-    cc <- codeCheck(debug=TRUE)
+    cc <- codeCheck(details=TRUE)
     interfaces <- modules_interfaceplot(cc$interfaceInfo, targetfolder= paste0(docfolder,"/images"), writetable=FALSE)
     saveRDS(list(cc=cc,interfaces=interfaces),cachefile)
   }
@@ -150,11 +150,11 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       # collect information about module interfaces
       ifs <- cc$interfaceInfo[[module]]
       ifs <- sort(ifs)
-      dec <- cc$gams$declarations[cc$gams$declarations[,"names"] %in% ifs,, drop=FALSE]
-      dec <- dec[!duplicated(dec[,"names"]),,drop=FALSE]
-      aps <- cc$ap$appearance[ifs,grepl(paste0("^",module,"\\."),colnames(cc$ap$appearance)),drop=FALSE]
+      dec <- cc$declarations[cc$declarations$names %in% ifs,, drop=FALSE]
+      dec <- dec[!duplicated(dec$names),,drop=FALSE]
+      aps <- cc$appearance[ifs,grepl(paste0("^",module,"\\."),colnames(cc$appearance)),drop=FALSE]
       colnames(aps) <- sub("^.*\\.","",colnames(aps))
-      aps <- aps[dec[,"names"],,drop=FALSE]
+      aps <- aps[dec$names,,drop=FALSE]
       aps <- aps[!duplicated(rownames(aps)),,drop=FALSE]
     
       out  <- .merge(dec)
@@ -166,13 +166,14 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     }
     moduleTables <- function(cc, module) {
       # collect information about module interfaces
-      dec <- cc$gams$declarations[grepl(paste0("^",module,"\\."),rownames(cc$gams$declarations)),, drop=FALSE]
-      dec <- dec[order(dec[,"names"]),,drop=FALSE]
+      dec <- cc$declarations[grepl(paste0("^",module,"\\."),cc$declarations$origin),, drop=FALSE]
+      dec <- dec[dec$typ!="set",]
+      dec <- dec[order(dec$names),,drop=FALSE]
       if(nrow(dec)==0) return(NULL)
       dec <- dec[!(dec[,"names"] %in% cc$interfaceInfo[[module]]),, drop=FALSE]
       dec <- dec[!duplicated(dec[,"names"]),,drop=FALSE]
       
-      aps <- cc$ap$appearance[dec[,"names"],grepl(paste0("^",module,"\\."),colnames(cc$ap$appearance)),drop=FALSE]
+      aps <- cc$appearance[dec$names,grepl(paste0("^",module,"\\."),colnames(cc$appearance)),drop=FALSE]
       colnames(aps) <- sub("^.*\\.","",colnames(aps))
       aps <- aps[!duplicated(rownames(aps)),,drop=FALSE]
       
