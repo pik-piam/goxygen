@@ -126,7 +126,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       if(is.null(ifs)) return(fout)
       return(list(input=fout[ifs[names(ifs) == "in"],],output=fout[ifs[names(ifs) == "out"],1:3]))
     }
-    .clean <- function(x,caption, keep_names=1:3) {
+    .clean <- function(x,caption, keep_names=1:3, braket.break=TRUE) {
       if(is.null(x)) return(NULL)
       if(nrow(x)==0) return(NULL)
       sub <- NULL
@@ -139,7 +139,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       if(!is.null(sub)) caption <- paste0(caption, " (",paste(sub,collapse=" | "),")")
       rownames(x) <- make.unique(as.character(x[[1]]))
       rownames(x) <- gsub("\\,([^ ])",", \\1",rownames(x))
-      rownames(x) <- sub("(","\\ \n(",rownames(x), fixed=TRUE)
+      if(braket.break) rownames(x) <- sub("(","\\ \n(",rownames(x), fixed=TRUE)
       x <- x[sort(rownames(x)),]
       x <- x[!grepl("^o[qv]",rownames(x)),]
       split.cells <- c(15,30,rep(1,length(x)-2))
@@ -181,12 +181,27 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
       out <- .format(out,aps)
       return(.clean(out,"module-internal objects"))
     }
+    
+    setTables <- function(cc, module) {
+      tmp <- cc$appearance[,grep(paste0(module,"."),colnames(cc$appearance),fixed=TRUE),drop=FALSE]
+      elems <- rownames(tmp)[rowSums(tmp)>0]
+      elems <- grep("^o[qv]",elems,invert=TRUE,value=TRUE) #remove output objects
+      sets <- cc$declarations$sets[cc$declarations$names %in% elems]
+      sets <- unique(unlist(strsplit(sets,",")))
+      dec <- cc$declarations[cc$declarations$names %in% sets,]
+      dec <- dec[order(dec$names),,drop=FALSE]
+      if(nrow(dec)==0) return(NULL)
+      dec <- dec[!duplicated(dec[,"names"]),,drop=FALSE]
+      dec$names <- sub("\\(\\)$","",paste0(dec$names,"(",dec$sets,")"))
+      return(.clean(dec[c("names","description")],"sets in use", braket.break = FALSE))
+    }
 
     modInfo <- rbind(cc$modulesInfo,core=c(name="core",number="",folder="core",realizations=""))
     out <- list()
     for(m in names(cc$interfaceInfo)) {
       out[[modInfo[m,"folder"]]] <- interfaceTables(cc,m)
       out[[modInfo[m,"folder"]]]$declarations <- moduleTables(cc,m)
+      out[[modInfo[m,"folder"]]]$sets <- setTables(cc,m)
     }
     return(out)
   }
@@ -247,7 +262,10 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
     }
     
     .header(zz,"Definitions",2)
+    .header(zz,"Objects",3)
     .write(zz,data$declarations)
+    .header(zz,"Sets",3)
+    .write(zz,data$sets)
     
     .header(zz,"Authors",2)
     .write(zz,module$doc$authors)
