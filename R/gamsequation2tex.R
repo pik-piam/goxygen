@@ -83,7 +83,7 @@ gamsequation2tex <- function(x) {
         } 
         return(z)
       }
-      z <- .tmp(z,"\\\\(sum|prod)#([^#]*)#","\\\\\\1_{#n\\2a#}#n\\2b#",c("n","n"))
+      z <- .tmp(z,"\\\\(sum|prod)#([^#]*)#","\\\\\\1_{#n\\2a#}#\\2b#",c("n",""))
       z <- .tmp(z,"\\\\(power)#([^#]*)#","#\\2a#^{#n\\2b#}",c("","n"))
       if(length(z)>3) z <- c(z[1],convert_functions(z[-1]))
       return(z)
