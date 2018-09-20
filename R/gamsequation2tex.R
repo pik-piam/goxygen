@@ -219,8 +219,6 @@ gamsequation2tex <- function(x) {
                    "=g=" = "\\geq",
                    "=n=" = "\\neq")
   
-  #if(multiline) middle <- paste(middle,"&")
-  
   left <- convert_side(left)
   right <- convert_side(right)
   
@@ -230,8 +228,10 @@ gamsequation2tex <- function(x) {
   out <- gsub(">=","\\geq", out, fixed=TRUE)
   out <- gsub("<=","\\leq", out, fixed=TRUE)
   
-  if(multiline) out <- fixlines(out, name)
-  out <- paste("\\begin{multline*}\n",out,"\\\\ \n\\end{multline*}")
+  #if(multiline) out <- fixlines(out, name)
+  out <- paste("\\begin{multline*}\n",out,"\n\\end{multline*}")
+  out <- gsub("\t"," ",out)
+  out <- gsub("\n[\n ]*\n","\n",out)
   names(out) <- name
   
   if(grepl("#",out)) {

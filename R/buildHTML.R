@@ -15,7 +15,7 @@
 #' (e.g. an images subdirectory with figures to be shown in the documents)
 #' @param addHTML character vector with HTML code which should be added to the body of each HTML file.
 #' @author Jan Philipp Dietrich
-#' @seealso \code{\link{goxygen}}, \code{\link{buildPDF}}
+#' @seealso \code{\link{goxygen}}, \code{\link{buildTEX}}
 #' @importFrom utils packageVersion
 #' @export
 
@@ -80,13 +80,21 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
     system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",ofile,
                   " --css template.css ",bib," --toc --mathjax --standalone --metadata link-citations=true --metadata title=",m))
     # Add additional code to html file
-    if(!is.null(addHTML)) {
       html <- readLines(ofile)
       html <- sub("(<title>)(.*)(</title>)",paste0("\\1",citation$title," | \\2\\3"),html)
       cut <- which(html=="<body>")
       html <- c(html[1:cut],addHTML,html[(cut+1):length(html)])
+      #add mathjax config
+      addMJConfig <- '<script type="text/x-mathjax-config">
+                    MathJax.Hub.Config({
+                      CommonHTML: { linebreaks: { automatic: true, width: "32em" } },
+                      "HTML-CSS": { linebreaks: { automatic: true, width: "32em" } },
+                             SVG: { linebreaks: { automatic: true, width: "32em" } }
+                    }); 
+                  </script>'
+      cut <- which(html=="<head>")
+      html <- c(html[1:cut],addMJConfig,html[(cut+1):length(html)])
       writeLines(html,ofile)
-    }
   }
   unlink(ref)
   for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)

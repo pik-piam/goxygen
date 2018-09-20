@@ -44,7 +44,7 @@ $if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*,table}{xcolor}
 $endif$
 %
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$else$a4paper,$endif$$if(beamer)$ignorenonframetext,$if(handout)$handout,$endif$$if(aspectratio)$aspectratio=$aspectratio$,$endif$$endif$$for(classoption)$$classoption$$sep$,$endfor$,tablecaptionabove]{scrartcl}
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$else$a4paper,$endif$$if(beamer)$ignorenonframetext,$if(handout)$handout,$endif$$if(aspectratio)$aspectratio=$aspectratio$,$endif$$endif$$for(classoption)$$classoption$$sep$,$endfor$]{scrartcl}
 $if(beamer)$
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
@@ -64,8 +64,8 @@ $if(linestretch)$
 \setstretch{$linestretch$}
 $endif$
 \usepackage{amssymb,amsmath}
+\usepackage{breqn}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
   \usepackage[utf8]{inputenc}

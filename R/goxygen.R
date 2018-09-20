@@ -47,7 +47,7 @@
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf","tex"), cff="CITATION.cff") {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff") {
   cwd <- getwd()
   on.exit(setwd(cwd))
   
@@ -333,8 +333,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","pdf
   
   returnMarkdown(full)
   
-  if("html"%in%output) buildHTML(supplementary="images", citation=citation)
-  if("pdf" %in%output) buildPDF()
-  if("tex" %in%output) buildTEX()
+  if("html"%in% output) buildHTML(supplementary="images", citation=citation)
+  if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output))
 }
   

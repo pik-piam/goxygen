@@ -12,11 +12,12 @@
 #' if file does not exist)
 #' @param supplementary a vector of files and/or folders required for the conversion
 #' (e.g. an images subdirectory with figures to be shown in the documents)
+#' @param pdf boolean which specifies whether pdf file should be generated from tex
 #' @author Jan Philipp Dietrich, Kristine Karstens
-#' @seealso \code{\link{goxygen}}, \code{\link{buildPDF}}
+#' @seealso \code{\link{goxygen}}, \code{\link{buildHTML}}
 #' @export
 
-buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="literature.bib", supplementary=NULL) {
+buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="literature.bib", supplementary=NULL, pdf=TRUE) {
   message("Start TEX creation...")
   check_pandoc()
   for(elem in supplementary) file.copy(elem,".",recursive = TRUE, overwrite = TRUE)
@@ -34,5 +35,13 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   system(paste0("pandoc ",files," -s -o ",file," --template ",
                 system.file("templates","template.latex",package="goxygen"),
                 " -V colorlinks --listings",bib))
+  tex <- readLines(file)
+  tex <- gsub("{multline*}","{dmath*}",tex, fixed=TRUE)
+  writeLines(tex,file)
   message("...finished TEX creation!")
+  if(pdf) {
+    message("Start PDF creation...")
+    for(i in 1:2) tmp <- system(paste("pdflatex",file),intern=TRUE)
+    message("...finished PDF creation!")
+  }
 }
