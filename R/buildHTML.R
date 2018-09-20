@@ -63,27 +63,39 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
       version <- NULL
     }
     
-    out <- c('<div id="mainheaderbox"></div>',
+    out <- c('<div id="mainheaderbox">',
              '<div id="mainheader">',
              logo,
              paste0('  <div id=mainheadertext><h1 id="mainheadertitle">Model Documentation</h1><h3 id="mainheaderversion">',version,'</h3></div>'),
              paste0('  <small>created with <a href="https://github.com/pik-piam/goxygen">goxygen</a> ',packageVersion("goxygen"),'</small>'),
-             '</div>')
+             '</div></div>')
     return(out)
   }
   
   addHTML <- c(addHTML,addMainHeaderHTML(citation),returnHTMLNav(moduleNames, paste0(moduleNames,".htm")))
   
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
+  
+  addText <- function(html,key, content, before=FALSE, occurrence=1) {
+    cut <- which(html==key)[occurrence]
+    if(is.na(cut)) {
+      warning("Pattern ",key," not found!")
+      return(html)
+    }
+    if(before) cut <- cut-1
+    return(c(html[1:cut],content,html[(cut+1):length(html)])) 
+  }
+  
   for(m in moduleNames) {
     ofile <- paste0(folder,"/",m,".htm")
     system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",ofile,
                   " --css template.css ",bib," --toc --mathjax --standalone --metadata link-citations=true --metadata title=",m))
     # Add additional code to html file
       html <- readLines(ofile)
+      html <- addText(html, "</div>","<div id=\"everything\">", occurrence = 2)
+      html <- addText(html, "</body>","</div>", before=TRUE)
       html <- sub("(<title>)(.*)(</title>)",paste0("\\1",citation$title," | \\2\\3"),html)
-      cut <- which(html=="<body>")
-      html <- c(html[1:cut],addHTML,html[(cut+1):length(html)])
+      html <- addText(html, "<body>", addHTML)
       #add mathjax config
       addMJConfig <- '<script type="text/x-mathjax-config">
                     MathJax.Hub.Config({
@@ -92,8 +104,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
                              SVG: { linebreaks: { automatic: true, width: "32em" } }
                     }); 
                   </script>'
-      cut <- which(html=="<head>")
-      html <- c(html[1:cut],addMJConfig,html[(cut+1):length(html)])
+      html <- addText(html,"<head>", addMJConfig)
       writeLines(html,ofile)
   }
   unlink(ref)
