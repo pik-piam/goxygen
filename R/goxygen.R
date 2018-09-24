@@ -188,11 +188,22 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
       elems <- grep("^o[qv]",elems,invert=TRUE,value=TRUE) #remove output objects
       sets <- cc$declarations$sets[cc$declarations$names %in% elems]
       sets <- unique(unlist(strsplit(sets,",")))
+      
+      if(!is.null(cc$setappearance)) {
+        #alternative method to find sets
+        aps <- cc$setappearance[,grepl(paste0("^",module,"\\."),colnames(cc$setappearance)),drop=FALSE]
+        aps <- aps[rowSums(aps)>0,,drop=FALSE]
+        sets2 <- rownames(aps)
+        #if(length(setdiff(sets,sets2))>0) warning("More sets found after old method in module ",module," (",paste(setdiff(sets,sets2),collapse=", "),")")
+        sets <- union(sets,sets2)
+      }
+      
       dec <- cc$declarations[cc$declarations$names %in% sets,]
       dec <- dec[order(dec$names),,drop=FALSE]
       if(nrow(dec)==0) return(NULL)
       dec <- dec[!duplicated(dec[,"names"]),,drop=FALSE]
       dec$names <- sub("\\(\\)$","",paste0(dec$names,"(",dec$sets,")"))
+
       return(.clean(dec[c("names","description")],"sets in use", braket.break = FALSE))
     }
 
