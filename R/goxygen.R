@@ -37,7 +37,7 @@
 #' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @author Jan Philipp Dietrich
-#' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
+#' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
 #' @importFrom lucode codeCheck modules_interfaceplot
 #' @importFrom pander pandoc.table.return
 #' @importFrom citation read_cff cff2bibentry
@@ -338,7 +338,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
     if(!dir.exists(folder)) dir.create(folder)
     returnReferences(names(x),paste0(names(x),".md"),paste0(folder,"/md.ref"),level=2)
     for(n in names(x)) {
-      writeLines(x[[n]],paste0(folder,"/",n,".md"))
+      stri_write_lines(x[[n]],paste0(folder,"/",n,".md"))
     }
   }
   
