@@ -41,11 +41,11 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
       names[names=="index"] <- "Overview"
     }
     
-    out <- paste0('<div id="',id,'">','<ul>')
+    out <- paste0('<nav id="',id,'">','<ul>')
     for(i in 1:length(names)) {
       out <- c(out,paste0('<li><a href="',targets[i],'">',names[i],'</a></li>'))
     }
-    out <- c(out,'</ul>','</div>')
+    out <- c(out,'</ul>','</nav>')
     return(out)
   }
   
@@ -77,7 +77,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
   
   addText <- function(html,key, content, before=FALSE, occurrence=1) {
-    cut <- which(html==key)[occurrence]
+    cut <- grep(key,html,fixed=TRUE)[occurrence]
     if(is.na(cut)) {
       warning("Pattern ",key," not found!")
       return(html)
@@ -92,7 +92,7 @@ buildHTML <- function(folder="html", mdfolder="markdown", literature="literature
                   " --css template.css ",bib," --toc --mathjax --standalone --metadata link-citations=true --metadata title=",m))
     # Add additional code to html file
       html <- readLines(ofile)
-      html <- addText(html, "</div>","<div id=\"everything\">", occurrence = 2)
+      html <- addText(html, "<h1 ","<div id=\"everything\">",before=TRUE, occurrence=2)
       html <- addText(html, "</body>","</div>", before=TRUE)
       html <- sub("(<title>)(.*)(</title>)",paste0("\\1",citation$title," | \\2\\3"),html)
       html <- addText(html, "<body>", addHTML)
