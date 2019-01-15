@@ -16,7 +16,7 @@ The additional repository can be made availably permanently by adding the line a
 After that the most recent version of the package can be installed using `install.packages`:
 
 ```r 
-install.packages("lucode")
+install.packages("goxygen")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
