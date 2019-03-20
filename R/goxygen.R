@@ -222,15 +222,15 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
     if(m=="core") return(NULL)
     rea <- strsplit(cc$modulesInfo[m,"realizations"],",")[[1]]
     folder <- cc$modulesInfo[m,"folder"]
-    out <- list()
+    out <- extractDocumentation(paste0(modules,folder,"/",folder,".gms"))
+    out$realizations <- list()
     for(r in rea) {
       rmain <- paste0(modules,folder,"/",r,".gms")
       files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
       paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
-      out[[r]] <- extractDocumentation(paths, start_type="equations")
+      out$realizations[[r]] <- extractDocumentation(paths, start_type="equations")
     }
-    module_description <- extractDocumentation(paste0(modules,folder,"/",folder,".gms"))
-    return(list(rdata=out,doc=module_description))
+    return(out)
   }
   
   collectSeealso <- function(interfaces,module,modulesInfo) {
@@ -240,98 +240,23 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
     seealso <- modulesInfo[seealso,"folder"]
     return(seealso)
   }
-  
- buildModulePage <- function(name,data,module,seealso) {
-    
-    out <- NULL
-    zz <- textConnection("out",open = "w", local=TRUE)
-    
-    .header(zz,paste0(module$doc$title," (",name,")"),1, id=name)
-    .header(zz,"Description",2)
-    .write(zz,module$doc$description)
-    
-    .header(zz,"Interfaces",2)
-    
-    .interfaceplot(zz,name)
-    
-    .header(zz,"Input",3)
-    .write(zz,data$input)
-    
-    .header(zz,"Output",3)
-    .write(zz,data$output)
-    
-    .header(zz,"Realizations",2)
-    
-    rdata <- module$rdata
-    i <- 1
-    for(r in names(rdata)) {
-      title <- paste0("(",toupper(letters[i]),") ",r)
-      .header(zz,title,3)
-      .write(zz,rdata[[r]]$description)
-      .limitations(zz,rdata[[r]]$limitations)
-      i <- i+1
-    }
-    
-    .header(zz,"Definitions",2)
-    .header(zz,"Objects",3)
-    .write(zz,data$declarations)
-    .header(zz,"Sets",3)
-    .write(zz,data$sets)
-    
-    .header(zz,"Authors",2)
-    .write(zz,module$doc$authors)
-    
-    .header(zz,"See Also",2)
-    .write(zz,paste0("[",sort(seealso),"]",collapse=", "))
-    
-    close(zz)
-    
-    out <- .updateImagePaths(out)
-    
-    return(out)
-  }
 
- buildIndexPage <- function(path="../main.gms",citation=NULL) {
-   index <- extractDocumentation(path)
-   out <- NULL
-   zz <- textConnection("out",open = "w", local=TRUE)
-   
-   if(!is.null(index$title)) .header(zz,index$title,1)
-   .write(zz,index$description)
-   
-   if(!is.null(citation)) {
-     citbib <- cff2bibentry(citation)
-     
-     authors <- citbib$author
-     if(!is.null(authors)) {
-       .header(zz,"Authors",2)
-       .write(zz,paste(as.character(authors),collapse=", \n"))
-     }
-     
-     .header(zz, "How to cite",2)
-     .write(zz,capture.output(citbib))
-     .header(zz, "Bibtex format",3)
-     .write(zz,c("```",toBibtex(citbib),"```"))
-     .header(zz, "Citation File Format",3)
-     .write(zz,c("```",as.yaml(citation),"```"))
-   }
-   
-   close(zz)
-   out <- .updateImagePaths(out)
-   return(out)
- }
+ 
  
   out <- collectTables(cc)
   moduleNames <- cc$modulesInfo[,"folder"]
   
   # write doc files
   full <- list()
-  full[["index"]] <- buildIndexPage("../main.gms", citation)
+  data <- extractDocumentation("../main.gms")
+  data$citation <- citation
+  full[["index"]] <- createIndexPage(data)
   
   for(m in setdiff(sort(names(out)),"core")) {
-    mr <- collectRealizations(m,cc)
-    seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    full[[m]] <- buildModulePage(name=m,data=out[[m]],module=mr,seealso=seealso)
+    data <- append(out[[m]],collectRealizations(m,cc))
+    data$name <- m
+    data$seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
+    full[[m]] <- createModulePage(data)
   }
   
   returnMarkdown <- function(x, folder="markdown") {

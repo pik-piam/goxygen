@@ -33,8 +33,11 @@
   }
 }
 
-.limitations <- function(zz,limitations) {
-  if(is.null(limitations)) limitations <- "There are no known limitations."
+.limitations <- function(zz,limitations, emptyIfNULL=FALSE) {
+  if(is.null(limitations)) {
+    if(emptyIfNULL) return()
+    limitations <- "There are no known limitations."
+  }
   limitations <- c("**Limitations**",limitations)
   limitations <- paste(">",limitations)
   .write(zz,limitations)

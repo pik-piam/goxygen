@@ -2,6 +2,8 @@
 
 export(buildHTML)
 export(buildTEX)
+export(createIndexPage)
+export(createModulePage)
 export(extractDocumentation)
 export(gamsequation2tex)
 export(goxygen)
