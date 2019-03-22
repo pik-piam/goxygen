@@ -36,9 +36,10 @@
 #' @param cache Boolean to allow read data from existing cache file
 #' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
+#' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
-#' @importFrom lucode codeCheck modules_interfaceplot
+#' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
 #' @importFrom pander pandoc.table.return
 #' @importFrom citation read_cff cff2bibentry
 #' @importFrom yaml as.yaml
@@ -47,9 +48,11 @@
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff") {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(path)) {
   cwd <- getwd()
   on.exit(setwd(cwd))
+  
+  if(!modularCode) stop("goxygen currently only supports modular GAMS code! Support for non-modular code is planned.")
   
   if(any(nomatch <- !(output %in% c("html","pdf","tex")))){
       warning(paste0("No output format '",output[nomatch],"' available. It will be ignored."))
