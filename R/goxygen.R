@@ -21,15 +21,12 @@
 #'  to stop a section
 #' }
 #' 
-#' You can supply additional information via a file named goxygen.conf stored in the doc folder of your model.
-#' Currently it can contain model namd and model version. The file should be formatted
-#' as follows:
-#' 
-#' \code{Model: MyModel} \cr 
-#' \code{Version: 1.2.3-beta}
-#' 
-#' In addition you can store a model logo (100px height) as \code{doc/images/logo.png} which then will be used in the
-#' HTML version of the documentation.
+#' In addition you can store a model logo (100px height, 100px weight) as \code{logo.png} in the main
+#' folder of the model which then will be used in the HTML version of the documentation.
+#' If you want to add citations to your documentation you can do so by adding a bibtex file with 
+#' the name literature.bib in the main folder of the model. To link these references in the text
+#' you can use the syntax \code{@<id>} in which "<id>" stands for the identifier given to the 
+#' corresponding bibtex entry.
 #' 
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
@@ -67,6 +64,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
   }
   
   if(!dir.exists(docfolder)) dir.create(docfolder, recursive = TRUE)
+  if(file.exists("literature.bib")) file.copy("literature.bib",paste0(docfolder,"/literature.bib"), overwrite = TRUE)
   cachefile <- paste0(docfolder,"/doc.rds")
   if(cache & file.exists(cachefile)) {
     cache <- readRDS(cachefile)
@@ -79,7 +77,9 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
   }
   
   copyimages <- function(docfolder) {
-    paths <- c("modules/*/*.png",
+    paths <- c("*.png",
+               "*.jpg",
+               "modules/*/*.png",
                "modules/*/*/*.png",
                "modules/*/*.jpg",
                "modules/*/*/*.jpg")
@@ -225,10 +225,13 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
     if(m=="core") return(NULL)
     rea <- strsplit(cc$modulesInfo[m,"realizations"],",")[[1]]
     folder <- cc$modulesInfo[m,"folder"]
-    out <- extractDocumentation(paste0(modules,folder,"/",folder,".gms"))
+    modulegms <- paste0(modules,folder,"/module.gms")
+    if(!file.exists(modulegms)) modulegms <- paste0(modules,folder,"/",folder,".gms")
+    out <- extractDocumentation(modulegms)
     out$realizations <- list()
     for(r in rea) {
-      rmain <- paste0(modules,folder,"/",r,".gms")
+      rmain <- paste0(modules,folder,"/",r,"/realization.gms")
+      if(!file.exists(rmain)) rmain <- paste0(modules,folder,"/",r,".gms")
       files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
       paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
       out$realizations[[r]] <- extractDocumentation(paths, start_type="equations")
@@ -271,7 +274,6 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
   }
   
   returnMarkdown(full)
-  
   if("html"%in% output) buildHTML(supplementary="images", citation=citation)
   if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output))
 }
