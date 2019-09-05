@@ -34,6 +34,7 @@
 #' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
+#' @param includeCore Boolean whether core should be included or not, default=FALSE
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
 #' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
@@ -45,7 +46,7 @@
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(path)) {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(path), includeCore=FALSE) {
   cwd <- getwd()
   on.exit(setwd(cwd))
   
@@ -220,23 +221,30 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
     return(out)
   }
   
-  collectRealizations <- function(m, cc,modules="../modules/") {
+  collectRealizations <- function(m,cc,modules="../modules/") {
     m <- sub("[0-9]*_","",m)
-    if(m=="core") return(NULL)
-    rea <- strsplit(cc$modulesInfo[m,"realizations"],",")[[1]]
-    folder <- cc$modulesInfo[m,"folder"]
-    modulegms <- paste0(modules,folder,"/module.gms")
-    if(!file.exists(modulegms)) modulegms <- paste0(modules,folder,"/",folder,".gms")
-    out <- extractDocumentation(modulegms)
-    out$realizations <- list()
-    for(r in rea) {
-      rmain <- paste0(modules,folder,"/",r,"/realization.gms")
-      if(!file.exists(rmain)) rmain <- paste0(modules,folder,"/",r,".gms")
-      files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
-      paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
-      out$realizations[[r]] <- extractDocumentation(paths, start_type="equations")
-    }
-    return(out)
+    if(m=="core") {
+      outSub <- list()
+      outSub$realizations <- list()
+      files <- list.files(path="../core",pattern="\\.gms")
+      paths <- paste0("../core/",files)
+      outSub$realizations[["core"]] <- extractDocumentation(paths, start_type="equations")
+    } else {  
+      rea <- strsplit(cc$modulesInfo[m,"realizations"],",")[[1]]
+      folder <- cc$modulesInfo[m,"folder"]
+      modulegms <- paste0(modules,folder,"/module.gms")
+      if(!file.exists(modulegms)) modulegms <- paste0(modules,folder,"/",folder,".gms")
+      outSub <- extractDocumentation(modulegms)
+      outSub$realizations <- list()
+      for(r in rea) {
+        rmain <- paste0(modules,folder,"/",r,"/realization.gms")
+        if(!file.exists(rmain)) rmain <- paste0(modules,folder,"/",r,".gms")
+        files <- sub(".*/([^.]*)\\.gms.*$","\\1.gms",grep(".gms",readLines(rmain), value=TRUE, fixed=TRUE))
+        paths <- c(rmain,paste0(modules,folder,"/",r,"/",files))
+        outSub$realizations[[r]] <- extractDocumentation(paths, start_type="equations")
+      }
+    }  
+    return(outSub)
   }
   
   collectSeealso <- function(interfaces,module,modulesInfo) {
@@ -258,7 +266,13 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
   data$citation <- citation
   full[["index"]] <- createIndexPage(data)
   
-  for(m in setdiff(sort(names(out)),"core")) {
+  # take only all modules into account or also core
+  if(includeCore)  {
+    m_loop <- sort(names(out))
+  } else {
+    m_loop <- setdiff(sort(names(out)),"core")
+  }
+  for(m in m_loop) {
     data <- append(out[[m]],collectRealizations(m,cc))
     data$name <- m
     data$seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
