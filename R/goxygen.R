@@ -34,6 +34,7 @@
 #' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
+#' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
 #' @param includeCore Boolean whether core should be included or not, default=FALSE
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
@@ -46,7 +47,7 @@
 #' @export
 
 
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(path), includeCore=FALSE) {
+goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(path), unitPattern=c("\\(","\\)"), includeCore=FALSE) {
   cwd <- getwd()
   on.exit(setwd(cwd))
   
@@ -107,8 +108,8 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
         unit[unit=="$$"] <- ""
         return(unit)
       }
-      # merge information
-      pattern <- "^(.*) \\((.*)\\) *(|\\/.*\\/ *)$"
+      # create pattern to identify the unit in the describtion
+      pattern <- paste0("^(.*) ",unitPattern[1],"(.*)",unitPattern[2]," *(|\\/.*\\/ *)$")
       description <- sub(pattern,"\\1",dec[,"description"])
       unit <- sub(pattern,"\\2",dec[,"description"])
       return(data.frame(name=dec[,"names"],sets=dec[,"sets"], description=description, unit=.cleanunit(unit), stringsAsFactors = FALSE))
