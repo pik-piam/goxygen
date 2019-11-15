@@ -2,9 +2,11 @@
 
 export(.empty)
 export(buildHTML)
+export(buildMarkdown)
 export(buildTEX)
 export(createIndexPage)
 export(createModulePage)
+export(createSimplePage)
 export(extractDocumentation)
 export(gamsequation2tex)
 export(goxygen)
