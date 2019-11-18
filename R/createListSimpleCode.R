@@ -23,9 +23,11 @@ createListSimpleCode <- function(path=".", citation=NULL, mainfile="main.gms") {
   for(f in files) {
     fname <- sub("\\.gms$","",gsub("/","_",f,fixed = TRUE))
     data <- extractDocumentation(f)
-    if(is.null(data$title)) data$title <- fname
-    data$name <- f
-    full[[fname]] <- createSimplePage(data)
+    if(length(data)>0) {
+      if(is.null(data$title)) data$title <- fname
+      data$name <- f
+      full[[fname]] <- createSimplePage(data)
+    }
   }
   return(full)
 }

@@ -19,7 +19,10 @@ createIndexPage <- function(data) {
   out <- NULL
   zz <- textConnection("out",open = "w", local=TRUE)
   
-  if(!is.null(data$title)) .header(zz,data$title,1)
+  if(is.null(data$name)) data$name <- "Overview"
+  if(is.null(data$title)) data$title <- data$name
+  .header(zz,data$title,1)
+  
   .write(zz,data$description)
   
   if(!is.null(data$citation)) {
