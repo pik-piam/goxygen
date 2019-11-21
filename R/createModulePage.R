@@ -17,13 +17,14 @@
 #'   \item{authors}{Module authors}
 #'   \item{seealso}{A vector with names of relevant other documentation pages.}
 #' }
+#' @param docfolder folder the documentation should be written to relative to model folder
 #' @return a character vector containing the produced markdown text
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}
 #' @export
 
 
-createModulePage <- function(data) {
+createModulePage <- function(data, docfolder) {
   
   out <- NULL
   zz <- textConnection("out",open = "w", local=TRUE)
@@ -34,7 +35,7 @@ createModulePage <- function(data) {
   
   .header(zz,"Interfaces",2)
   
-  .interfaceplot(zz,data$name)
+  .interfaceplot(zz,data$name,docfolder)
   
   .header(zz,"Input",3)
   .write(zz,data$input)

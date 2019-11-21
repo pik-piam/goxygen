@@ -60,12 +60,13 @@
 #' 
 #' @param zz a connection object of class "textConnection" containing the markdown document
 #' @param name Name of the module for which the interfaceplot should be shown
+#' @param docfolder folder the documentation should be written to relative to model folder
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #' 
-.interfaceplot <- function(zz,name) {
+.interfaceplot <- function(zz,name,docfolder) {
   file <- paste0("images/interfaces_",sub("^[^_]*_","",name),".png")
-  if(file.exists(file)) {
+  if(file.exists(paste0(docfolder,"/",file))) {
     .write(zz,paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"))
   } else {
     .write(zz,"**Interface plot missing!**") 

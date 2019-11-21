@@ -9,6 +9,7 @@
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
 #' @param includeCore Boolean whether core should be included or not, default=FALSE
 #' @param mainfile main file of the model
+#' @param docfolder folder the documentation should be written to relative to model folder
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
 #' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
@@ -18,7 +19,7 @@
 #' @importFrom utils tail toBibtex capture.output
 #' @seealso \code{\link{codeCheck}}
 
-createListModularCode <- function(cc, interfaces, path=".", citation=NULL, unitPattern=c("\\(","\\)"), includeCore=FALSE, mainfile="main.gms") {
+createListModularCode <- function(cc, interfaces, path=".", citation=NULL, unitPattern=c("\\(","\\)"), includeCore=FALSE, mainfile="main.gms", docfolder="doc") {
   cwd <- getwd()
   on.exit(setwd(cwd))
   setwd(path)
@@ -205,7 +206,7 @@ createListModularCode <- function(cc, interfaces, path=".", citation=NULL, unitP
     data <- append(out[[m]],collectRealizations(m,cc))
     data$name <- m
     data$seealso <- collectSeealso(interfaces[[m]],m,cc$modulesInfo)
-    full[[m]] <- createModulePage(data)
+    full[[m]] <- createModulePage(data,docfolder=docfolder)
   }
   return(full)
 }
