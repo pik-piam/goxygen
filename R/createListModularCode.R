@@ -158,8 +158,8 @@ createListModularCode <- function(cc, interfaces, path=".", citation=NULL, unitP
     if(m=="core") {
       outSub <- list()
       outSub$realizations <- list()
-      files <- list.files(path="../core",pattern="\\.gms")
-      paths <- paste0("../core/",files)
+      files <- list.files(path="core",pattern="\\.gms")
+      paths <- paste0("core/",files)
       outSub$realizations[["core"]] <- extractDocumentation(paths, start_type="equations")
     } else {  
       rea <- strsplit(cc$modulesInfo[m,"realizations"],",")[[1]]

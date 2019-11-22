@@ -85,7 +85,7 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
       interfaces <- modules_interfaceplot(cc$interfaceInfo, targetfolder= paste0(docfolder,"/images"), writetable=FALSE)
       saveRDS(list(cc=cc,interfaces=interfaces),cachefile)
     }  
-    full <- createListModularCode(cc=cc, interfaces=interfaces, path=".", citation=citation, includeCore=includeCore, mainfile=mainfile, docfolder=docfolder)
+    full <- createListModularCode(cc=cc, interfaces=interfaces, path=".", citation=citation, unitPattern=unitPattern, includeCore=includeCore, mainfile=mainfile, docfolder=docfolder)
   } else {
     copyimages(docfolder, paths=list.files(pattern="\\.(jpg|png)$",recursive = TRUE))
     full <- createListSimpleCode(path=".", citation=citation, mainfile=mainfile)
