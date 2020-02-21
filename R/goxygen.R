@@ -36,7 +36,9 @@
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
 #' @param includeCore Boolean whether core should be included or not, default=FALSE
+#' @param use_advanced_interfacePlot_function Logical, to switch between interface plot functions, default=FALSE
 #' @param mainfile main file of the model
+#'
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
 #' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
@@ -46,9 +48,16 @@
 #' @importFrom utils tail toBibtex capture.output
 #' @seealso \code{\link{codeCheck}}
 #' @export
-
-
-goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex","pdf"), cff="CITATION.cff", modularCode=is.modularGAMS(), unitPattern=c("\\(","\\)"), includeCore=FALSE, mainfile="main.gms") {
+goxygen <- function(path=".", 
+                    docfolder="doc", 
+                    cache=FALSE, 
+                    output=c("html","tex","pdf"), 
+                    cff="CITATION.cff", 
+                    modularCode=is.modularGAMS(), 
+                    unitPattern=c("\\(","\\)"), 
+                    includeCore=FALSE, 
+                    mainfile="main.gms",
+                    use_advanced_interfacePlot_function=FALSE) {
   cwd <- getwd()
   on.exit(setwd(cwd))
   setwd(path)
@@ -82,7 +91,11 @@ goxygen <- function(path=".", docfolder="doc", cache=FALSE, output=c("html","tex
       interfaces <- cache$interfaces
     } else {
       cc <- codeCheck(details=TRUE)
-      interfaces <- modules_interfaceplot(cc$interfaceInfo, targetfolder= paste0(docfolder,"/images"), writetable=FALSE)
+      interfaces <- modules_interfaceplot(cc$interfaceInfo, 
+                                          targetfolder= paste0(docfolder,"/images"), 
+                                          writetable=FALSE,
+                                          includeCore=includeCore,
+                                          use_advanced_interfacePlot_function=use_advanced_interfacePlot_function)
       saveRDS(list(cc=cc,interfaces=interfaces),cachefile)
     }  
     full <- createListModularCode(cc=cc, interfaces=interfaces, path=".", citation=citation, unitPattern=unitPattern, includeCore=includeCore, mainfile=mainfile, docfolder=docfolder)
