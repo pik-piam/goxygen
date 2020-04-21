@@ -35,9 +35,9 @@
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
-#' @param includeCore Boolean whether core should be included or not, default=FALSE
-#' @param use_advanced_interfacePlot_function Logical, to switch between interface plot functions, default=FALSE
+#' @param includeCore boolean whether core should be included or not, default=FALSE
 #' @param mainfile main file of the model
+#' @param ... optional arguments to \code{\link[lucode]{interfaceplot}}, passed via \code{\link[lucode]{modules_interfaceplot}}. 
 #'
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
@@ -46,7 +46,7 @@
 #' @importFrom citation read_cff cff2bibentry
 #' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
-#' @seealso \code{\link{codeCheck}}
+#' @seealso \code{\link{codeCheck}},\code{\link[lucode]{interfaceplot}},
 #' @export
 goxygen <- function(path=".", 
                     docfolder="doc", 
@@ -57,7 +57,7 @@ goxygen <- function(path=".",
                     unitPattern=c("\\(","\\)"), 
                     includeCore=FALSE, 
                     mainfile="main.gms",
-                    use_advanced_interfacePlot_function=FALSE) {
+                    ...) {
   cwd <- getwd()
   on.exit(setwd(cwd))
   setwd(path)
@@ -95,7 +95,7 @@ goxygen <- function(path=".",
                                           targetfolder= paste0(docfolder,"/images"), 
                                           writetable=FALSE,
                                           includeCore=includeCore,
-                                          use_advanced_interfacePlot_function=use_advanced_interfacePlot_function)
+                                          ...)
       saveRDS(list(cc=cc,interfaces=interfaces),cachefile)
     }  
     full <- createListModularCode(cc=cc, interfaces=interfaces, path=".", citation=citation, unitPattern=unitPattern, includeCore=includeCore, mainfile=mainfile, docfolder=docfolder)
