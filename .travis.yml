@@ -15,5 +15,5 @@ install:
   - Rscript -e "if(!requireNamespace('lucode')) devtools::install_github('pik-piam/lucode')"
 script:
   - Rscript ./tests/testthat/test-travisCI.R
- after_success:
+after_success:
   - Rscript -e 'covr::codecov()'
