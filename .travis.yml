@@ -4,6 +4,7 @@ language: R
 repos:
   CRAN: https://cloud.r-project.org
   PIK:  https://rse.pik-potsdam.de/r/packages/
+cache: packages
 latex: false
 pandoc: false
 sudo: false
