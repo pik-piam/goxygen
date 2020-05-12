@@ -10,6 +10,9 @@ sudo: false
 r_packages:
   - covr
   - devtools
+r_github_packages:
+  - pik-piam/citation
+  - pik-piam/lucode
 install:
   - Rscript -e "for(pkg in c('devtools','testthat')) if(!requireNamespace(pkg)) install.packages(pkg)"
   - Rscript -e "if(!requireNamespace('lucode')) devtools::install_github('pik-piam/lucode')"
