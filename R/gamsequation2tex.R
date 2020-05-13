@@ -143,46 +143,6 @@ gamsequation2tex <- function(x) {
     return(x)
   }
   
-  fixlines <- function(x, name) {
-    
-    # Fix strange line breaks and set flag for codeline breaks only
-    x <- gsub("^\n *","",x)
-    x <- gsub("\n$","",x)
-    x <- gsub("\n *\\}","}\n",x)
-    x <- gsub("(\\\\frac\\{[^}]*\\}[^{]*?)\\n(.*?\\{)","\\1#codelinebreakonly#\\2",x)
-    
-    # Split up equation at line breaks
-    out <- strsplit(x,"\n")[[1]]
-    
-    #check {-bracket balance
-    balance <- (stri_count_fixed(out,"{") - stri_count_fixed(out,"}"))
-    #if(any(balance!=0)) warning("Fixed illegal line break in ",name,"!")
-    while(any(balance!=0)) {
-      i <- which(balance!=0)[1]
-      out[i] <- paste(out[i],out[i+1])
-      out <- out[-(i+1)]
-      balance <- (stri_count_fixed(out,"{") - stri_count_fixed(out,"}"))
-    }
-    
-    # check left/right balance
-    balance <- (stri_count_fixed(out,"\\left") - stri_count_fixed(out,"\\right"))
-    for(i in which(balance>0)) {
-      out[i] <- paste(out[i],paste(rep("\\right.",balance[i]),collapse=""))
-    }
-    for(i in which(balance<0)) {
-      out[i] <- paste(paste(rep("\\left.",-1*balance[i]),collapse=""),out[i])
-    }
-    
-    # Merge equation
-    out <- paste(out,collapse="\\\\ \n")
-    out <- gsub("#codelinebreakonly#","\n",out,fixed=TRUE)
-    #out <- paste("\\begin{aligned}\n",out,"\n\\end{aligned}")
-    return(out)
-  }
-  
-  #remove spaces and line breaks
-  #x <- gsub("[\n ]*","",x)
-  
   # split name and equation
   pattern <- "^\n*(.*?) *\\.\\. *(.*?);?$"
   if(grepl(pattern,x)) {
@@ -192,7 +152,6 @@ gamsequation2tex <- function(x) {
     name <- "undefined"
     eq <- x
   }
-  
   
   if(grepl("(^\\$|\n\\$)",x)) {
     warning("Cannot handle equations with preceeding dollar conditions! Return original code!")
@@ -228,7 +187,6 @@ gamsequation2tex <- function(x) {
   out <- gsub(">=","\\geq", out, fixed=TRUE)
   out <- gsub("<=","\\leq", out, fixed=TRUE)
   
-  #if(multiline) out <- fixlines(out, name)
   out <- paste("\\begin{multline*}\n",out,"\n\\end{multline*}")
   out <- gsub("\t"," ",out)
   out <- gsub("\n[\n ]*\n","\n",out)

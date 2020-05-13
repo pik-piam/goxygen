@@ -14,6 +14,13 @@ test_that("extract documentation from modular dummy model", {
   expect_true(file.exists(paste0(docfolder,"/documentation.tex")))
 })
 
+test_that("cache and unknown output", {
+  docfolder <- paste(tempdir(),"/doc_modular")
+  expect_warning(out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
+                     docfolder = docfolder, cache = TRUE, output="bla")))
+  expect_null(out)
+})
+
 test_that("extract documentation from simple dummy model", {
   docfolder <- paste(tempdir(),"/doc_simple")
   out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
