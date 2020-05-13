@@ -14,6 +14,7 @@ pandoc: false
 sudo: false
 r_packages:
   - covr
+  - qgraph
   - devtools
   - testthat
   - lucode
