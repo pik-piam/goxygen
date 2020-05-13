@@ -1,6 +1,10 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -y pandoc
+- sudo apt-get install -y pandoc-citeproc
 repos:
   CRAN: https://cloud.r-project.org
   PIK:  https://rse.pik-potsdam.de/r/packages/
@@ -10,10 +14,11 @@ pandoc: false
 sudo: false
 r_packages:
   - covr
+  - qgraph
   - devtools
   - testthat
   - lucode
 script:
-  - Rscript -e 'testthat::test_dir("tests/testthat/",stop_on_failure = TRUE,stop_on_warning = TRUE)'
+  - Rscript -e 'devtools::test()'
 after_success:
   - Rscript -e 'covr::codecov()'
