@@ -4,6 +4,7 @@ language: R
 before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -y pandoc
+- sudo apt-get install -y pandoc-citeproc
 repos:
   CRAN: https://cloud.r-project.org
   PIK:  https://rse.pik-potsdam.de/r/packages/
