@@ -31,7 +31,7 @@
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
-#' @param output List of output to be written, available (and also default) are "html","pdf" and "tex"
+#' @param output List of output to be written, available are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
@@ -51,7 +51,7 @@
 goxygen <- function(path=".", 
                     docfolder="doc", 
                     cache=FALSE, 
-                    output=c("html","tex","pdf"), 
+                    output=c("html","tex"), 
                     cff="CITATION.cff", 
                     modularCode=is.modularGAMS(), 
                     unitPattern=c("\\(","\\)"), 
