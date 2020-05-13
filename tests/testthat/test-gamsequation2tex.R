@@ -1,4 +1,5 @@
 library(testthat)
+library(goxygen)
 
 context("gamsequation2tex")
 
