@@ -3,13 +3,25 @@ library(goxygen)
 
 context("goxygen")
 
-test_that("goxygen extracts dummy model documentation without errors", {
-  docfolder <- tempdir()
+test_that("extract documentation from modular dummy model", {
+  docfolder <- paste(tempdir(),"/doc_modular")
   out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
-                     docfolder = docfolder))
+                     docfolder = docfolder, cff = "HOWTOCITE.cff"))
   expect_null(out)
   expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/01_fancymodule.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/02_crazymodule.htm")))
+  expect_true(file.exists(paste0(docfolder,"/documentation.tex")))
+})
+
+test_that("extract documentation from simple dummy model", {
+  docfolder <- paste(tempdir(),"/doc_simple")
+  out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
+                     docfolder = docfolder, modularCode = FALSE,
+                     cff = "HOWTOCITE.cff"))
+  expect_null(out)
+  expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
+  expect_true(file.exists(paste0(docfolder,"/html/modules_01_fancymodule_default_calculations.htm")))
+  expect_true(file.exists(paste0(docfolder,"/html/modules_02_crazymodule_module.htm")))
   expect_true(file.exists(paste0(docfolder,"/documentation.tex")))
 })
