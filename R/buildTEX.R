@@ -41,7 +41,7 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   message("...finished TEX creation!")
   if(pdf) {
     message("Start PDF creation...")
-    for(i in 1:2) tmp <- system(paste("pdflatex -halt-on-error",file),intern=TRUE)
+    for(i in 1:2) tmp <- system(paste("pdflatex -interaction=nonstopmode",file),intern=TRUE)
     if(grepl("error",tail(tmp,2)[1])) writeLines(tmp,con ="goxygen_pdflatex.log")
     message("...finished running pdflatex, check doc/goxygen_pdflatex.log if no PDF was created!")
   }
