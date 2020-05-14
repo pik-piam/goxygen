@@ -5,7 +5,7 @@ repos:
   CRAN: https://cloud.r-project.org
   PIK:  https://rse.pik-potsdam.de/r/packages/
 cache: packages
-latex: false
+latex: true
 pandoc: true
 sudo: false
 r_packages:
