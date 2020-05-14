@@ -51,7 +51,7 @@
 goxygen <- function(path=".", 
                     docfolder="doc", 
                     cache=FALSE, 
-                    output=c("html","tex"), 
+                    output=c("html","tex","pdf"), 
                     cff="CITATION.cff", 
                     modularCode=is.modularGAMS(), 
                     unitPattern=c("\\(","\\)"), 
