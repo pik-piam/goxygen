@@ -22,6 +22,12 @@ gamsequation2tex <- function(x) {
     return(out)
   }
   
+  unconverted <- function(x, name, warning) {
+    warning(warning)
+    names(x) <- paste(name,"(CONVERSION FAILED!)")
+    return(x)
+  }
+  
   convert_side <- function(x) {
     
     extract_vars <- function(x, variable, code="v", protected=c("sum","prod","power")) {
@@ -155,9 +161,7 @@ gamsequation2tex <- function(x) {
   }
   
   if(grepl("(^\\$|\n\\$)",x)) {
-    warning("Cannot handle equations with preceeding dollar conditions! Return original code!")
-    names(x) <- paste(name,"(CONVERSION FAILED!)")
-    return(x)
+    return(unconverted(x, name, "Cannot handle equations with preceeding dollar conditions! Return original code!"))
   }
   
   multiline <- grepl("\n",eq)
@@ -165,9 +169,7 @@ gamsequation2tex <- function(x) {
   #split sides
   pattern <- "^(.*)(=[lLgGeEnN]=)(.*)$"
   if(!grepl(pattern,eq)) {
-    warning("Cannot handle equations without relational operator! Return original code!")
-    names(x) <- paste(name,"(CONVERSION FAILED!)")
-    return(x)
+    return(unconverted(x, name, "Cannot handle equations without relational operator! Return original code!"))
   }
   left <- sub(pattern,"\\1",eq)
   middle <- sub(pattern,"\\2",eq)
@@ -194,9 +196,7 @@ gamsequation2tex <- function(x) {
   names(out) <- name
   
   if(grepl("#",out)) {
-    warning("Equation ",name," could not be converted! Return original code!")
-    names(x) <- paste(name,"(CONVERSION FAILED!)")
-    return(x)
+    return(unconverted(x, name, paste0("Equation ",name," could not be converted! Return original code!")))
   }
   
   return(out)
