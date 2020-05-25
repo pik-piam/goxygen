@@ -643,15 +643,16 @@ $endif$
 % header and footer
 %
 \usepackage{fancyhdr}
+\usepackage{lastpage}
 \pagestyle{fancy}
 \fancyhead{}
 \fancyfoot{}
 \lhead{$title$}
 \chead{}
-\rhead{$date$}
-\lfoot{$for(author)$$author$$sep$, $endfor$}
+\rhead{$version$}
+\lfoot{$goxygen$}
 \cfoot{}
-\rfoot{\thepage}
+\rfoot{\thepage /\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -683,10 +684,10 @@ $endif$
 
 { \setstretch{1.4}
 \vfill
-\noindent {\huge \textbf{\textsf{$title$}}}
-$if(subtitle)$
+\noindent {\huge $logo$ \textbf{\textsf{$title$}}}
+$if(version)$
 \vskip 1em
-{\Large \textsf{$subtitle$}}
+{\Large \textsf{$version$}}
 $endif$
 \vskip 2em
 \noindent

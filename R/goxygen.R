@@ -111,6 +111,6 @@ goxygen <- function(path=".",
   }
   buildMarkdown(full)
   if("html"%in% output) buildHTML(supplementary="images", citation=citation)
-  if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output))
+  if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output), citation=citation)
 }
   

@@ -1,7 +1,7 @@
 Package: goxygen
 Type: Package
 Title: In-Code documentation for GAMS
-Version: 0.32.5
+Version: 0.33.0
 Date: 2020-05-25
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"))
@@ -14,4 +14,4 @@ License: BSD_2_clause + file LICENSE
 Encoding: UTF-8
 LazyData: no
 RoxygenNote: 7.1.0
-ValidationKey: 5982275
+ValidationKey: 6074310
