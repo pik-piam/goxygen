@@ -143,6 +143,9 @@ gamsequation2tex <- function(x) {
     return(x)
   }
   
+  # remove comments at the end of the line
+  x <- gsub(" *!![^\n]*(\n|$)","\\1",x)
+  
   # split name and equation
   pattern <- "^\n*(.*?) *\\.\\. *(.*?);?$"
   if(grepl(pattern,x)) {

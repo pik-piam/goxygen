@@ -1,6 +1,6 @@
 {
   "title": "goxygen: In-Code documentation for GAMS",
-  "version": "0.32.2",
+  "version": "0.32.3",
   "description": "<p>A collection of tools which extract a model documentation from GAMS code and comments.<\/p>",
   "creators": [
     {

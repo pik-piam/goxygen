@@ -1,8 +1,8 @@
 Package: goxygen
 Type: Package
 Title: In-Code documentation for GAMS
-Version: 0.32.2
-Date: 2020-05-14
+Version: 0.32.3
+Date: 2020-05-25
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"))
 Description: A collection of tools which extract a model documentation from GAMS code and comments.
@@ -14,4 +14,4 @@ License: BSD_2_clause + file LICENSE
 Encoding: UTF-8
 LazyData: no
 RoxygenNote: 7.1.0
-ValidationKey: 5923512
+ValidationKey: 5945461
