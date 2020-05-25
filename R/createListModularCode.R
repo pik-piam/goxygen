@@ -46,13 +46,9 @@ createListModularCode <- function(cc, interfaces, path=".", citation=NULL, unitP
       return(data.frame(name=dec[,"names"],sets=dec[,"sets"], description=description, unit=.cleanunit(unit), stringsAsFactors = FALSE))
     }
     .format <- function(out,aps,ifs=NULL) {
-      if(nrow(out)==0) {
-        if(is.null(ifs)) {
-          return(NULL)
-        } else {
-          return(list(input=NULL,output=NULL))
-        }
-      }
+      if(nrow(out)==0 &&  is.null(ifs)) return(NULL)
+      if(nrow(out)==0 && !is.null(ifs)) return(list(input=NULL,output=NULL))
+      
       # format information
       fout <- data.frame(Name=paste0(out$name,sub("()","",paste0(" (",out$sets,")"),fixed=TRUE)), 
                          Description=out$description, 
