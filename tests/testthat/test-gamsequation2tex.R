@@ -23,3 +23,9 @@ test_that("!! comments are removed and equation properly converted", {
   result <- c(`eq_1(a)` = "\\begin{multline*}\n v\\_a(a) = \n \\sum_{a2b(a,b)}\\left(\n v\\_b(a,b)\\right)\n + \\sum_{a2c(a,b)}\\left(\n v\\_c(a,b) \\cdot v\\_d(a,b)\\right) \n\\end{multline*}")
   expect_identical(gamsequation2tex(equation),result)
 })
+
+test_that("Unneccessary brackets are being removed", {
+  equation <- "eq1 .. a=e= ((b))"
+  result <- c(eq1 = "\\begin{multline*}\n a = b \n\\end{multline*}")
+  expect_identical(gamsequation2tex(equation),result)
+})

@@ -25,9 +25,7 @@ gamsequation2tex <- function(x) {
   convert_side <- function(x) {
     
     extract_vars <- function(x, variable, code="v", protected=c("sum","prod","power")) {
-      
-      if(length(x)!=1) stop("Works only for 1 element!")
-      
+
       vars        <- stri_extract_all_regex(x,variable)[[1]]
       names(vars) <- paste0("#",code,1:length(vars),"#")
       x           <- stri_replace_all_regex(x,variable,"#:.INSERTHERE.:#")
