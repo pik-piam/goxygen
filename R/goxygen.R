@@ -37,16 +37,16 @@
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
 #' @param includeCore boolean whether core should be included or not, default=FALSE
 #' @param mainfile main file of the model
-#' @param ... optional arguments to \code{\link[lucode]{interfaceplot}}, passed via \code{\link[lucode]{modules_interfaceplot}}. 
+#' @param ... optional arguments to \code{\link[gmod]{interfaceplot}}, passed via \code{\link[gmod]{modules_interfaceplot}}. 
 #'
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
-#' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
+#' @importFrom gmod codeCheck modules_interfaceplot is.modularGAMS
 #' @importFrom pander pandoc.table.return
 #' @importFrom citation read_cff cff2bibentry
 #' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
-#' @seealso \code{\link{codeCheck}},\code{\link[lucode]{interfaceplot}},
+#' @seealso \code{\link{codeCheck}},\code{\link[gmod]{interfaceplot}},
 #' @export
 goxygen <- function(path=".", 
                     docfolder="doc", 

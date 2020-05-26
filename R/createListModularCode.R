@@ -12,7 +12,7 @@
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
-#' @importFrom lucode codeCheck modules_interfaceplot is.modularGAMS
+#' @importFrom gmod codeCheck modules_interfaceplot is.modularGAMS
 #' @importFrom pander pandoc.table.return
 #' @importFrom citation read_cff cff2bibentry
 #' @importFrom yaml as.yaml
