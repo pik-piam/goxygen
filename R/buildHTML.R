@@ -6,6 +6,8 @@
 #' Pandoc (https://pandoc.org/) together with pandoc-citeproc need to be installed 
 #' on the system.
 #' 
+#' @param style visualization style to be used for the creation. Currently available styles are 
+#' "classic" and "ming"
 #' @param folder location the HTML files should be written to
 #' @param mdfolder path to the markdown folder to be used as source
 #' @param literature path to a bibliography, if available (will be ignored
@@ -13,101 +15,67 @@
 #' @param citation Citation information in citation file format (optional)
 #' @param supplementary a vector of files and/or folders required for the conversion
 #' (e.g. an images subdirectory with figures to be shown in the documents)
-#' @param addHTML character vector with HTML code which should be added to the body of each HTML file.
+#' @param debug logical which switches on/off a debug mode which will return additional 
+#' status updates and keep build files
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{buildTEX}}
 #' @importFrom utils packageVersion
 #' @export
 
-buildHTML <- function(folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary=NULL, addHTML=NULL) {
+buildHTML <- function(style="classic", folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary="images", debug=FALSE) {
+  
+  # check style
+  if(style=="classic") return(oldBuildHTML(folder=folder, mdfolder=mdfolder, literature=literature, citation=citation, supplementary=supplementary))
+  if(style!="ming") stop("Unknown style ", style,"!")
+  
   message("Start HTML creation...")
   check_pandoc()
+  
+  # check available md files
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
   moduleNames <- sub("\\.[^.]*$","",basename(files))
+  
+  # prepare folder
   if(!dir.exists(folder)) dir.create(folder)
-  file.copy(system.file("templates","template.css",package="goxygen"),paste0(folder,"/template.css"))
-  ref <- tempfile()
+  file.copy(system.file("templates",paste0(style,".css"),package="goxygen"),paste0(folder,"/style.css"))
+  for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)
+  
+  # prepare reference file
+  ref <- ifelse(debug, "ref.md", tempfile())
   returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
   
-  if(is.character(citation) && file.exists(citation)) citation <- read_cff(citation)
-  
-  returnHTMLNav <- function(names, targets, id="TOCL") {
-    
-    if("index"%in%names) {
-      #bring index page to the front
-      targets <- targets[order(names!="index")]
-      names   <- names[order(names!="index")]
-      #rename index to overview
-      names[names=="index"] <- "Overview"
-    }
-    
-    out <- paste0('<nav id="',id,'">','<ul>')
-    for(i in 1:length(names)) {
-      out <- c(out,paste0('<li><a href="',targets[i],'">',names[i],'</a></li>'))
-    }
-    out <- c(out,'</ul>','</nav>')
-    return(out)
+  if(is.character(citation) && file.exists(citation)) {
+    citation <- read_cff(citation)
+  } else {
+    citation <- list(title="Model Documentation")
   }
-  
-  addMainHeaderHTML <- function(citation) {
-  
-    if(file.exists("images/logo.png")) {
-      logo <- '  <a href="index.htm"><img id="logo" src="images/logo.png" height="100" alt="model logo" /></a>'
-    } else {
-      logo <- NULL
-    }
-    
-    if(!is.null(citation$version)) {
-      version <- paste0(" | Version ",citation$version)
-    } else {
-      version <- NULL
-    }
-    
-    out <- c('<div id="mainheaderbox">',
-             '<div id="mainheader">',
-             logo,
-             paste0('  <div id=mainheadertext><h1 id="mainheadertitle">Model Documentation</h1><h3 id="mainheaderversion">',version,'</h3></div>'),
-             paste0('  <small>created with <a href="https://github.com/pik-piam/goxygen">goxygen</a> ',packageVersion("goxygen"),'</small>'),
-             '</div></div>')
-    return(out)
-  }
-  
-  addHTML <- c(addHTML,addMainHeaderHTML(citation),returnHTMLNav(moduleNames, paste0(moduleNames,".htm")))
   
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
-  
-  addText <- function(html,key, content, before=FALSE, occurrence=1) {
-    cut <- grep(key,html,fixed=TRUE)[occurrence]
-    if(is.na(cut)) {
-      warning("Pattern ",key," not found!")
-      return(html)
-    }
-    if(before) cut <- cut-1
-    return(c(html[1:cut],content,html[(cut+1):length(html)])) 
+  logo <- ifelse(file.exists(paste0(folder,"/images/logo.png")), " -V logo", "")
+  authors <- ""
+  if(!is.null(citation$authors)) {
+    .tmp <- function(x) return(paste(x$`given-names`,x$`family-names`))
+    authors <- paste0(" -V author-meta=\"", sapply(citation$authors,.tmp),"\"")
+    authors <- paste(rev(authors),collapse="")
   }
   
   for(m in moduleNames) {
     ofile <- paste0(folder,"/",m,".htm")
-    system(paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",ofile,
-                  " --css template.css ",bib," --toc --mathjax --standalone --metadata link-citations=true --metadata title=",m))
-    # Add additional code to html file
-      html <- readLines(ofile)
-      html <- addText(html, "<h1 ","<div id=\"everything\">",before=TRUE, occurrence=2)
-      html <- addText(html, "</body>","</div>", before=TRUE)
-      html <- sub("(<title>)(.*)(</title>)",paste0("\\1",citation$title," | \\2\\3"),html)
-      html <- addText(html, "<body>", addHTML)
-      #add mathjax config
-      addMJConfig <- '<script type="text/x-mathjax-config">
-                    MathJax.Hub.Config({
-                      CommonHTML: { linebreaks: { automatic: true, width: "32em" } },
-                      "HTML-CSS": { linebreaks: { automatic: true, width: "32em" } },
-                             SVG: { linebreaks: { automatic: true, width: "32em" } }
-                    }); 
-                  </script>'
-      html <- addText(html,"<head>", addMJConfig)
-      writeLines(html,ofile)
+    pandoc_call <-paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",ofile,
+                         " --css template.css ",
+                         bib,
+                         authors,
+                         logo,
+                         " --toc --mathjax --standalone --metadata link-citations=true",
+                         " --template=",system.file("templates",paste0(style,".html5"),package="goxygen"),
+                         " --metadata title=",m,
+                         " -V modeltitle=\"",citation$title,"\"",
+                         " -V goxygenversion=",packageVersion("goxygen"),
+                         " -V modelversion=",citation$version,
+                         " -V pagenav:'\"#here\">Here' -V pagenav:'\"#there\">There'")
+    if(debug) cat(pandoc_call,"\n\n")
+    system(pandoc_call)
   }
-  unlink(ref)
-  for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)
+  if(!debug) unlink(ref)
   message("...finished HTML creation!")
 }

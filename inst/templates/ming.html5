@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="goxygen" />
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+<title>$modeltitle$ – $pagetitle$</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href='https://fonts.googleapis.com/css?family=Abel|Allerta Stencil|Roboto Mono' rel='stylesheet'>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+<script type="text/x-mathjax-config">
+                    MathJax.Hub.Config({
+                      CommonHTML: { linebreaks: { automatic: true } },
+                      "HTML-CSS": { linebreaks: { automatic: true } },
+                             SVG: { linebreaks: { automatic: true } }
+                    });
+</script>
+</head>
+<body>
+<div class="header">
+    <div class="headerimg">
+      <span style="cursor:pointer" onclick="openNav()">$if(logo)$<img id="logo" src="images/logo.png" height="100" alt="model logo" />$endif$
+      </span>
+    </div>
+    <div class="headertext">
+      <h1 id="mainheadertitle">$modeltitle$</h1>
+      $if(modelversion)$<h3>Model Version $modelversion$</h3>$endif$
+      <div class="by">created with <a href="https://github.com/pik-piam/goxygen">goxygen</a> $goxygenversion$</div>
+    </div>
+</div>
+
+<div class="pagenav" id="pagenav">
+  $for(pagenav)$
+  <a href=$pagenav$</a>
+  $endfor$
+</div>
+
+$for(include-before)$
+$include-before$
+$endfor$
+$body$
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+</html>
+
