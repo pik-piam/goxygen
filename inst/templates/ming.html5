@@ -43,6 +43,14 @@ $endif$
   $for(pagenav)$
   <a href=$pagenav$</a>
   $endfor$
+  <div class="dropdown">
+   <button class="dropbtn">Page
+     <i class="fa fa-caret-down"></i>
+   </button>
+   <div class="dropdown-content">
+   $toc$
+   </div>
+  </div>
 </div>
 
 $for(include-before)$
