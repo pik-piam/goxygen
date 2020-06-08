@@ -14,7 +14,7 @@ r_packages:
   - qgraph
   - devtools
   - testthat
-  - lucode
+  - lucode2
 script:
   - Rscript -e 'devtools::test()'
 after_success:
