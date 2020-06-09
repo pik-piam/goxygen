@@ -44,12 +44,50 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   ref <- ifelse(debug, "ref.md", tempfile())
   returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
   
-  if(is.character(citation) && file.exists(citation)) {
-    citation <- read_cff(citation)
-  } else {
-    citation <- list(title="Model Documentation")
+  # prepare main navigation
+  returnHTMLref <- function(files) {
+    out <- data.frame(name=NULL, title=NULL, stringsAsFactors = FALSE)
+    for(f in files) {
+      tmp <- readLines(f,n=2)
+      # use title if title is detected
+      out <- rbind(out, 
+                   data.frame(title = ifelse(grepl("^=*$",tmp[2]), sub(" *\\(.*$","",tmp[1]), ""),
+                              name = sub(".md","",basename(f),fixed=TRUE), stringsAsFactors = FALSE))
+    }
+    return(out)
+  }
+  mainNav <- function(mdfolder){
+    cwd <- getwd()
+    setwd(mdfolder)
+    on.exit(setwd(cwd))
+    ref <- returnHTMLref(dir(".", pattern = "*.\\.md$"))
+    
+    if("index"%in%ref$name) {
+      #bring index page to the front
+      i <- which(ref$name=="index")
+      ref <- ref[c(i,setdiff(1:nrow(ref),i)),]
+      #rename index to overview
+      ref$title[1] <- "Overview"
+    }
+    
+    has_number <- grepl("^[0-9]{1,2}_",ref$name)
+    if(sum(has_number)>=(nrow(ref)-1)) {
+      # if all names (expect of one, which might be the index page) begin
+      # with a number, use that number in front of the title
+      number <- as.integer(sub("_.*$","",ref$name[has_number]))
+      ref$title[has_number] <- paste0(format(number,width=2),". ",ref$title[has_number])
+    }
+    
+    out <- paste0('<a href="',ref$name,'.htm">',ref$title,'</a>',collapse="\n")
+    return(out)
   }
   
+  if(is.character(citation) && file.exists(citation)) {
+    citation <- read_cff(citation)
+  } else if(!is.list(citation)) {
+    citation <- list(title="Model Documentation")
+  }
+  repo <- ifelse(!is.null(citation$`repository-code`),paste0(" -V repo=",citation$`repository-code`),"")
   bib <- ifelse(file.exists(literature),paste0("--bibliography=",literature),"")
   logo <- ifelse(file.exists(paste0(folder,"/images/logo.png")), " -V logo", "")
   authors <- ""
@@ -66,13 +104,14 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
                          bib,
                          authors,
                          logo,
+                         repo,
                          " --toc --mathjax --standalone --metadata link-citations=true",
                          " --template=",system.file("templates",paste0(style,".html5"),package="goxygen"),
                          " --metadata title=",m,
                          " -V modeltitle=\"",citation$title,"\"",
                          " -V goxygenversion=",packageVersion("goxygen"),
                          " -V modelversion=",citation$version,
-                         " -V pagenav:'\"#here\">Here' -V pagenav:'\"#there\">There'")
+                         " -V mainnav='",mainNav(mdfolder),"'")
     if(debug) cat(pandoc_call,"\n\n")
     system(pandoc_call)
   }

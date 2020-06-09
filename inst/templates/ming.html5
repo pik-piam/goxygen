@@ -33,8 +33,8 @@ $endif$
       </span>
     </div>
     <div class="headertext">
-      <h1 id="mainheadertitle">$modeltitle$</h1>
-      $if(modelversion)$<h3>Model Version $modelversion$</h3>$endif$
+      <h1 id="mainheadertitle">$if(repo)$<a href="$repo$">$endif$$modeltitle$$if(repo)$</a>$endif$</h1>
+      $if(modelversion)$<h3>$modelversion$</h3>$endif$
       <div class="by">created with <a href="https://github.com/pik-piam/goxygen">goxygen</a> $goxygenversion$</div>
     </div>
 </div>
@@ -43,6 +43,14 @@ $endif$
   $for(pagenav)$
   <a href=$pagenav$</a>
   $endfor$
+  <div class="dropdown">
+   <button class="dropbtn">Index
+     <i class="fa fa-caret-down"></i>
+   </button>
+   <div id="mainnav" class="dropdown-content">
+   $mainnav$
+   </div>
+  </div>
   <div class="dropdown">
    <button class="dropbtn">Page
      <i class="fa fa-caret-down"></i>

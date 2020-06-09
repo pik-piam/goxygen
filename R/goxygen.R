@@ -31,6 +31,8 @@
 #' @param path path to the model to be documented
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
+#' @param htmlStyle visualization style to be used for the HTML creation. Currently available styles are 
+#' "classic" and "ming". Ignored for outputs other than HTML.
 #' @param output List of output to be written, available are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
@@ -52,6 +54,7 @@ goxygen <- function(path=".",
                     docfolder="doc", 
                     cache=FALSE, 
                     output=c("html","tex","pdf"), 
+                    htmlStyle="classic",
                     cff="CITATION.cff", 
                     modularCode=is.modularGAMS(), 
                     unitPattern=c("\\(","\\)"), 
@@ -110,7 +113,7 @@ goxygen <- function(path=".",
     warning(paste0("No output format '",output[nomatch],"' available. It will be ignored."))
   }
   buildMarkdown(full)
-  if("html"%in% output) buildHTML(supplementary="images", citation=citation)
+  if("html"%in% output) buildHTML(supplementary="images", citation=citation, style=htmlStyle)
   if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output), citation=citation)
 }
   
