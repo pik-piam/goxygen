@@ -44,7 +44,7 @@ $endif$
   <a href=$pagenav$</a>
   $endfor$
   <div class="dropdown">
-   <button class="dropbtn">Index
+   <button class="dropbtn">$pagetitle$
      <i class="fa fa-caret-down"></i>
    </button>
    <div id="mainnav" class="dropdown-content">
@@ -52,7 +52,7 @@ $endif$
    </div>
   </div>
   <div class="dropdown">
-   <button class="dropbtn">Page
+   <button class="dropbtn">Contents
      <i class="fa fa-caret-down"></i>
    </button>
    <div class="dropdown-content">
