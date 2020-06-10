@@ -26,12 +26,19 @@ a:hover {
 /* Style the header */
 .header {
   font-family: 'Allerta Stencil';
-  padding-top: 0px;
-  padding-bottom: 20px;
   text-align: center;
   background: #006d77;
   color: white;
   min-height: 120px;
+}
+
+.headertext {
+  width: calc(100% - 200px);
+  height: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .header h1 a {
@@ -104,20 +111,9 @@ a:hover {
   padding: 20px;
 }
 
-.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
 /* Page content */
 .content {
   padding: 16px;
-}
-
-/* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
-.sticky + .content {
-  padding-top: 60px;
 }
 
 .pagenav {
@@ -125,10 +121,11 @@ a:hover {
   background-color: #333;
   max-width: 1000px;
   border-radius: 0 0 20px 20px;
+  z-index: 1;
+  transition: top 0.3s;
 }
 
 .pagenav a {
-  float: left;
   display: block;
   color: #f2f2f2;
   text-align: center;
@@ -198,7 +195,7 @@ a:hover {
 }
 
 .dropdown-content a:hover {
-  background-color: #ffddd2; /* #ddd; */
+  background-color: #ffddd2; 
 }
 
 .dropdown:hover .dropdown-content {

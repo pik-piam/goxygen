@@ -75,11 +75,18 @@ var navbar = document.getElementById("pagenav");
 var sticky = navbar.offsetTop;
 
 function myFunction() {
+  var currentScrollPos = window.pageYOffset;
   if (window.pageYOffset >= sticky) {
-    navbar.classList.add("sticky")
+    if (prevScrollpos > currentScrollPos) {
+      document.getElementById("pagenav").style.top = "0";
+      document.getElementById("pagenav").style.position = "fixed";
+    } else {
+      document.getElementById("pagenav").style.top = "-50px";
+    }
   } else {
-    navbar.classList.remove("sticky");
+      document.getElementById("pagenav").style.position = "static";
   }
+  prevScrollpos = currentScrollPos;
 }
 </script>
 </body>
