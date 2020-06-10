@@ -46,7 +46,7 @@ a:hover {
 .headerimg {
   height: 120px;
   width: 160px;
-  border-radius: 0px 90px 90px 0px;
+  border-radius: 0 90px 90px 0;
   background: #ffffff;
   display: inline-block;
   float: left;
@@ -122,8 +122,9 @@ a:hover {
 
 .pagenav {
   font-family: 'Allerta Stencil';
-  overflow: hidden;
   background-color: #333;
+  max-width: 1000px;
+  border-radius: 0 0 20px 20px;
 }
 
 .pagenav a {
@@ -134,11 +135,6 @@ a:hover {
   padding: 14px 16px;
   text-decoration: none;
   font-size: 17px;
-}
-
-.dropdown {
-  float: left;
-  overflow: hidden;
 }
 
 .dropdown .dropbtn {
@@ -156,6 +152,11 @@ a:hover {
   background-color: #e29578;
 }
 
+.dropdown {
+  display:	inline-block;
+	position:	relative;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -168,7 +169,6 @@ a:hover {
 #mainnav {
   column-count: 2;
   column-gap: 5px;
-  column-width: 150px;
 }
 
 .dropdown-content ul {
@@ -194,6 +194,7 @@ a:hover {
   text-decoration: none;
   display: block;
   text-align: left;
+  white-space: nowrap;
 }
 
 .dropdown-content a:hover {
