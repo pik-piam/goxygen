@@ -77,10 +77,9 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
       number <- as.integer(sub("_.*$","",ref$name[has_number]))
       ref$title[has_number] <- paste0(format(number,width=2),". ",ref$title[has_number])
     }
-    
-    out <- paste0('<a href="',ref$name,'.htm">',ref$title,'</a>',collapse="\n")
-    return(out)
+    return(ref)
   }
+  mainNav <- mainNav(mdfolder)
   
   if(is.character(citation) && file.exists(citation)) {
     citation <- read_cff(citation)
@@ -98,6 +97,8 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   }
   
   for(m in moduleNames) {
+    pagetitle <- mainNav$title[mainNav$name==m]
+    if(length(pagetitle)==0) pagetitle <- m
     ofile <- paste0(folder,"/",m,".htm")
     pandoc_call <-paste0("pandoc ",mdfolder,"/",m,".md ",ref," -o ",ofile,
                          " --css template.css ",
@@ -111,7 +112,8 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
                          " -V modeltitle=\"",citation$title,"\"",
                          " -V goxygenversion=",packageVersion("goxygen"),
                          " -V modelversion=",citation$version,
-                         " -V mainnav='",mainNav(mdfolder),"'")
+                         " -V pagetitle=\"",pagetitle,"\"",
+                         " -V mainnav='",paste0('<a href="',mainNav$name,'.htm">',mainNav$title,'</a>',collapse="\n"),"'")
     if(debug) cat(pandoc_call,"\n\n")
     system(pandoc_call)
   }

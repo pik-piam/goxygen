@@ -34,22 +34,22 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)
   
   .tmp <- function(x) return(paste0(x[["given-names"]]," \\textbf{",x[["family-names"]],"}"))
-  version <- ifelse(is.null(citation$version), NULL, paste0("Model Version ",citation$version))
+  version <- ifelse(is.null(citation$version), "", paste0('--variable version="',paste0("Model Version ",citation$version),'"'))
   title <- ifelse(is.null(citation$title), "Model Documentation", citation$title)
-  authors <- ifelse(is.null(citation$authors), NULL, paste(sapply(citation$authors,.tmp),collapse=" | "))
+  authors <- ifelse(is.null(citation$authors), "",  paste0('--variable author="',paste(sapply(citation$authors,.tmp),collapse=" | "),'"'))
   logo <- ifelse(file.exists("images/logo.png"), 
                  '\\raisebox{-.2\\height}{\\includegraphics[width=2cm]{images/logo}}  \\hskip 0.5em ', NULL)
   
   additional_settings <- paste(paste0('--variable title="',title,'"'),
                                '--variable titlepage',
                                '--variable toc',
-                               paste0('--variable author="',authors,'"'),
+                               authors,
                                paste0('--variable logo="',logo,'"'),
                                paste0('--variable date="created with \\href{https://github.com/pik-piam/goxygen}{goxygen} on ',
                                       format(Sys.time(), "%b %d %Y"),'"'),
                                paste0('--variable goxygen="created with \\href{https://github.com/pik-piam/goxygen}{goxygen} ',
                                       packageVersion("goxygen"),'"'),
-                               paste0('--variable version="',version,'"'))
+                               version)
   
   if(is.null(literature)) bib <- ""
   else bib <- ifelse(file.exists(literature),paste0(" --metadata link-citations --bibliography=",literature),"")
