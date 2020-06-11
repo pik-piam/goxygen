@@ -81,6 +81,8 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   }
   mainNav <- mainNav(mdfolder)
   
+  mainpage <- ifelse("index" %in% mainNav$name," -V mainpage=\"index.htm\"","")
+  
   if(is.character(citation) && file.exists(citation)) {
     citation <- read_cff(citation)
   } else if(!is.list(citation)) {
@@ -106,6 +108,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
                          authors,
                          logo,
                          repo,
+                         mainpage,
                          " --toc --mathjax --standalone --metadata link-citations=true",
                          " --template=",system.file("templates",paste0(style,".html5"),package="goxygen"),
                          " --metadata title=",m,

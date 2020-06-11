@@ -29,8 +29,7 @@ $endif$
 <body>
 <div class="header">
     <div class="headerimg">
-      <span style="cursor:pointer" onclick="openNav()">$if(logo)$<img id="logo" src="images/logo.png" height="100" alt="model logo" />$endif$
-      </span>
+      $if(logo)$$if(mainpage)$<a href="$mainpage$">$endif$<img id="logo" src="images/logo.png" height="100" alt="model logo" />$if(mainpage)$</a>$endif$$endif$
     </div>
     <div class="headertext">
       <h1 id="mainheadertitle">$if(repo)$<a href="$repo$">$endif$$modeltitle$$if(repo)$</a>$endif$</h1>
