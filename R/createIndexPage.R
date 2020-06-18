@@ -42,6 +42,13 @@ createIndexPage <- function(data) {
     .write(zz,c("```",as.yaml(data$citation),"```"))
   }
   
+  .limitations(zz,data$limitations, emptyIfNULL=TRUE)
+  
+  if(!is.null(data$authors)) {
+    .header(zz,"Authors",2)
+    .write(zz,data$authors)
+  }
+  
   close(zz)
   out <- .updateImagePaths(out)
   return(out)
