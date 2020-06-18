@@ -38,7 +38,7 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   title <- ifelse(is.null(citation$title), "Model Documentation", citation$title)
   authors <- ifelse(is.null(citation$authors), "",  paste0('--variable author="',paste(sapply(citation$authors,.tmp),collapse=" | "),'"'))
   logo <- ifelse(file.exists("images/logo.png"), 
-                 '\\raisebox{-.2\\height}{\\includegraphics[width=2cm]{images/logo}}  \\hskip 0.5em ', NULL)
+                 '\\raisebox{-.2\\height}{\\includegraphics[width=2cm]{images/logo}}  \\hskip 0.5em ', "")
   
   additional_settings <- paste(paste0('--variable title="',title,'"'),
                                '--variable titlepage',

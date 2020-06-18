@@ -33,33 +33,65 @@ We take the GAMS code from the gms package and save it to `main-plain.gms`:
 
 ```{r}
 library(gms)
+# create temporary folder for the plain GAMS model
 dir.create("tmp-plain")
-file.copy(from = system.file("extdata/full.gms",package="gms"), to = "tmp-plain/main.gms")
+# copy a single GAMS file containing a simple dummy model and goxygen comments 
+file.copy(from = system.file("extdata/dummymodel-plain.gms",package="goxygen"), to = "tmp-plain/main.gms")
 ```
 
 and execute `goxygen` on this GAMS file
 
 ```{r}
 library(goxygen)
-goxygen(path = "tmp-plain", mainfile = "main-plain.gms")
+goxygen(path = "tmp-plain", mainfile = "main-david.gms", cache = FALSE)
 ```
 
-goxygen now searches the code for all the lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf).
+Goxygen now searches the code for all lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf). Please find the goxygen output in the folder `tmp-plain/doc`.
 
-The html output looks as follows:
+The short example GAMS file contains all identifiers available in goxygen. The resulting document starts with a table of contents.
 
+* `@title` Adds the heading with the title to the documentation.
+
+* `@description` Contains the text describing the model. Start a new paragraph by adding a blank line that starts with `*'`.
+
+* `@authors` List the authors of the model here.
+
+* `@limitations` Explain the limitation of the model.
+
+* `@code` All following lines of the model code will be displayed in the documentation output as code blocks. Lines starting with `*'` will be displayed as regular text.
+
+* `@equations` starts the equation section where goxygen converts GAMS equations into LaTeX code so that they are displayed nicely in the output.
+
+* `@stop` Everything following will be ignored until the next identifier is mentioned again. In this case the following code is not included in the documentation output:
+
+    ```
+    *' Even goxygen comments are ignored.
+    display v01_intern.l;
+    ```
+    until the `@code` tag resumes the documentation.
 
 ## Running goxygen on modularized GAMS code
 
+This was a simple example of a GAMS model in a single file with a plain structure. As soon as model and code get more complex it is helpful to structure the model in a modular way as described by @dietrich_magpie4. Goxygen is tailored to extract the documentation from this modular structure and compile it to a clearly arranged documentation. Goxygen 
+identifies modules and their interfaces, generates an interface plot, lists the inputs and outputs of modules. For each module goxygen creates a new chapter in the documentation. We will demonstrate this using the simple example model from the `gms` package:
 
 ```{r}
-library(gms)
+# create a temporary folder for the modularized GAMS model
 dir.create("tmp-modular")
+# copy all files and folders containing the modular dummy model
 file.copy(from = system.file("dummymodel",package="gms"), to = "tmp-modular", recursive = TRUE)
 ```
 
+Now execute `goxygen` on the modular GAMS model:
 
-Modulare Strktur ist nicht "die" modulare struktur, sondern so, wie es REMIND and MAgpIE machen
-gms package erstellt model skeletton
+```{r}
+goxygen(path = "tmp-modular/dummymodel", cache = FALSE)
+```
+
+Please find the goxygen output in the folder `tmp-modular/dummymodel/doc`.
+ 
+Notizen: 
+* Modulare Strktur ist nicht "die" modulare struktur, sondern so, wie es z.B. REMIND and MAgpIE machen
+* gms package erstellt model skeletton
 
 ## References
