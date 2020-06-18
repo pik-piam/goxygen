@@ -1,0 +1,65 @@
+---
+title: "goxygen"
+author: "David Klein, Jan Philipp Dietrich"
+date: "17.06.2020"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{goxygen}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Purpose and Functionality
+
+Goxygen provides tools to extract a model documentation from GAMS code, including comments, code, and even GAMS equations, the latter of which are converted into latex code. This allows having GAMS code and explanatory text side by side in the same gms files, which makes it easier to keep the comments up to date with the code. The goxygen output is returned in Markdown, HTML and PDF format.
+
+In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).
+
+Goxygen can extract the documentation from plain GAMS code (see next section) or from modularized GAMS models as described in @dietrich_magpie4 (see further down).
+
+## Running goxygen on plain GAMS code
+
+diese Datien brauceh natürlich die ganzen tags, die sonst über die modulare struktur verteile sind (auch autoren).
+
+We take the GAMS code from the gms package and save it to `main-plain.gms`:
+
+```{r}
+library(gms)
+dir.create("tmp-plain")
+file.copy(from = system.file("extdata/full.gms",package="gms"), to = "tmp-plain/main.gms")
+```
+
+and execute `goxygen` on this GAMS file
+
+```{r}
+library(goxygen)
+goxygen(path = "tmp-plain", mainfile = "main-plain.gms")
+```
+
+goxygen now searches the code for all the lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf).
+
+The html output looks as follows:
+
+
+## Running goxygen on modularized GAMS code
+
+
+```{r}
+library(gms)
+dir.create("tmp-modular")
+file.copy(from = system.file("dummymodel",package="gms"), to = "tmp-modular", recursive = TRUE)
+```
+
+
+Modulare Strktur ist nicht "die" modulare struktur, sondern so, wie es REMIND and MAgpIE machen
+gms package erstellt model skeletton
+
+## References
