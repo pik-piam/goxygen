@@ -4,8 +4,8 @@ library(goxygen)
 context("goxygen")
 
 test_that("extract documentation from modular dummy model", {
-  docfolder <- paste(tempdir(),"/doc_modular")
-  out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
+  docfolder <- paste0(tempdir(),"/doc_modular")
+  out <- try(goxygen(path = system.file("dummymodel",package="gms"),
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff"))
   expect_null(out)
   expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
@@ -16,15 +16,15 @@ test_that("extract documentation from modular dummy model", {
 })
 
 test_that("cache and unknown output", {
-  docfolder <- paste(tempdir(),"/doc_modular")
-  expect_warning(out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
+  docfolder <- paste0(tempdir(),"/doc_modular")
+  expect_warning(out <- try(goxygen(path = system.file("dummymodel",package="gms"),
                      docfolder = docfolder, includeCore = TRUE, cache = TRUE, output="bla")))
   expect_null(out)
 })
 
 test_that("extract documentation from simple dummy model", {
-  docfolder <- paste(tempdir(),"/doc_simple")
-  out <- try(goxygen(path = system.file("dummymodel",package="goxygen"),
+  docfolder <- paste0(tempdir(),"/doc_simple")
+  out <- try(goxygen(path = system.file("dummymodel",package="gms"),
                      docfolder = docfolder, modularCode = FALSE,
                      cff = "HOWTOCITE.cff"))
   expect_null(out)
