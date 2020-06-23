@@ -1,6 +1,6 @@
 {
   "title": "goxygen: In-Code documentation for GAMS",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "description": "<p>A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).<\/p>",
   "creators": [
     {
