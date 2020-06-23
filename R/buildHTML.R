@@ -116,7 +116,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
                          " -V goxygenversion=",packageVersion("goxygen"),
                          " -V modelversion=",citation$version,
                          " -V pagetitle=\"",pagetitle,"\"",
-                         " -V mainnav='",paste0('<a href="',mainNav$name,'.htm">',mainNav$title,'</a>',collapse="\n"),"'")
+                         " -V mainnav=\"",paste0("<a href='",mainNav$name,".htm'>",mainNav$title,"</a>",collapse="\n"),"\"")
     if(debug) cat(pandoc_call,"\n\n")
     system(pandoc_call)
   }
