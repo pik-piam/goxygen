@@ -23,6 +23,10 @@ equations
  q01_equation2 ..
     sum(i,v01_intern(i)) =e= 12;
 
-*' This was simple, wasn't it? And we even have a picture
-
+*' This was simple, wasn't it? And we even have a picture. We include it using Markdown syntax
+*'
 *' ![Fancy cat](cat.png){ width=30% }
+*'
+*' ## Extra heading
+
+*' Here we create an extra heading not using goxygen syntax but using Markdown syntax.

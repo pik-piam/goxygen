@@ -40,10 +40,12 @@ and execute `goxygen` on this GAMS file to produce the documentation in html for
 
 ```{r}
 library(goxygen)
-goxygen(path = "tmp-plain", mainfile = "main.gms", output = "html")
+goxygen(path = "tmp-plain", mainfile = "0_main.gms", output = "html", cff = "HOWTOCITE.cff")
 ```
 
 Goxygen now searches the code for all lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf). Please find the goxygen output in the folder `tmp-plain/doc`.
+
+## Goxygen syntax
 
 The short example GAMS file contains all identifiers available in goxygen. The resulting document starts with a table of contents.
 
@@ -67,10 +69,26 @@ The short example GAMS file contains all identifiers available in goxygen. The r
     ```
     until the `@code` tag resumes the documentation.
     
+    
+## Further features
+
+* **Markdown syntax:** Since goxygen translates the code comments into Markdown before creating the other output formats from it, it is possible to use Markdown syntax in your goxygen comments. 
+
+* **Including images:** For example, in `1_equations.gms` we included an image using Markdown syntax.
+
+* **Logo:** Any file in your model's main folder named `logo.png` (or other image formats) will be inclued in the documentation.
+
+* **References:** To add literature references to the documentation please save a bibtex file `literature.bib` in the main folder of the model and link the references using `@<id>` in your goxygen comments."\<id\>" stands for the name of the corresponding bibtex entry.
+
+* **CITATION.cff:** Add meta information to your model, such as authors, name of the model, license etc. by adding a `CITATION.cff` file to your model's main folder. This helps others to cite your model correctly and goxygen includes this meta information in the documentation. If you use a different filename than `CITATION.cff` please provide the name `cff = MYCITATION.cff`.
+
+* **Internal links:** This applies to the modular model structure only (see below). To link a module in the text use square brackets and the name of the module, e.g. `\[007_bond\]`
 
 ## Running goxygen on modularized GAMS code
 
-This was a simple example of a GAMS model in a single file with a plain structure. As soon as model and code get more complex it is helpful to structure the model in a modular way as described by @dietrich_magpie4. Goxygen is tailored to extract the documentation from this modular structure and compile it to a clearly arranged documentation. Goxygen identifies modules and their interfaces, generates an interface plot that depicts the interactions between modules, and lists the inputs and outputs of modules. For each module goxygen creates a new chapter in the documentation. We will demonstrate this using the simple example model from the `gms` package:
+This was a simple example of a GAMS model in a single file with a plain structure. As soon as model and code get more complex it is helpful to structure the model in a modular way, for example as described by @dietrich_magpie4. This modular structure emulates in GAMS what would be functions and environments in other programming languages, since GAMS does not offer this feature. The separation is artificial and achieved only by naming conventions. A module comprises the code of a content area that can be clearly separated from other content areas topic-wise and interacts with other modules only via clearly defined interfaces. The modular structure is clearly visible in the code through the naming convention mentioned and through the folder and file structure.
+
+Goxygen is tailored to extract the documentation from this modular structure and to compile it to a clearly arranged documentation. Goxygen identifies modules and their interfaces, generates a interface plots that depict the interactions between modules, and lists the inputs and outputs of modules. For each module goxygen creates a new chapter in the documentation. We will demonstrate this using the simple example model from the `gms` package:
 
 ```{r}
 # create a temporary folder for the modularized GAMS model
@@ -82,7 +100,7 @@ file.copy(from = system.file("dummymodel",package="gms"), to = "tmp-modular", re
 Now execute `goxygen` on the modular GAMS model:
 
 ```{r}
-goxygen(path = "tmp-modular/dummymodel", output = "html")
+goxygen(path = "tmp-modular/dummymodel", output = "html", cff = "HOWTOCITE.cff")
 ```
 
 Please find the goxygen output in the folder `tmp-modular/dummymodel/doc`.
