@@ -22,7 +22,7 @@ Goxygen provides tools to extract a model documentation from GAMS code, includin
 
 In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).
 
-Goxygen can extract the documentation from plain GAMS code (see next section) or from GAMS models that have a modularized structure as described in dietrich_magpie4 (see further down).
+Goxygen can extract the documentation from plain GAMS code (see next section) or from GAMS models that have a modularized structure as described in http://dx.doi.org/10.5194/gmd-12-1299-2019 (see further down).
 
 ## Running goxygen on plain GAMS code
 
@@ -85,7 +85,7 @@ The short example GAMS file contains all identifiers available in goxygen. The r
 
 ## Running goxygen on modularized GAMS code
 
-This was a simple example of a GAMS model in a single file with a plain structure. As soon as model and code get more complex it is helpful to structure the model in a modular way, for example as described by dietrich_magpie4. This modular structure emulates in GAMS what would be functions and environments in other programming languages, since GAMS does not offer this feature. The separation is artificial and achieved only by naming conventions. A module comprises the code of a content area that can be clearly separated from other content areas topic-wise and interacts with other modules only via clearly defined interfaces. The modular structure is clearly visible in the code through the naming convention mentioned and through the folder and file structure.
+This was a simple example of a GAMS model in a single file with a plain structure. As soon as model and code get more complex it is helpful to structure the model in a modular way, for example as described in http://dx.doi.org/10.5194/gmd-12-1299-2019. This modular structure emulates in GAMS what would be functions and environments in other programming languages, since GAMS does not offer this feature. The separation is artificial and achieved only by naming conventions. A module comprises the code of a content area that can be clearly separated from other content areas topic-wise and interacts with other modules only via clearly defined interfaces. The modular structure is clearly visible in the code through the naming convention mentioned and through the folder and file structure.
 
 Goxygen is tailored to extract the documentation from this modular structure and to compile it to a clearly arranged documentation. Goxygen identifies modules and their interfaces, generates a interface plots that depict the interactions between modules, and lists the inputs and outputs of modules. For each module goxygen creates a new chapter in the documentation. We will demonstrate this using the simple example model from the `gms` package:
 
@@ -103,5 +103,3 @@ goxygen(path = "tmp-modular/dummymodel", output = "html", cff = "HOWTOCITE.cff")
 ```
 
 Please find the goxygen output in the folder `tmp-modular/dummymodel/doc`.
- 
-## References
