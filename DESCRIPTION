@@ -1,8 +1,8 @@
 Package: goxygen
 Type: Package
 Title: In-Code documentation for GAMS
-Version: 0.39.0
-Date: 2020-06-23
+Version: 0.39.1
+Date: 2020-06-24
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"))
 Description: A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).
@@ -17,4 +17,4 @@ Suggests: testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-ValidationKey: 7190040
+ValidationKey: 7208867
