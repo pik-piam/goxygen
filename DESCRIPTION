@@ -1,7 +1,7 @@
 Package: goxygen
 Type: Package
 Title: In-Code documentation for GAMS
-Version: 0.39.1
+Version: 0.39.2
 Date: 2020-06-24
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"))
@@ -17,4 +17,4 @@ Suggests: testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-ValidationKey: 7208867
+ValidationKey: 7227304

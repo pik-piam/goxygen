@@ -3,7 +3,6 @@ title: "Writing in-source documentation for GAMS code with goxygen"
 author: "David Klein, Jan Philipp Dietrich"
 date: "17.06.2020"
 output: rmarkdown::html_vignette
-bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{goxygen}
   %\VignetteEngine{knitr::rmarkdown}
