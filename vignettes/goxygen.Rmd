@@ -27,23 +27,21 @@ Goxygen can extract the documentation from plain GAMS code (see next section) or
 
 ## Running goxygen on plain GAMS code
 
-We take the GAMS code example from this package and save it to `tmp-plain.gms`:
+We take the GAMS code example from this package and save it to `dummymodel-plain`:
 
 ```{r eval=FALSE}
-# create temporary folder for the plain GAMS model
-dir.create("tmp-plain")
 # copy the folder containing a simple dummy model with goxygen comments 
-file.copy(from = system.file("dummymodel-plain",package="goxygen"), to = "tmp-plain", recursive = TRUE)
+file.copy(from = system.file("dummymodel-plain",package="goxygen"), to = ".", recursive = TRUE)
 ```
 
 and execute `goxygen` on this GAMS file to produce the documentation in html format. If you want the documentation in pdf format simply set `output = "pdf"`.
 
 ```{r eval=FALSE}
 library(goxygen)
-goxygen(path = "tmp-plain", mainfile = "0_main.gms", output = "html", cff = "HOWTOCITE.cff")
+goxygen(path = "dummymodel-plain/", mainfile = "0_main.gms", output = "html", cff = "HOWTOCITE.cff")
 ```
 
-Goxygen now searches the code for all lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf). Please find the goxygen output in the folder `tmp-plain/doc`.
+Goxygen now searches the code for all lines starting with the goxygen tag "*'", interpretes the goxygen identifiers, and compiles the documentation into the format specified (html, tex, pdf). Please find the goxygen output in the folder `dummymodel-plain/doc`.
 
 ## Goxygen syntax
 
@@ -91,18 +89,16 @@ This was a simple example of a GAMS model in a single file with a plain structur
 Goxygen is tailored to extract the documentation from this modular structure and to compile it to a clearly arranged documentation. Goxygen identifies modules and their interfaces, generates a interface plots that depict the interactions between modules, and lists the inputs and outputs of modules. For each module goxygen creates a new chapter in the documentation. We will demonstrate this using the simple example model from the `gms` package:
 
 ```{r eval=FALSE}
-# create a temporary folder for the modularized GAMS model
-dir.create("tmp-modular")
 # copy all files and folders containing the modular dummy model
-file.copy(from = system.file("dummymodel",package="gms"), to = "tmp-modular", recursive = TRUE)
+file.copy(from = system.file("dummymodel",package="gms"), to = ".", recursive = TRUE)
 ```
 
 Now execute `goxygen` on the modular GAMS model:
 
 ```{r eval=FALSE}
-goxygen(path = "tmp-modular/dummymodel", output = "html", cff = "HOWTOCITE.cff")
+goxygen(path = "dummymodel/", output = "html", cff = "HOWTOCITE.cff")
 ```
 
-Please find the goxygen output in the folder `tmp-modular/dummymodel/doc`.
- 
+Please find the goxygen output in the folder `dummymodel/doc`.
+
 ## References
