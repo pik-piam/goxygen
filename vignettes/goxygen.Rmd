@@ -100,3 +100,5 @@ goxygen(path = "dummymodel/", output = "html", cff = "HOWTOCITE.cff")
 ```
 
 Please find the goxygen output in the folder `dummymodel/doc`.
+
+## References
