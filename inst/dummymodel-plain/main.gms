@@ -8,7 +8,7 @@
 *'
 *' @limitations It is not really working as it is just an example.
 
-$include "./1_equations.gms"
+$include "./equations.gms"
 
 *' @stop The following code will be ignored by goxygen until the next identifier.
 
@@ -20,4 +20,5 @@ display v01_intern.l;
 
 display vm_exchange.l;
 
+*' You can also link other gms files, e.g. the equation file of this model [equations]
 

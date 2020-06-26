@@ -30,3 +30,5 @@ equations
 *' ## Extra heading
 
 *' Here we create an extra heading not using goxygen syntax but using Markdown syntax.
+*'
+*' And you can also link back to the [index] page if you like.
