@@ -1,12 +1,12 @@
-# In-Code documentation for GAMS
+# In-Code Documentation for GAMS
 
-R package **goxygen**, version **1.0.0**
+R package **goxygen**, version **1.0.1**
 
 [![Travis build status](https://travis-ci.com/pik-piam/goxygen.svg?branch=master)](https://travis-ci.com/pik-piam/goxygen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1411404.svg)](https://doi.org/10.5281/zenodo.1411404) [![codecov](https://codecov.io/gh/pik-piam/goxygen/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/goxygen)
 
 ## Purpose and Functionality
 
-A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).
+A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (<https://pandoc.org/>).
 
 
 ## Installation
@@ -46,18 +46,18 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **goxygen** in publications use:
 
-Dietrich J, Karstens K, Klein D, Baumstark L (2020). _goxygen: In-Code documentation for GAMS_. doi:
-10.5281/zenodo.1411404 (URL: https://doi.org/10.5281/zenodo.1411404), R package version 1.0.0, <URL:
+Dietrich J, Karstens K, Klein D, Baumstark L (2020). _goxygen: In-Code Documentation for GAMS_. doi:
+10.5281/zenodo.1411404 (URL: https://doi.org/10.5281/zenodo.1411404), R package version 1.0.1, <URL:
 https://github.com/pik-piam/goxygen>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
-  title = {goxygen: In-Code documentation for GAMS},
+  title = {goxygen: In-Code Documentation for GAMS},
   author = {Jan Philipp Dietrich and Kristine Karstens and David Klein and Lavinia Baumstark},
   year = {2020},
-  note = {R package version 1.0.0},
+  note = {R package version 1.0.1},
   doi = {10.5281/zenodo.1411404},
   url = {https://github.com/pik-piam/goxygen},
 }

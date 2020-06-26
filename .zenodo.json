@@ -1,7 +1,7 @@
 {
-  "title": "goxygen: In-Code documentation for GAMS",
-  "version": "1.0.0",
-  "description": "<p>A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (https://pandoc.org/).<\/p>",
+  "title": "goxygen: In-Code Documentation for GAMS",
+  "version": "1.0.1",
+  "description": "<p>A collection of tools which extract a model documentation from GAMS code and comments. In order to use the package you need to install pandoc and pandoc-citeproc first (<https://pandoc.org/>).<\/p>",
   "creators": [
     {
       "name": "Dietrich, Jan Philipp"
