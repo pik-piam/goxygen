@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 .travis.yml
 ^.*\.zenodo.json$
+^cran-comments\.md$
+^CRAN-RELEASE$

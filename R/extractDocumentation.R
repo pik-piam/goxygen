@@ -13,6 +13,15 @@
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
 #' @seealso \code{\link{goxygen}}
+#' @examples 
+#' mainfile <- paste0(system.file("dummymodel",package="gms"),"/main.gms")
+#' calcfile <- paste0(system.file("dummymodel",package="gms"),
+#'                            "/modules/02_crazymodule/complex/calculations.gms")
+#' # extracting information from the main file of the model                            
+#' extractDocumentation(mainfile)
+#' # extracting information from a file with some equations in it
+#' extractDocumentation(calcfile)
+#' 
 #' @export
 
 extractDocumentation <- function(path, start_type=NULL, comment="*'") {

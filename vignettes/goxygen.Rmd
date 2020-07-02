@@ -26,6 +26,12 @@ In order to use the package you need to install pandoc and pandoc-citeproc first
 
 Goxygen can extract the documentation from plain GAMS code (see [plain example](#plain)) or from GAMS models that have a modularized structure as described in @dietrich_magpie4 (see [modular example](#modular)).
 
+Before testing please switch to a folder in which the test models can be copied and the documentation can be extracted (e.g. a temporary directory).
+
+```{r eval=FALSE}
+setwd(tempdir())
+```
+
 ## Running goxygen on plain GAMS code {#plain}
 
 We take the GAMS code example from this package and save it to `dummymodel-plain`:
@@ -101,4 +107,4 @@ goxygen::goxygen(path = "dummymodel/", cff = "HOWTOCITE.cff")
 
 Please find the goxygen output in the folder `dummymodel/doc`.
 
-## References (#references)
+## References {#references}

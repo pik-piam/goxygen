@@ -48,7 +48,11 @@
 #' @importFrom citation read_cff cff2bibentry
 #' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
-#' @seealso \code{\link{codeCheck}},\code{\link[gms]{interfaceplot}},
+#' @seealso \code{\link{codeCheck}},\code{\link[gms]{interfaceplot}}
+#' @examples
+#' # run goxygen for dummy model and store documentation as HTML in a temporary directory
+#' docfolder <- paste0(tempdir(),"/doc")
+#' goxygen(system.file("dummymodel",package="gms"),  docfolder=docfolder, output="html")
 #' @export
 goxygen <- function(path=".", 
                     docfolder="doc", 
