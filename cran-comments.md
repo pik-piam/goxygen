@@ -1,15 +1,13 @@
 ## Test environments
 * local R installation, R 3.6.3
-* ubuntu 16.04 (on travis-ci), R 3.6.3
-* win-builder (devel)
+* Fedora Linux, R-devel, clang, gfortran
+* Ubuntu Linux 16.04 LTS, R-release, GCC
+* Windows Server 2008 R2 SP1, R-devel, 32/64 bit
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
-* It depends on two packages (citation, gms) which just have been uploaded to CRAN
-* All hints received during the upload of citation and gms have been checked for this package as well, in particular:
-** the DESCRIPTION has been updated according to the styling guidelines
-** it has been made sure that tests, vignettes and examples only write or modify files in a temporary directory (tempdir())
-** when files are written, file paths can be modified by the user to determine where the files should be written to
+* This is a bugfix release.
+* The package had previously been uploaded and released on CRAN but had been removed due to an issue on one of the windows servers which did not had pandoc installed. Due to vacation I was not able to fix the issue in time.
+* The issue has now been fixed via disabling pandoc-depending code on systems which do not have pandoc available.
