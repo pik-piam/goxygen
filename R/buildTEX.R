@@ -20,7 +20,7 @@
 
 buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary=NULL, pdf=TRUE) {
   message("Start TEX creation...")
-  check_pandoc()
+  check_pandoc(error=TRUE)
   if(is.character(citation) && file.exists(citation)) citation <- read_cff(citation)
   for(elem in supplementary) file.copy(elem,".",recursive = TRUE, overwrite = TRUE)
   sep <- tempfile()

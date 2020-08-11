@@ -29,7 +29,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   if(style!="ming") stop("Unknown style ", style,"!")
   
   message("Start HTML creation...")
-  check_pandoc()
+  check_pandoc(error=TRUE)
   
   # check available md files
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)

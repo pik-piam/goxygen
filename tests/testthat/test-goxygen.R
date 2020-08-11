@@ -3,6 +3,8 @@ library(goxygen)
 
 context("goxygen")
 
+skip_if_not(check_pandoc(error=FALSE))
+
 test_that("extract documentation from modular dummy model", {
   docfolder <- paste0(tempdir(),"/doc_modular")
   out <- try(goxygen(path = system.file("dummymodel",package="gms"),

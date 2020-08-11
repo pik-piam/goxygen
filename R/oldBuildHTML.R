@@ -20,7 +20,7 @@
 
 oldBuildHTML <- function(folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary=NULL, addHTML=NULL) {
   message("Start HTML creation...")
-  check_pandoc()
+  check_pandoc(error=TRUE)
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
   moduleNames <- sub("\\.[^.]*$","",basename(files))
   if(!dir.exists(folder)) dir.create(folder)
