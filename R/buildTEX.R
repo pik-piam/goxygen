@@ -28,7 +28,12 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   ref <- tempfile()
   files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
   #bring index to the front
-  files <- files[order(!grepl("index.md",files))]
+  forder <- function(files,name) {
+    if(any(grepl(name,files,fixed=TRUE))) files <- files[order(!grepl(name, files, fixed = TRUE))]
+    return(files)
+  }
+  files <- forder(files,"core.md")
+  files <- forder(files,"index.md")
   moduleNames <- sub("\\.[^.]*$","",basename(files))
   returnReferences(moduleNames,paste0("#id-",moduleNames),ref,level=1)
   files <- paste(paste(files,collapse=paste0(" ",sep," ")),ref)

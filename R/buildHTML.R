@@ -61,17 +61,23 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
     setwd(mdfolder)
     on.exit(setwd(cwd))
     ref <- returnHTMLref(dir(".", pattern = "*.\\.md$"))
+    ref$title[ref$title==""] <- ref$name[ref$title==""]
     
-    if("index"%in%ref$name) {
-      #bring index page to the front
-      i <- which(ref$name=="index")
-      ref <- ref[c(i,setdiff(1:nrow(ref),i)),]
-      #rename index to overview
-      ref$title[1] <- "Overview"
+    bringToFront <- function(ref,name,newname=NULL) {
+      if(name%in%ref$name) {
+        #bring index page to the front
+        i <- which(ref$name==name)
+        ref <- ref[c(i,setdiff(1:nrow(ref),i)),]
+        #rename index to overview
+        if(!is.null(newname)) ref$title[1] <- newname
+      }
+      return(ref)
     }
+    ref <- bringToFront(ref,"core")
+    ref <- bringToFront(ref,"index","Overview")
     
     has_number <- grepl("^[0-9]{1,2}_",ref$name)
-    if(sum(has_number)>=(nrow(ref)-1)) {
+    if(sum(has_number)>=(nrow(ref)-2)) {
       # if all names (expect of one, which might be the index page) begin
       # with a number, use that number in front of the title
       number <- as.integer(sub("_.*$","",ref$name[has_number]))

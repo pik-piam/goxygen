@@ -28,9 +28,7 @@ $endif$
 </head>
 <body>
 <div class="header">
-    <div class="headerimg">
-      $if(logo)$$if(mainpage)$<a href="$mainpage$">$endif$<img id="logo" src="images/logo.png" height="100" alt="model logo" />$if(mainpage)$</a>$endif$$endif$
-    </div>
+      $if(logo)$<div class="headerimg">$if(mainpage)$<a href="$mainpage$">$endif$<img id="logo" src="images/logo.png" height="100" alt="model logo" />$if(mainpage)$</a>$endif$</div>$endif$
     <div class="headertext">
       <h1 id="mainheadertitle">$if(repo)$<a href="$repo$">$endif$$modeltitle$$if(repo)$</a>$endif$</h1>
       $if(modelversion)$<h3>$modelversion$</h3>$endif$
