@@ -32,7 +32,17 @@
 #' @param docfolder folder the documentation should be written to relative to model folder
 #' @param cache Boolean to allow read data from existing cache file
 #' @param htmlStyle visualization style to be used for the HTML creation. Currently available styles are 
-#' "classic" and "ming". Ignored for outputs other than HTML.
+#' "classic" and "ming". Ignored for outputs other than HTML. Can be extended by additional templates stored in the
+#' \code{templatefolder} in the format \code{<style>.css} and \code{<style>.html5} (both need to be provided). 
+#' The preinstalled ming template \code{system.file("templates","ming.css",package="goxygen")}  and 
+#' \code{system.file("templates","ming.html5",package="goxygen")} can serve as a starting point for own 
+#' templates.
+#' @param texStyle visualization style to be used for the Latex/PDF creation. Currently only "classic" style is 
+#' available. Ignored for outputs other than Latex/PDF. Can be extended by additional templates stored in the
+#' \code{templatefolder} in the format \code{<style>.latex}. Classic template 
+#' \code{system.file("templates","classic.latex",package="goxygen")} can serve as a starting point for own 
+#' templates.
+#' @param templatefolder Folder in which goxygen will search for template files in addition to the pre-installed ones.
 #' @param output List of output to be written, available are "html","pdf" and "tex"
 #' @param cff path to a citation file in citation-file-format (ignored if not existing)
 #' @param modularCode Boolean deciding whether code should be interpreted as modular GAMS code (only av)
@@ -62,6 +72,8 @@ goxygen <- function(path=".",
                     cache=FALSE, 
                     output=c("html","tex","pdf"), 
                     htmlStyle="ming",
+                    texStyle="classic",
+                    templatefolder=".",
                     cff="CITATION.cff", 
                     modularCode=is.modularGAMS(), 
                     unitPattern=c("\\(","\\)"), 
@@ -72,6 +84,8 @@ goxygen <- function(path=".",
   on.exit(setwd(cwd))
   setwd(path)
 
+  templatefolder <- normalizePath(templatefolder)
+  
   if(file.exists(cff)) {
     citation <- read_cff(cff)
   } else {
@@ -120,7 +134,7 @@ goxygen <- function(path=".",
     warning(paste0("No output format '",output[nomatch],"' available. It will be ignored."))
   }
   buildMarkdown(full)
-  if("html"%in% output) buildHTML(supplementary="images", citation=citation, style=htmlStyle)
-  if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output), citation=citation)
+  if("html"%in% output) buildHTML(supplementary="images", citation=citation, style=htmlStyle, templatefolder=templatefolder)
+  if("tex" %in% output | "pdf" %in% output) buildTEX(pdf=("pdf" %in% output), citation=citation, style=texStyle, templatefolder=templatefolder)
 }
   

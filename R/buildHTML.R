@@ -17,16 +17,19 @@
 #' (e.g. an images subdirectory with figures to be shown in the documents)
 #' @param debug logical which switches on/off a debug mode which will return additional 
 #' status updates and keep build files
+#' @param templatefolder Folder in which goxygen will search for template files in addition to the pre-installed ones.
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{buildTEX}}
 #' @importFrom utils packageVersion
 #' @export
 
-buildHTML <- function(style="classic", folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary="images", debug=FALSE) {
+buildHTML <- function(style="classic", folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary="images", debug=FALSE, templatefolder="..") {
   
   # check style
   if(style=="classic") return(oldBuildHTML(folder=folder, mdfolder=mdfolder, literature=literature, citation=citation, supplementary=supplementary))
-  if(style!="ming") stop("Unknown style ", style,"!")
+
+  templatefileCSS   <- chooseTemplate(style,templatefolder,"css")
+  templatefileHTML5 <- chooseTemplate(style,templatefolder,"html5")
   
   message("Start HTML creation...")
   check_pandoc(error=TRUE)
@@ -37,7 +40,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   
   # prepare folder
   if(!dir.exists(folder)) dir.create(folder)
-  file.copy(system.file("templates",paste0(style,".css"),package="goxygen"),paste0(folder,"/style.css"))
+  file.copy(templatefileCSS,paste0(folder,"/style.css"))
   for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)
   
   # prepare reference file
@@ -116,7 +119,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
                          repo,
                          mainpage,
                          " --toc --mathjax --standalone --metadata link-citations=true",
-                         " --template=",system.file("templates",paste0(style,".html5"),package="goxygen"),
+                         " --template=",templatefileHTML5,
                          " --metadata title=",m,
                          " -V modeltitle=\"",citation$title,"\"",
                          " -V goxygenversion=",packageVersion("goxygen"),

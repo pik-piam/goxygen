@@ -14,13 +14,23 @@
 #' @param supplementary a vector of files and/or folders required for the conversion
 #' (e.g. an images subdirectory with figures to be shown in the documents)
 #' @param pdf boolean which specifies whether pdf file should be generated from tex
+#' @param style visualization style to be used for the Latex/PDF creation. Currently only "classic" style is 
+#' available. Ignored for outputs other than Latex/PDF. Can be extended by additional templates stored in the
+#' \code{templatefolder} in the format \code{<style>.latex}. Classic template 
+#' \code{system.file("templates","classic.latex",package="goxygen")} can serve as a starting point for own 
+#' templates.
+#' @param templatefolder Folder in which goxygen will search for template files in addition to the pre-installed ones.
 #' @author Jan Philipp Dietrich, Kristine Karstens
 #' @seealso \code{\link{goxygen}}, \code{\link{buildHTML}}
 #' @export
 
-buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary=NULL, pdf=TRUE) {
+buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="literature.bib", 
+                     citation="../CITATION.cff", supplementary=NULL, pdf=TRUE, style="classic", templatefolder="..") {
   message("Start TEX creation...")
   check_pandoc(error=TRUE)
+  
+  templatefile   <- chooseTemplate(style,templatefolder,"latex")
+  
   if(is.character(citation) && file.exists(citation)) citation <- read_cff(citation)
   for(elem in supplementary) file.copy(elem,".",recursive = TRUE, overwrite = TRUE)
   sep <- tempfile()
@@ -59,7 +69,7 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   if(is.null(literature)) bib <- ""
   else bib <- ifelse(file.exists(literature),paste0(" --metadata link-citations --bibliography=",literature),"")
   system(paste0("pandoc ",files," -s -o ",file," --template ",
-                system.file("templates","template.latex",package="goxygen"),
+                templatefile,
                 " -V colorlinks ",additional_settings," --listings",bib))
   tex <- readLines(file)
   tex <- gsub("{multline*}","{dmath*}",tex, fixed=TRUE)
