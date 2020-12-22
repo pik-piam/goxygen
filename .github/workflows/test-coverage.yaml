@@ -49,5 +49,5 @@ jobs:
         shell: Rscript {0}
         
       - name: Validation key 
-        run: lucode2:::validkey()
+        run: if(!lucode2:::validkey()$valid) stop("Invalid build key!")
         shell: Rscript {0}
