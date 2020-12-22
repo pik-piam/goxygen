@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.travis.yml
+.codecov.yml
 ^.*\.zenodo.json$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
