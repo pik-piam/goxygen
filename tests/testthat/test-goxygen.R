@@ -9,6 +9,7 @@ test_that("extract documentation from modular dummy model", {
   docfolder <- paste0(tempdir(),"/doc_modular")
   out <- try(goxygen(path = system.file("dummymodel",package="gms"),
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff"))
+  print(out)
   expect_null(out)
   expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/core.htm")))
