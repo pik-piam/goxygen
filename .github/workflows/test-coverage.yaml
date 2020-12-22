@@ -47,3 +47,7 @@ jobs:
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
+        
+      - name: Validation key 
+        run: lucode2:::validkey()
+        shell: Rscript {0}
