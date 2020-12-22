@@ -7,8 +7,9 @@ skip_if_not(check_pandoc(error=FALSE))
 
 test_that("extract documentation from modular dummy model", {
   docfolder <- paste0(tempdir(),"/doc_modular")
-  expect_null(goxygen(path = system.file("dummymodel",package="gms"),
+  out <- try(goxygen(path = system.file("dummymodel",package="gms"), output = c("html","tex"), 
                       docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff"))
+  expect_null(out)
   expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/core.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/01_fancymodule.htm")))
@@ -41,7 +42,7 @@ test_that("extract documentation from simple dummy model", {
   docfolder <- paste0(tempdir(),"/doc_simple")
   out <- try(goxygen(path = system.file("dummymodel",package="gms"),
                      docfolder = docfolder, modularCode = FALSE,
-                     cff = "HOWTOCITE.cff"))
+                     output = c("html","tex"), cff = "HOWTOCITE.cff"))
   expect_null(out)
   expect_true(file.exists(paste0(docfolder,"/html/index.htm")))
   expect_true(file.exists(paste0(docfolder,"/html/modules_01_fancymodule_default_calculations.htm")))
