@@ -2,7 +2,7 @@
 
 R package **goxygen**, version **1.2.0**
 
-[![R build status](https://github.com/pik-piam/goxygen/workflows/R-CMD-check/badge.svg)](https://github.com/pik-piam/goxygen/actions)
+[![R build status](https://github.com/pik-piam/goxygen/workflows/check/badge.svg)](https://github.com/pik-piam/goxygen/actions)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1411404.svg)](https://doi.org/10.5281/zenodo.1411404) [![codecov](https://codecov.io/gh/pik-piam/goxygen/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/goxygen)
 
 ## Purpose and Functionality

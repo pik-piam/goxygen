@@ -8,10 +8,10 @@ on:
       - main
       - master
 
-name: test-coverage
+name: check
 
 jobs:
-  test-coverage:
+  check:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
