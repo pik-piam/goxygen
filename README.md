@@ -2,10 +2,7 @@
 
 R package **goxygen**, version **1.2.0**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/goxygen)](https://cran.r-project.org/package=goxygen)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1411404.svg)](https://doi.org/10.5281/zenodo.1411404) 
-[![R build status](https://github.com/pik-piam/goxygen/workflows/check/badge.svg)](https://github.com/pik-piam/goxygen/actions)
-[![codecov](https://codecov.io/gh/pik-piam/goxygen/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/goxygen)
+[![CRAN status](https://www.r-pkg.org/badges/version/goxygen)](https://cran.r-project.org/package=goxygen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1411404.svg)](https://doi.org/10.5281/zenodo.1411404)  [![R build status](https://github.com/pik-piam/goxygen/workflows/check/badge.svg)](https://github.com/pik-piam/goxygen/actions) [![codecov](https://codecov.io/gh/pik-piam/goxygen/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/goxygen)
 
 ## Purpose and Functionality
 
