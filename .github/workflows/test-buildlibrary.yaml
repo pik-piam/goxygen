@@ -12,7 +12,7 @@ name: check
 
 jobs:
   check:
-    runs-on: macOS-latest
+    runs-on: ubuntu-20.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -21,6 +21,10 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
 
       - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install libcurl4-openssl-dev libgit2-dev
 
       - name: Query dependencies
         run: |
@@ -36,12 +40,12 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install dependencies
+      - name: Install R dependencies
         run: |
-          install.packages(c("remotes", "qgraph","lucode2"), 
-                           repos=c("https://cloud.r-project.org","https://rse.pik-potsdam.de/r/packages/"))
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("covr")
+          repos <- c("https://cloud.r-project.org","https://rse.pik-potsdam.de/r/packages/")
+          install.packages(c("remotes"), repos=repos)
+          remotes::install_deps(dependencies = TRUE, repos=repos)
+          remotes::install_cran(c("covr","lucode2"), repos=repos)
         shell: Rscript {0}
 
       - name: Test coverage
