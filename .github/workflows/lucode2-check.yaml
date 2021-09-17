@@ -1,0 +1,67 @@
+# Run CI for R using https://eddelbuettel.github.io/r-ci/
+
+name: lucode2-check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  USE_BSPM: "true"
+  _R_CHECK_FORCE_SUGGESTS_: "false"
+
+jobs:
+  lucode2-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Bootstrap
+        run: |
+          curl -OLs https://eddelbuettel.github.io/r-ci/run.sh
+          chmod 0755 run.sh
+          ./run.sh bootstrap
+
+      - name: Modify Setup
+        run: |
+          echo 'options(repos = c(universe = "https://pik-piam.r-universe.dev", CRAN = "https://cloud.r-project.org"))' >> .Rprofile
+          cat .Rprofile
+          sudo sed -i '/bspm::enable()/d' /etc/R/Rprofile.site
+          echo 'trace(utils::install.packages, quote({' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '  if (!is.null(repos)) {' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '    pikCranPackages <- c("madrat", "magclass", "citation", "gms", "goxygen")' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '    pkgs <- c(bspm::install_sys(pkgs[!pkgs %in% pikCranPackages]),' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '              pkgs[pkgs %in% pikCranPackages])' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '  }' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          echo '}), print=FALSE)' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+          cat /etc/R/Rprofile.site
+
+      - name: Dependencies
+        run: |
+          ./run.sh install_aptget libhdf5-dev
+          ./run.sh install_all
+          # ./run.sh install_r lucode2
+          ./run.sh install_github pfuehrlich-pik/lucode2
+          ./run.sh install_r covr
+
+      - name: Verify ValidationKey
+        shell: Rscript {0}
+        run: lucode2:::validkey(stopIfInvalid = TRUE)
+
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Remove bspm integration # to get rid of error when running install.packages
+        run: echo 'untrace(utils::install.packages)' | sudo tee --append /etc/R/Rprofile.site >/dev/null
+
+      - name: Checks
+        shell: Rscript {0}
+        run: |
+          options(crayon.enabled = TRUE)
+          lucode2::check(runLinter = FALSE)
+
+      - name: Test coverage
+        shell: Rscript {0}
+        run: covr::codecov(quiet = FALSE)
