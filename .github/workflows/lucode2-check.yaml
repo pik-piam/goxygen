@@ -39,6 +39,8 @@ jobs:
           echo '}), print=FALSE)' | sudo tee --append /etc/R/Rprofile.site >/dev/null
           cat /etc/R/Rprofile.site
 
+      - uses: r-lib/actions/setup-pandoc@v1
+
       - name: Dependencies
         run: |
           ./run.sh install_aptget libhdf5-dev pandoc pandoc-citeproc
