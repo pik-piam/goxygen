@@ -41,7 +41,7 @@ jobs:
 
       - name: Dependencies
         run: |
-          ./run.sh install_aptget libhdf5-dev
+          ./run.sh install_aptget libhdf5-dev pandoc pandoc-citeproc
           ./run.sh install_all
           # ./run.sh install_r lucode2
           ./run.sh install_github pfuehrlich-pik/lucode2
@@ -50,8 +50,6 @@ jobs:
       - name: Verify ValidationKey
         shell: Rscript {0}
         run: lucode2:::validkey(stopIfInvalid = TRUE)
-
-      - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Remove bspm integration # to get rid of error when running install.packages
         run: echo 'untrace(utils::install.packages)' | sudo tee --append /etc/R/Rprofile.site >/dev/null
