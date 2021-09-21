@@ -43,7 +43,7 @@ jobs:
 
       - name: Dependencies
         run: |
-          ./run.sh install_aptget libhdf5-dev pandoc pandoc-citeproc
+          ./run.sh install_aptget libhdf5-dev
           ./run.sh install_all
           # ./run.sh install_r lucode2
           ./run.sh install_github pfuehrlich-pik/lucode2
@@ -57,11 +57,12 @@ jobs:
         run: echo 'untrace(utils::install.packages)' | sudo tee --append /etc/R/Rprofile.site >/dev/null
 
       - name: Checks
-        shell: Rscript {0}
+        shell: sudo Rscript {0}
         run: |
+          devtools::test()
           options(crayon.enabled = TRUE)
           lucode2::check(runLinter = FALSE)
 
       - name: Test coverage
-        shell: Rscript {0}
+        shell: sudo Rscript {0}
         run: covr::codecov(quiet = FALSE)
