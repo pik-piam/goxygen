@@ -71,12 +71,11 @@ jobs:
         run: lucode2:::validkey(stopIfInvalid = TRUE)
 
       - name: Checks
-        shell: sudo Rscript {0}
+        shell: Rscript {0}
         run: |
-          devtools::test()
           options(crayon.enabled = TRUE)
           lucode2::check(runLinter = FALSE)
 
       - name: Test coverage
-        shell: sudo Rscript {0}
+        shell: Rscript {0}
         run: covr::codecov(quiet = FALSE)
