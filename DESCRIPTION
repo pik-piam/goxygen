@@ -21,7 +21,8 @@ Suggests:
     knitr,
     rmarkdown,
     covr,
-    qgraph
+    qgraph,
+    withr
 SystemRequirements:
     pandoc,
     pandoc-citeproc

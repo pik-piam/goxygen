@@ -1,7 +1,7 @@
 skip_if_not(check_pandoc())
 
 test_that("extract documentation from modular dummy model", {
-  docfolder <- file.path(tempdir(), "doc_modular")
+  docfolder <- file.path(withr::local_tempdir(), "doc_modular")
   out <- try(goxygen(path = system.file("dummymodel", package = "gms"), output = c("html", "tex"),
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff"))
   expect_null(out)
@@ -13,7 +13,7 @@ test_that("extract documentation from modular dummy model", {
 })
 
 test_that("extract HTML documentation from modular dummy model with classic style", {
-  docfolder <- file.path(tempdir(), "doc_modular_classic")
+  docfolder <- file.path(withr::local_tempdir(), "doc_modular_classic")
   out <- try(goxygen(path = system.file("dummymodel", package = "gms"),
                      htmlStyle = "classic", output = "html",
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff"))
@@ -25,7 +25,7 @@ test_that("extract HTML documentation from modular dummy model with classic styl
 })
 
 test_that("cache and unknown output", {
-  docfolder <- file.path(tempdir(), "doc_modular")
+  docfolder <- file.path(withr::local_tempdir(), "doc_modular")
   expect_warning({
     out <- try(goxygen(path = system.file("dummymodel", package = "gms"), docfolder = docfolder,
                        includeCore = TRUE, cache = TRUE, output = "bla"))
@@ -34,7 +34,7 @@ test_that("cache and unknown output", {
 })
 
 test_that("extract documentation from simple dummy model", {
-  docfolder <- file.path(tempdir(), "doc_simple")
+  docfolder <- file.path(withr::local_tempdir(), "doc_simple")
   out <- try(goxygen(path = system.file("dummymodel", package = "gms"),
                      docfolder = docfolder, modularCode = FALSE,
                      output = c("html", "tex"), cff = "HOWTOCITE.cff"))
