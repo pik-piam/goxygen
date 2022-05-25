@@ -36,7 +36,7 @@ buildTEX <- function(file="documentation.tex", mdfolder="markdown", literature="
   sep <- tempfile()
   writeLines("\\pagebreak",sep)
   ref <- tempfile()
-  files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
+  files <- list.files(mdfolder,pattern=".*\\.md$",full.names = TRUE)
   #bring index to the front
   forder <- function(files,name) {
     if(any(grepl(name,files,fixed=TRUE))) files <- files[order(!grepl(name, files, fixed = TRUE))]
