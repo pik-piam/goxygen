@@ -6,3 +6,5 @@
 ^\.buildlibrary$
 ^\.github$
 ^codecov\.yml$
+^\.pre-commit-config\.yaml$
+^workflow$
