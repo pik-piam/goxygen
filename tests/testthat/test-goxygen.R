@@ -2,8 +2,11 @@ skip_if_not(check_pandoc())
 
 test_that("extract documentation from modular dummy model", {
   docfolder <- file.path(withr::local_tempdir(), "doc_modular")
-  out <- try(goxygen(path = system.file("dummymodel", package = "gms"), output = c("html", "tex"),
+  expect_warning({
+    out <- try(goxygen(path = system.file("dummymodel", package = "gms"), output = c("html", "tex"),
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff", DoNotPlot = TRUE))
+    },
+    "Nothing to plot anymore after filters have been applied")
   expect_null(out)
   expect_true(file.exists(file.path(docfolder, "html", "index.htm")))
   expect_true(file.exists(file.path(docfolder, "html", "core.htm")))
@@ -14,9 +17,12 @@ test_that("extract documentation from modular dummy model", {
 
 test_that("extract HTML documentation from modular dummy model with classic style", {
   docfolder <- file.path(withr::local_tempdir(), "doc_modular_classic")
-  out <- try(goxygen(path = system.file("dummymodel", package = "gms"),
+  expect_warning({
+    out <- try(goxygen(path = system.file("dummymodel", package = "gms"),
                      htmlStyle = "classic", output = "html",
                      docfolder = docfolder, includeCore = TRUE, cff = "HOWTOCITE.cff", DoNotPlot = TRUE))
+    },
+    "Nothing to plot anymore after filters have been applied")
   expect_null(out)
   expect_true(file.exists(file.path(docfolder, "html", "index.htm")))
   expect_true(file.exists(file.path(docfolder, "html", "core.htm")))

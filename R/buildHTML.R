@@ -35,7 +35,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
   check_pandoc(error=TRUE)
   
   # check available md files
-  files <- list.files(mdfolder,pattern="*.md",full.names = TRUE)
+  files <- list.files(mdfolder,pattern=".*\\.md$",full.names = TRUE)
   moduleNames <- sub("\\.[^.]*$","",basename(files))
   
   # prepare folder
