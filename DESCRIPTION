@@ -1,8 +1,8 @@
 Package: goxygen
 Type: Package
 Title: In-Code Documentation for 'GAMS'
-Version: 1.2.2
-Date: 2022-06-01
+Version: 1.2.3
+Date: 2022-06-02
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"),
              person("David", "Klein", email = "dklein@pik-potsdam.de", role = "aut"),
