@@ -1,12 +1,12 @@
 #' buildHTML
-#' 
-#' Converts a folder with markdown files and a corresponding literature library 
+#'
+#' Converts a folder with markdown files and a corresponding literature library
 #' (if available) to HTML files and creates cross-links between them.
-#' 
-#' Pandoc (https://pandoc.org/) together with pandoc-citeproc need to be installed 
+#'
+#' Pandoc (https://pandoc.org/) together with pandoc-citeproc need to be installed
 #' on the system.
-#' 
-#' @param style visualization style to be used for the creation. Currently available styles are 
+#'
+#' @param style visualization style to be used for the creation. Currently available styles are
 #' "classic" and "ming"
 #' @param folder location the HTML files should be written to
 #' @param mdfolder path to the markdown folder to be used as source
@@ -15,7 +15,7 @@
 #' @param citation Citation information in citation file format (optional)
 #' @param supplementary a vector of files and/or folders required for the conversion
 #' (e.g. an images subdirectory with figures to be shown in the documents)
-#' @param debug logical which switches on/off a debug mode which will return additional 
+#' @param debug logical which switches on/off a debug mode which will return additional
 #' status updates and keep build files
 #' @param templatefolder Folder in which goxygen will search for template files in addition to the pre-installed ones.
 #' @author Jan Philipp Dietrich
@@ -24,36 +24,36 @@
 #' @export
 
 buildHTML <- function(style="classic", folder="html", mdfolder="markdown", literature="literature.bib", citation="../CITATION.cff", supplementary="images", debug=FALSE, templatefolder="..") {
-  
+
   # check style
   if(style=="classic") return(oldBuildHTML(folder=folder, mdfolder=mdfolder, literature=literature, citation=citation, supplementary=supplementary))
 
   templatefileCSS   <- chooseTemplate(style,templatefolder,"css")
   templatefileHTML5 <- chooseTemplate(style,templatefolder,"html5")
-  
+
   message("Start HTML creation...")
   check_pandoc(error=TRUE)
-  
+
   # check available md files
   files <- list.files(mdfolder,pattern=".*\\.md$",full.names = TRUE)
   moduleNames <- sub("\\.[^.]*$","",basename(files))
-  
+
   # prepare folder
   if(!dir.exists(folder)) dir.create(folder)
   file.copy(templatefileCSS,paste0(folder,"/style.css"))
   for(elem in supplementary) file.copy(elem,folder,recursive = TRUE, overwrite = TRUE)
-  
+
   # prepare reference file
   ref <- ifelse(debug, "ref.md", tempfile())
   returnReferences(moduleNames,paste0(moduleNames,".htm"),ref, level=2)
-  
+
   # prepare main navigation
   returnHTMLref <- function(files) {
     out <- data.frame(name=NULL, title=NULL, stringsAsFactors = FALSE)
     for(f in files) {
       tmp <- readLines(f,n=2)
       # use title if title is detected
-      out <- rbind(out, 
+      out <- rbind(out,
                    data.frame(title = ifelse(grepl("^=*$",tmp[2]), sub(" *\\(.*$","",tmp[1]), ""),
                               name = sub(".md","",basename(f),fixed=TRUE), stringsAsFactors = FALSE))
     }
@@ -63,9 +63,9 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
     cwd <- getwd()
     setwd(mdfolder)
     on.exit(setwd(cwd))
-    ref <- returnHTMLref(dir(".", pattern = "*.\\.md$"))
+    ref <- returnHTMLref(dir(".", pattern = "\\.md$"))
     ref$title[ref$title==""] <- ref$name[ref$title==""]
-    
+
     bringToFront <- function(ref,name,newname=NULL) {
       if(name%in%ref$name) {
         #bring index page to the front
@@ -78,7 +78,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
     }
     ref <- bringToFront(ref,"core")
     ref <- bringToFront(ref,"index","Overview")
-    
+
     has_number <- grepl("^[0-9]{1,2}_",ref$name)
     if(sum(has_number)>=(nrow(ref)-2)) {
       # if all names (expect of one, which might be the index page) begin
@@ -89,9 +89,9 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
     return(ref)
   }
   mainNav <- mainNav(mdfolder)
-  
+
   mainpage <- ifelse("index" %in% mainNav$name," -V mainpage=\"index.htm\"","")
-  
+
   if(is.character(citation) && file.exists(citation)) {
     citation <- read_cff(citation)
   } else if(!is.list(citation)) {
@@ -106,7 +106,7 @@ buildHTML <- function(style="classic", folder="html", mdfolder="markdown", liter
     authors <- paste0(" -V author-meta=\"", sapply(citation$authors,.tmp),"\"")
     authors <- paste(rev(authors),collapse="")
   }
-  
+
   for(m in moduleNames) {
     pagetitle <- mainNav$title[mainNav$name==m]
     if(length(pagetitle)==0) pagetitle <- m

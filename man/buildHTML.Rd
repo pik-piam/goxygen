@@ -16,7 +16,7 @@ buildHTML(
 )
 }
 \arguments{
-\item{style}{visualization style to be used for the creation. Currently available styles are 
+\item{style}{visualization style to be used for the creation. Currently available styles are
 "classic" and "ming"}
 
 \item{folder}{location the HTML files should be written to}
@@ -31,17 +31,17 @@ if file does not exist)}
 \item{supplementary}{a vector of files and/or folders required for the conversion
 (e.g. an images subdirectory with figures to be shown in the documents)}
 
-\item{debug}{logical which switches on/off a debug mode which will return additional 
+\item{debug}{logical which switches on/off a debug mode which will return additional
 status updates and keep build files}
 
 \item{templatefolder}{Folder in which goxygen will search for template files in addition to the pre-installed ones.}
 }
 \description{
-Converts a folder with markdown files and a corresponding literature library 
+Converts a folder with markdown files and a corresponding literature library
 (if available) to HTML files and creates cross-links between them.
 }
 \details{
-Pandoc (https://pandoc.org/) together with pandoc-citeproc need to be installed 
+Pandoc (https://pandoc.org/) together with pandoc-citeproc need to be installed
 on the system.
 }
 \seealso{
