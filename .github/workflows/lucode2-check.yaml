@@ -70,7 +70,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          ./run.sh install_aptget libhdf5-dev
+          ./run.sh install_aptget libhdf5-dev libharfbuzz-dev libfribidi-dev
           ./run.sh install_all
           ./run.sh install_r lucode2 covr rstudioapi
 
