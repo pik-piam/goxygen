@@ -48,7 +48,7 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **goxygen** in publications use:
 
-Dietrich J, Karstens K, Klein D, Baumstark L (2022). _goxygen: In-Code Documentation for 'GAMS'_. doi: 10.5281/zenodo.1411404 (URL: https://doi.org/10.5281/zenodo.1411404), R package version 1.2.5, <URL: https://github.com/pik-piam/goxygen>.
+Dietrich J, Karstens K, Klein D, Baumstark L (2022). _goxygen: In-Code Documentation for 'GAMS'_. doi:10.5281/zenodo.1411404 <https://doi.org/10.5281/zenodo.1411404>, R package version 1.2.5, <https://github.com/pik-piam/goxygen>.
 
 A BibTeX entry for LaTeX users is
 
