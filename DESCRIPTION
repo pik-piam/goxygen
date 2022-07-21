@@ -1,8 +1,8 @@
 Package: goxygen
 Type: Package
 Title: In-Code Documentation for 'GAMS'
-Version: 1.2.4
-Date: 2022-06-08
+Version: 1.2.5
+Date: 2022-07-21
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = "aut"),
              person("David", "Klein", email = "dklein@pik-potsdam.de", role = "aut"),
@@ -15,14 +15,14 @@ Imports:
     stringi,
     gms,
     citation,
+    withr,
     yaml
 Suggests: 
     testthat,
     knitr,
     rmarkdown,
     covr,
-    qgraph,
-    withr
+    qgraph
 SystemRequirements:
     pandoc,
     pandoc-citeproc
