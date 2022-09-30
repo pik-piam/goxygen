@@ -4,14 +4,14 @@
 \alias{chooseTemplate}
 \title{chooseTemplate}
 \usage{
-chooseTemplate(style, templatefolder, ftype)
+chooseTemplate(style, templatefolder, ftype = NULL)
 }
 \arguments{
 \item{style}{visualization style to be used for the creation.}
 
 \item{templatefolder}{Folder in which goxygen will search for template files in addition to the pre-installed ones.}
 
-\item{ftype}{template file type / file ending}
+\item{ftype}{template file type / file ending, or NULL if looking for a whole directory}
 }
 \description{
 Support function helping to choose the selected template
