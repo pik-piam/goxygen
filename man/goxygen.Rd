@@ -29,17 +29,18 @@ goxygen(
 
 \item{output}{List of output to be written, available are "html","pdf" and "tex"}
 
-\item{htmlStyle}{visualization style to be used for the HTML creation. Currently available styles are 
+\item{htmlStyle}{visualization style to be used for the HTML creation. Currently available styles are
 "classic" and "ming". Ignored for outputs other than HTML. Can be extended by additional templates stored in the
-\code{templatefolder} in the format \code{<style>.css} and \code{<style>.html5} (both need to be provided). 
-The preinstalled ming template \code{system.file("templates","ming.css",package="goxygen")}  and 
-\code{system.file("templates","ming.html5",package="goxygen")} can serve as a starting point for own 
+\code{templatefolder} in the form \code{<style>.html5} together with a subfolder with supplementary files
+and the name of the style \code{<style>} (both need to be provided).
+The preinstalled ming template \code{system.file("templates","ming.css",package="goxygen")}  and
+\code{system.file("templates","ming.html5",package="goxygen")} can serve as a starting point for own
 templates.}
 
-\item{texStyle}{visualization style to be used for the Latex/PDF creation. Currently only "classic" style is 
+\item{texStyle}{visualization style to be used for the Latex/PDF creation. Currently only "classic" style is
 available. Ignored for outputs other than Latex/PDF. Can be extended by additional templates stored in the
-\code{templatefolder} in the format \code{<style>.latex}. Classic template 
-\code{system.file("templates","classic.latex",package="goxygen")} can serve as a starting point for own 
+\code{templatefolder} in the format \code{<style>.latex}. Classic template
+\code{system.file("templates","classic.latex",package="goxygen")} can serve as a starting point for own
 templates.}
 
 \item{templatefolder}{Folder in which goxygen will search for template files in addition to the pre-installed ones.}
@@ -54,21 +55,22 @@ templates.}
 
 \item{mainfile}{main file of the model}
 
-\item{...}{optional arguments to \code{\link[gms]{interfaceplot}}, passed via \code{\link[gms]{modules_interfaceplot}}.}
+\item{...}{optional arguments to \code{\link[gms]{interfaceplot}}, passed via
+\code{\link[gms]{modules_interfaceplot}}.}
 }
 \description{
-Documentation function which extracts a full model documentation from a 
+Documentation function which extracts a full model documentation from a
 modularized gams model. The function extracts comments used as documentation,
 extracts code and can extract and convert GAMS equations as latex code. Output
 is returned in Markdown, HTML and PDF format.
 }
 \note{
 Documentation lines in the code must start with *' to be detected as documentation.
-Identifier at the beginning of each block describe what kind of documentation is given. 
+Identifier at the beginning of each block describe what kind of documentation is given.
 All identifiers start with @ followed by the name of the identifier. Currently, following
 identifiers are available
 \itemize{
- \item @title Title 
+ \item @title Title
  \item @authors List of authors
  \item @description Model description (only the documentation text will be interpreted)
  \item @equations Equation description (documentation text will be extracted and gams equations
@@ -81,17 +83,17 @@ identifiers are available
 
 In addition you can store a model logo (100px height, 100px weight) as \code{logo.png} in the main
 folder of the model which then will be used in the HTML version of the documentation.
-If you want to add citations to your documentation you can do so by adding a bibtex file with 
+If you want to add citations to your documentation you can do so by adding a bibtex file with
 the name literature.bib in the main folder of the model. To link these references in the text
-you can use the syntax \code{@<id>} in which "<id>" stands for the identifier given to the 
+you can use the syntax \code{@<id>} in which "<id>" stands for the identifier given to the
 corresponding bibtex entry.
 }
 \examples{
 # make sure that pandoc is available
-if(check_pandoc()) {
+if (check_pandoc()) {
   # run goxygen for dummy model and store documentation as HTML in a temporary directory
-  docfolder <- paste0(tempdir(),"/doc")
-  goxygen(system.file("dummymodel",package="gms"),  docfolder=docfolder, output="html")
+  docfolder <- paste0(tempdir(), "/doc")
+  goxygen(system.file("dummymodel", package = "gms"),  docfolder = docfolder, output = "html")
 }
 }
 \seealso{

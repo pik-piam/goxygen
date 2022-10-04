@@ -14,10 +14,8 @@ $if(keywords)$
   <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
 $endif$
 <title>$modeltitle$ – $pagetitle$</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Abel|Allerta Stencil|Roboto Mono' rel='stylesheet'>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+<link rel="stylesheet" href="ming/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML-full"></script>
 <script type="text/x-mathjax-config">
                     MathJax.Hub.Config({
                       CommonHTML: { linebreaks: { automatic: true } },
