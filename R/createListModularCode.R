@@ -171,7 +171,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
         mentionedFiles <- sub(".*/([^.]*)\\.gms.*$", "\\1.gms",
                               grep(".gms", readLines(rmain), value = TRUE, fixed = TRUE))
         mentionedPaths <- c(rmain, paste0(modules, folder, "/", r, "/", mentionedFiles))
-        existingPaths <- dir(paste0(modules, folder, "/", r), pattern = "\\.gms$", full.names = TRUE)
+        existingPaths <- union(rmain, dir(paste0(modules, folder, "/", r), pattern = "\\.gms$", full.names = TRUE))
 
         # create path vector by taking all existingPaths (removing non-existing paths)
         # but ordering it based on the order of mention in realization.gms. Not
