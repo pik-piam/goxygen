@@ -11,3 +11,4 @@
 ^.lintr$
 ^tests/.lintr$
 ^vignettes/.lintr$
+^Makefile$
