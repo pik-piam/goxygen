@@ -101,7 +101,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
     moduleTables <- function(cc, module) {
       # collect information about module interfaces
       dec <- cc$declarations[grepl(paste0("^", module, "\\."), cc$declarations$origin), , drop = FALSE]
-      dec <- dec[dec$typ != "set", ]
+      dec <- dec[dec$type != "set", ]
       dec <- dec[order(dec$names), , drop = FALSE]
       if (nrow(dec) == 0) return(NULL)
       dec <- dec[!(dec[, "names"] %in% cc$interfaceInfo[[module]]), , drop = FALSE]
