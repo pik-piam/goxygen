@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'goxygen: In-Code Documentation for ''GAMS'''
+version: 1.3.3
+date-released: '2023-08-09'
+abstract: A collection of tools which extract a model documentation from 'GAMS' code
+  and comments. In order to use the package you need to install 'pandoc' and 'pandoc-citeproc'
+  first (<https://pandoc.org/>).
+authors:
+- family-names: Dietrich
+  given-names: Jan Philipp
+  email: dietrich@pik-potsdam.de
+- family-names: Karstens
+  given-names: Kristine
+  email: karstens@pik-potsdam.de
+- family-names: Klein
+  given-names: David
+  email: dklein@pik-potsdam.de
+- family-names: Baumstark
+  given-names: Lavinia
+  email: lavinia@pik-potsdam.de
+license: BSD-2-Clause
+repository-code: https://github.com/pik-piam/goxygen
+doi: 10.5281/zenodo.1411404
+

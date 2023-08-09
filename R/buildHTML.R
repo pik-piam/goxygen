@@ -112,6 +112,7 @@ buildHTML <- function(style = "classic", folder = "html", mdfolder = "markdown",
     pagetitle <- mainNav$title[mainNav$name == m]
     if (length(pagetitle) == 0) pagetitle <- m
     ofile <- paste0(folder, "/", m, ".htm")
+    citeproc <- any(grepl("--citeproc", system2("pandoc", "--help", stdout = TRUE)))
     pandocCall <- paste0("pandoc ", mdfolder, "/", m, ".md ", ref, " -o ", ofile,
                          " --css template.css ",
                          bib,
@@ -119,7 +120,7 @@ buildHTML <- function(style = "classic", folder = "html", mdfolder = "markdown",
                          logo,
                          repo,
                          mainpage,
-                         if (any(grepl("--citeproc", system2("pandoc", "--help", stdout = TRUE)))) " --citeproc" else "",
+                         if (citeproc) " --citeproc" else "",
                          " --toc --mathjax --standalone --metadata link-citations=true",
                          " --template=", templatefileHTML5,
                          " --metadata title=", m,
