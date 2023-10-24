@@ -46,11 +46,19 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
     code <- "@(\\w*) ?(.*)$"
     pattern <- paste0("^(",escapeRegex(comment),") *",code)
     type <- sub(pattern,"\\2",x[1])
-    extraPage <- NULL
-    if (grepl("@code extrapage", x[1])) {
-      extraPage <- gsub(".*@code extrapage=\"([^\"]*)\".*", "\\1", x[1])
-      type <- "code"
-      x[1] <- sub(pattern, "\\1 \\3", x[1])
+    attrPattern <- "(\\w+)=\"([^\"]+)\""
+
+     if (grepl(attrPattern, type)) {
+        attrName <- sub(attPattern, "\\1", type)
+        attrValue <- sub(attrPattern, "\\2", type)
+        if (attrName == "extrapage") {
+            contentStart <- grep(paste0("^", escapeRegex(comment), " @", type), x)
+            contentEnd <- grep(paste0("^", escapeRegex(comment), " @stop"), x)
+            if (length(contentEnd) > 0 && contentEnd[1] > contentStart) {
+                contentExtracted <- x[(contentStart + 1):(contentEnd - 1)]
+                x <- c(paste0(comment, attrValue), contentExtracted)
+            }
+        }
     }
     if(type=="equations") {
       x[1] <- sub(pattern,"\\1 \\3",x[1])
@@ -89,23 +97,6 @@ extractDocumentation <- function(path, start_type=NULL, comment="*'") {
       x[1] <- sub(code,"\\2",x[1])
     }
     
-    # if (!is.null(extraPage)) {
-    #   dirPath <- "doc/markdown"
-    #   if (!dir.exists(dirPath)) {
-    #   dir.create(dirPath, recursive = TRUE)
-    # }
-    #   mdFile <- paste0(dirPath, "/", extraPage, ".md")
-    #   x <- x[-1]
-    #   write(paste(extraPage, "\n=================================\nDescription\n-----------"), mdFile)
-    #   write(x, mdFile, append = TRUE)
-    # }
-     if (!is.null(extraPage)) {
-        header <- paste0(extraPage, "\n=================================\nDescription\n-----------\n")
-        content <- paste(x[-1], collapse="\n")
-        markdownList <- stats::setNames(list(paste(header, content)), extraPage)
-        buildMarkdown(markdownList, "doc/markdown")
-    }
-
     while(length(x)>1 & x[1]=="")  x <- x[-1]
     while(length(x)>1 & tail(x,1)=="") x <- x[-length(x)]
     if(length(x)==1) if(is.na(x) | x=="") return(NULL)
