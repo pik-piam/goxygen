@@ -156,8 +156,16 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
       outSub <- list()
       outSub$realizations <- list()
       files <- list.files(path = "core", pattern = "\\.gms")
-      paths <- paste0("core/", files)
-      outSub$realizations[["core"]] <- extractDocumentation(paths, start_type = "equations")
+      paths <- file.path("core", files)
+
+      documentation <- extractDocumentation(paths, start_type = "equations")
+
+      # move extrapage items to toplevel
+      outSub$extrapage <- append(outSub$extrapage, documentation$extrapage)
+      documentation$extrapage <- NULL
+
+      outSub$realizations[["core"]] <- documentation
+
     } else {
       rea <- strsplit(cc$modulesInfo[m, "realizations"], ",")[[1]]
       folder <- cc$modulesInfo[m, "folder"]
@@ -177,7 +185,14 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
         # but ordering it based on the order of mention in realization.gms. Not
         # mentioned files will be added at the end.
         paths <- union(intersect(mentionedPaths, existingPaths), existingPaths)
-        outSub$realizations[[r]] <- extractDocumentation(paths, start_type = "equations")
+
+        documentation <- extractDocumentation(paths, start_type = "equations")
+
+        # move extrapage items to toplevel
+        outSub$extrapage <- append(outSub$extrapage, documentation$extrapage)
+        documentation$extrapage <- NULL
+
+        outSub$realizations[[r]] <- documentation
       }
     }
     return(outSub)
@@ -191,11 +206,30 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
     return(seealso)
   }
 
+  sortExtraPages <- function(extraPage) {
+    out <- list()
+    attrPattern <- "^(\\w+)=\"(\\w+)\"$"
+
+    for (i in seq(extraPage)) {
+      content <- extraPage[[i]][-1]
+      page <- sub(attrPattern, "\\2", extraPage[[i]][1])
+      type <- sub("-\\w+", "", names(extraPage[i]))
+      l <- list(content)
+      names(l) <- type
+      out[[page]] <- append(out[[page]], l)
+    }
+    return(out)
+  }
+
   out <- collectTables(cc, unitPattern)
 
   # write doc files
   full <- list()
+
   data <- extractDocumentation(mainfile)
+  extraPage <- data$extrapage
+  data$extrapage <- NULL
+
   data$citation <- citation
   full[["index"]] <- createIndexPage(data)
 
@@ -205,11 +239,23 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
   } else {
     mLoop <- setdiff(sort(names(out)), "core")
   }
+
   for (m in mLoop) {
-    data <- append(out[[m]], collectRealizations(m, cc))
+    realizations <- collectRealizations(m, cc)
+    extraPage <- append(extraPage, realizations$extrapage)
+    realizations$extrapage <- NULL
+    data <- append(out[[m]], realizations)
     data$name <- m
     data$seealso <- collectSeealso(interfaces[[m]], m, cc$modulesInfo)
     full[[m]] <- createModulePage(data, docfolder = docfolder)
   }
+
+  extraPage <- sortExtraPages(extraPage)
+  for (i in names(extraPage)) {
+    data <- mergeDocumentation(extraPage[[i]])
+    data$name <- i
+    full[[i]] <- createModulePage(data, docfolder = docfolder)
+  }
+
   return(full)
 }
