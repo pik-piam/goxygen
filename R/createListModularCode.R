@@ -208,13 +208,11 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
 
   sortExtraPages <- function(extraPage) {
     out <- list()
-    attrPattern <- "^(\\w+)=\"(\\w+)\"$"
-
+    attrPattern <- "^(\\w+)-(\\w+)"
     for (i in seq(extraPage)) {
-      content <- extraPage[[i]][-1]
-      page <- sub(attrPattern, "\\2", extraPage[[i]][1])
-      type <- sub("-\\w+", "", names(extraPage[i]))
-      l <- list(content)
+      type <- sub(attrPattern, "\\1", names(extraPage)[i])
+      page <- sub(attrPattern, "\\2", names(extraPage)[i])
+      l <- list(extraPage[[i]])
       names(l) <- type
       out[[page]] <- append(out[[page]], l)
     }
@@ -250,7 +248,6 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
     full[[m]] <- createModulePage(data, docfolder = docfolder)
   }
 
-  #browser()
   extraPage <- sortExtraPages(extraPage)
   for (i in names(extraPage)) {
     data <- mergeDocumentation(extraPage[[i]])

@@ -104,10 +104,10 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
     attrPattern <- "^(\\w+)=\"(\\w+)\"[ \t]*$"
     if (grepl(attrPattern, attribute)) {
       attrName <- sub(attrPattern, "\\1", attribute)
-      # remove trailing whitespaces and tabs
-      x <- sub("[ \t]*$", "", x)
+      page <- sub(attrPattern, "\\2", attribute)
       if (attrName == "extrapage") {
-        type <- paste0("extrapage-", type)
+        x <- x[-1]
+        type <- paste0("extrapage-", type, "-", page)
       }
     }
 
