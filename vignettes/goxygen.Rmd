@@ -75,7 +75,7 @@ The short example GAMS file contains all identifiers available in goxygen. The r
 
 ### extrapage attribute
 
-Any of the identifiers can be combined with the extrapage attribute as follows: `@identifier extrapage="page"`, for example: 
+Any of the identifiers , except for `@stop`, can be combined with the `extrapage` attribute as follows: `@identifier extrapage="page"`, for example: 
 
     ```
     *' @description extrapage="settings"
