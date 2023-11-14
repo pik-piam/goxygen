@@ -53,7 +53,7 @@ goxygen now searches the code for all lines starting with the goxygen tag `*'`, 
 
 The short example GAMS file contains all identifiers available in goxygen. The resulting document starts with a table of contents.
 
-* `@title` Adds the heading with the title to the documentation.
+* `@title` Adds the heading with the title to the documentation. Only the first line will be used.
 
 * `@description` Contains the text describing the model. Start a new paragraph by adding a blank line that starts with `*'`.
 
@@ -72,7 +72,18 @@ The short example GAMS file contains all identifiers available in goxygen. The r
     display v01_intern.l;
     ```
     until the `@code` tag resumes the documentation.
-    
+
+### extrapage attribute
+
+Any of the identifiers can be combined with the extrapage attribute as follows: `@identifier extrapage="page"`, for example: 
+
+    ```
+    *' @description extrapage="settings"
+    *' The macro-economic core of REMIND is a Ramsey-type optimal growth model ...
+    ```
+
+The documentation will be moved to a new page as specified (e.g. "settings" in the example above). Note that the page name can only consist of characters and numbers and the rest of the documentation must follow on a new comment line.
+
     
 ## Further features
 

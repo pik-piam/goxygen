@@ -100,10 +100,12 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
     if (type == "description") x <- c(x, "")
     out <- list()
 
-    # determine if 'extrapage' attribute is set
-    attrPattern <- "^(\\w+)=\"(\\w+)\"$"
+    # mark blocks with 'extrapage' attribute
+    attrPattern <- "^(\\w+)=\"(\\w+)\"[ \t]*$"
     if (grepl(attrPattern, attribute)) {
       attrName <- sub(attrPattern, "\\1", attribute)
+      # remove trailing whitespaces and tabs
+      x <- sub("[ \t]*$", "", x)
       if (attrName == "extrapage") {
         type <- paste0("extrapage-", type)
       }

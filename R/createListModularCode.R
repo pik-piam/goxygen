@@ -250,6 +250,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
     full[[m]] <- createModulePage(data, docfolder = docfolder)
   }
 
+  #browser()
   extraPage <- sortExtraPages(extraPage)
   for (i in names(extraPage)) {
     data <- mergeDocumentation(extraPage[[i]])
