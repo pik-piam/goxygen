@@ -5,7 +5,7 @@
 #'
 #' @param extraPage flat list of blocks with names indicating identifier and
 #' extrapage (e.g. 'description-settings')
-#' @author Jan Philipp Dietrich
+#' @author Falk Benke
 sortExtraPages <- function(extraPage) {
   out <- list()
   attrPattern <- "^(\\w+)-(\\w+)"

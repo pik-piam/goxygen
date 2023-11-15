@@ -15,5 +15,5 @@ helper transforming a flat list of extra page blocks into
 sublists per page
 }
 \author{
-Jan Philipp Dietrich
+Falk Benke
 }
