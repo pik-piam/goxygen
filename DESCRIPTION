@@ -13,7 +13,7 @@ Description: A collection of tools which extract a model documentation from 'GAM
 Imports:
     pander,
     stringi,
-    gms,
+    gms (>= 0.26.3),
     citation,
     withr,
     yaml
