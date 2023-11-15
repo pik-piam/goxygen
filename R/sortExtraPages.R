@@ -9,7 +9,7 @@
 sortExtraPages <- function(extraPage) {
   out <- list()
   attrPattern <- "^(\\w+)-(\\w+)"
-  for (i in seq(extraPage)) {
+  for (i in seq_along(extraPage)) {
     type <- sub(attrPattern, "\\1", names(extraPage)[i])
     page <- sub(attrPattern, "\\2", names(extraPage)[i])
     l <- list(extraPage[[i]])
