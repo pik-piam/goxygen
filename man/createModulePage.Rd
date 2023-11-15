@@ -7,7 +7,7 @@
 createModulePage(data, docfolder)
 }
 \arguments{
-\item{data}{a list of data entries for the resulting markdown page. Following 
+\item{data}{a list of data entries for the resulting markdown page. Following
 entries can be provided:
 \describe{
   \item{name}{Name of the module}

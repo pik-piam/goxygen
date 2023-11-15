@@ -8,7 +8,7 @@
 #' @export
 #'
 .empty <- function(zz) {
-  writeLines("",zz)
+  writeLines("", zz)
 }
 
 #' .write
@@ -20,8 +20,8 @@
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
-.write <- function(zz,data) {
-  if(!is.null(data)) writeLines(data,zz)
+.write <- function(zz, data) {
+  if (!is.null(data)) writeLines(data, zz)
   .empty(zz)
 }
 
@@ -36,19 +36,19 @@
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
-.header <- function(zz,title,level,id=NULL) {
-  if(length(title)>1) {
+.header <- function(zz, title, level, id = NULL) {
+  if (length(title) > 1) {
     warning("Multiline entry to title detected. Only first line will be used!")
     title <- title[1]
   }
-  if(!is.null(id)) id <- paste0(" {#id-",id,"}")
-  if(level<3) {
-    writeLines(paste0(title,id),zz)
-    symbol <- ifelse(level==1,"=","-")
-    writeLines(paste(rep(symbol,nchar(title)), collapse=""),zz)
+  if (!is.null(id)) id <- paste0(" {#id-", id, "}")
+  if (level < 3) {
+    writeLines(paste0(title, id), zz)
+    symbol <- ifelse(level == 1, "=", "-")
+    writeLines(paste(rep(symbol, nchar(title)), collapse = ""), zz)
   } else {
-    start <- paste(rep("#",level),collapse="")
-    writeLines(paste(start,title),zz)
+    start <- paste(rep("#", level), collapse = "")
+    writeLines(paste(start, title), zz)
   }
   .empty(zz)
 }
@@ -68,7 +68,7 @@
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
 .section <- function(data, zz, title, level, id = NULL) {
-  if(!is.null(data)){
+  if (!is.null(data)) {
     .header(zz, title, level, id)
     .write(zz, data)
   }
@@ -84,12 +84,12 @@
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
-.interfaceplot <- function(zz,name,docfolder) {
-  file <- paste0("images/interfaces_",sub("^[^_]*_","",name),".png")
-  if(file.exists(paste0(docfolder,"/",file))) {
-    .write(zz,paste0("![Interfaces to other modules](",file,"){ height=50% width=100% }"))
+.interfaceplot <- function(zz, name, docfolder) {
+  file <- paste0("images/interfaces_", sub("^[^_]*_", "", name), ".png")
+  if (file.exists(paste0(docfolder, "/", file))) {
+    .write(zz, paste0("![Interfaces to other modules](", file, "){ height=50% width=100% }"))
   } else {
-    .write(zz,"**Interface plot missing!**")
+    .write(zz, "**Interface plot missing!**")
   }
 }
 
@@ -104,14 +104,14 @@
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
-.limitations <- function(zz,limitations, emptyIfNULL=FALSE) {
-  if(is.null(limitations)) {
-    if(emptyIfNULL) return()
+.limitations <- function(zz, limitations, emptyIfNULL = FALSE) {
+  if (is.null(limitations)) {
+    if (emptyIfNULL) return()
     limitations <- "There are no known limitations."
   }
-  limitations <- c("**Limitations**",limitations)
-  limitations <- paste(">",limitations)
-  .write(zz,limitations)
+  limitations <- c("**Limitations**", limitations)
+  limitations <- paste(">", limitations)
+  .write(zz, limitations)
 }
 
 
@@ -124,8 +124,6 @@
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{goxygen}}, \code{\link{createModulePage}}
 #'
-.updateImagePaths <- function(x){
-  return(gsub("\\(([^/]*\\.(png|jpg))\\)","(images/\\1)",x))
+.updateImagePaths <- function(x) {
+  return(gsub("\\(([^/]*\\.(png|jpg))\\)", "(images/\\1)", x))
 }
-
-

@@ -24,10 +24,10 @@ of the line. In case of @realization also GAMS code is read and interpreted, in 
 only the specific documentation comment is evaluated.
 }
 \examples{
-mainfile <- paste0(system.file("dummymodel",package="gms"),"/main.gms")
-calcfile <- paste0(system.file("dummymodel",package="gms"),
+mainfile <- paste0(system.file("dummymodel", package = "gms"), "/main.gms")
+calcfile <- paste0(system.file("dummymodel", package = "gms"),
                            "/modules/02_crazymodule/complex/calculations.gms")
-# extracting information from the main file of the model                            
+# extracting information from the main file of the model
 extractDocumentation(mainfile)
 # extracting information from a file with some equations in it
 extractDocumentation(calcfile)

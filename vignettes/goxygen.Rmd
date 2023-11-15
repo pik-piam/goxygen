@@ -37,8 +37,8 @@ setwd(tempdir())
 We take the GAMS code example from this package and save it to `dummymodel-plain`:
 
 ```{r eval=FALSE}
-# copy the folder containing a simple dummy model with goxygen comments 
-file.copy(from = system.file("dummymodel-plain",package="goxygen"), to = ".", recursive = TRUE)
+# copy the folder containing a simple dummy model with goxygen comments
+file.copy(from = system.file("dummymodel-plain", package = "goxygen"), to = ".", recursive = TRUE)
 ```
 
 and execute `goxygen` on this GAMS file to produce the documentation in HTML as well as PDF format.
@@ -108,7 +108,7 @@ Goxygen is tailored to extract the documentation from this modular structure and
 
 ```{r eval=FALSE}
 # copy all files and folders containing the modular dummy model
-file.copy(from = system.file("dummymodel",package="gms"), to = ".", recursive = TRUE)
+file.copy(from = system.file("dummymodel", package = "gms"), to = ".", recursive = TRUE)
 ```
 
 Now execute `goxygen` on the modular GAMS model:
