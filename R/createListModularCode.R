@@ -206,19 +206,6 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
     return(seealso)
   }
 
-  sortExtraPages <- function(extraPage) {
-    out <- list()
-    attrPattern <- "^(\\w+)-(\\w+)"
-    for (i in seq(extraPage)) {
-      type <- sub(attrPattern, "\\1", names(extraPage)[i])
-      page <- sub(attrPattern, "\\2", names(extraPage)[i])
-      l <- list(extraPage[[i]])
-      names(l) <- type
-      out[[page]] <- append(out[[page]], l)
-    }
-    return(out)
-  }
-
   out <- collectTables(cc, unitPattern)
 
   # write doc files
