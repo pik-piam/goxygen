@@ -28,18 +28,9 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
 
   if (length(path) > 1) {
     out <- list()
-    extraPage <- list()
-
     for (p in path) {
-      documentation <- extractDocumentation(p, start_type = start_type, comment = comment)
-      extraPage <- append(extraPage, documentation$extrapage)
-      documentation$extrapage <- NULL
-      out <- append(out, documentation)
+      out <- append(out, extractDocumentation(p, start_type = start_type, comment = comment))
     }
-
-    out <- mergeDocumentation(out)
-    out$extrapage <- extraPage
-
     return(out)
   }
 
@@ -55,7 +46,23 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
     code <- "@(\\w*) ?(.*)$"
     pattern <- paste0("^(", escapeRegex(comment), ") *", code)
     type <- sub(pattern, "\\2", x[1])
-    attribute <- sub(pattern, "\\3", x[1])
+
+    # extract attributes
+    rest <- sub(pattern, "\\3", x[1])
+    attrPattern <- "^(\\{.+\\})(.*)$"
+    attributes <- NULL
+    if (grepl(attrPattern, rest)) {
+      tryCatch(
+        expr = {
+          attributes <- yaml::yaml.load(sub(attrPattern, "\\1", rest))
+          x[1] <- sub("\\{.+\\}", "", x[1])
+        },
+        error = function(e) {
+          stop(paste0("Failed to parse yaml expression ", rest, "\n", e))
+        }
+      )
+
+    }
 
     if (type == "equations") {
       x[1] <- sub(pattern, "\\1 \\3", x[1])
@@ -100,18 +107,10 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
     if (type == "description") x <- c(x, "")
     out <- list()
 
-    # mark blocks with 'extrapage' attribute
-    attrPattern <- "^(\\w+)=\"(\\w+)\"[ \t]*$"
-    if (grepl(attrPattern, attribute)) {
-      attrName <- sub(attrPattern, "\\1", attribute)
-      page <- sub(attrPattern, "\\2", attribute)
-      if (attrName == "extrapage") {
-        x <- x[-1]
-        type <- paste0("extrapage-", type, "-", page)
-      }
-    }
-
-    out[[type]] <- x
+    out[[type]] <- list(
+      content = x,
+      cfg = attributes
+    )
     return(out)
   }
 
@@ -122,7 +121,8 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
     x <- c(paste0(comment, " @", start_type, " "), x)
   }
 
-  blocksStart <- suppressWarnings(grep(paste0("^", escapeRegex(comment), " @[a-z]*( |$)"), x))
+  regex <- paste0("^", escapeRegex(comment), " @[a-z]*( |(\\{.+\\})|$)")
+  blocksStart <- suppressWarnings(grep(regex, x))
   if (length(blocksStart) == 0) return(list())
 
   blocksEnd <- c(blocksStart[-1] - 1, length(x))
@@ -131,17 +131,6 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
   for (i in seq_along(blocksStart)) {
     blocks <- c(blocks, extractBlock(x[blocksStart[i]:blocksEnd[i]], comment))
   }
-
-  blocks <- mergeDocumentation(blocks)
-
-  # extract and move extrapages to top-level list
-  extraPages <- blocks[grepl("^extrapage-", names(blocks))]
-  names(extraPages) <- sub("^extrapage-", "", names(extraPages))
-
-  blocks <- append(
-    blocks[!grepl("^extrapage-", names(blocks))],
-    list("extrapage" = extraPages)
-  )
 
   return(blocks)
 

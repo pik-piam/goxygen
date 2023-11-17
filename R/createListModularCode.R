@@ -158,13 +158,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
       files <- list.files(path = "core", pattern = "\\.gms")
       paths <- file.path("core", files)
 
-      documentation <- extractDocumentation(paths, start_type = "equations")
-
-      # move extrapage items to toplevel
-      outSub$extrapage <- append(outSub$extrapage, documentation$extrapage)
-      documentation$extrapage <- NULL
-
-      outSub$realizations[["core"]] <- documentation
+      outSub$realizations[["core"]] <- extractDocumentation(paths, start_type = "equations")
 
     } else {
       rea <- strsplit(cc$modulesInfo[m, "realizations"], ",")[[1]]
@@ -186,13 +180,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
         # mentioned files will be added at the end.
         paths <- union(intersect(mentionedPaths, existingPaths), existingPaths)
 
-        documentation <- extractDocumentation(paths, start_type = "equations")
-
-        # move extrapage items to toplevel
-        outSub$extrapage <- append(outSub$extrapage, documentation$extrapage)
-        documentation$extrapage <- NULL
-
-        outSub$realizations[[r]] <- documentation
+        outSub$realizations[[r]] <- extractDocumentation(paths, start_type = "equations")
       }
     }
     return(outSub)
@@ -212,10 +200,12 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
   full <- list()
 
   data <- extractDocumentation(mainfile)
-  extraPage <- data$extrapage
-  data$extrapage <- NULL
+  data <- flattenPageBlockList(data)
+  extraPageBlocks <- data$extraPageBlocks
+  data <- data$blocks
 
   data$citation <- citation
+
   full[["index"]] <- createIndexPage(data)
 
   # take only all modules into account or also core
@@ -227,17 +217,17 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
 
   for (m in mLoop) {
     realizations <- collectRealizations(m, cc)
-    extraPage <- append(extraPage, realizations$extrapage)
-    realizations$extrapage <- NULL
+    extract <- flattenPageBlockList(realizations)
+    realizations <- extract$blocks
+    extraPageBlocks <- appendExtraPageBlocks(extraPageBlocks, extract$extraPageBlocks)
     data <- append(out[[m]], realizations)
     data$name <- m
     data$seealso <- collectSeealso(interfaces[[m]], m, cc$modulesInfo)
     full[[m]] <- createModulePage(data, docfolder = docfolder)
   }
 
-  extraPage <- sortExtraPages(extraPage)
-  for (i in names(extraPage)) {
-    data <- mergeDocumentation(extraPage[[i]])
+  for (i in names(extraPageBlocks)) {
+    data <- mergeDocumentation(extraPageBlocks[[i]])
     data$name <- i
     full[[i]] <- createModulePage(data, docfolder = docfolder)
   }
