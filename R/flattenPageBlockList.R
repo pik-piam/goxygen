@@ -4,7 +4,18 @@
 #' blocks. Code documentation blocks are described as lists consisting of `content`
 #' containing the documentation and a `cfg` list containing attributes.
 #'
-#' Supports sublists with code documentation per realization.#'
+#' If a block entry has the `cgf` attribute `extrapage`, it is moved to a separate list
+#' `extraPageBlocks`.
+#'
+#' Blocks without the `extrapage`attribute are moved to a list `blocks` and multiple
+#' blocks with the same name are merged into one block.
+#'
+#' Cfg attributes other than `extrapage` are currently not supported and therefore ignored.
+#'
+#' Code documentation blocks are flattened, i.e. a list consisting of `content` and `cfg`
+#' entries is replaced by the data in `cfg`.
+#'
+#' Supports nesting of blocks in `realizations` with code documentation per realization.
 #'
 #' @param data a list of documentation pieces with type as name of each element
 #' @return a list with two elements (1) `blocks` containing the documentation elements
@@ -21,12 +32,12 @@ flattenPageBlockList <- function(data) {
 
     # recursive handling of realizations sublists
     if (names(tmp[i]) == "realizations") {
-
+      data[["realizations"]] <- list()
       for (j in seq_along(tmp[[i]])) {
         extract <- flattenPageBlockList(tmp[i]$realizations[[j]])
         l <- list(extract$blocks)
         names(l) <- names(tmp[i]$realizations[j])
-        data <- append(data, l)
+        data[["realizations"]] <- append(data[["realizations"]], l)
         extraPageBlocks <- appendExtraPageBlocks(extraPageBlocks, extract$extraPageBlocks)
       }
 
