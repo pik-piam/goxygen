@@ -73,19 +73,21 @@ The short example GAMS file contains all identifiers available in goxygen. The r
     ```
     until the `@code` tag resumes the documentation.
 
-### extrapage attribute
+### Additional attributes
 
-Any of the identifiers , except for `@stop`, can be combined with the `extrapage` attribute as follows: `@identifier extrapage="page"`, for example: 
+Any of the identifiers can be combined with additional attributes, passed as a comma separated list of key/values within curly braces right after the identifier: `@identifier{attribute: value}`. 
 
-    ```
-    *' @description extrapage="settings"
-    *' The macro-economic core of REMIND is a Ramsey-type optimal growth model ...
-    ```
+As of now, the only supported attribute is `extrapage`. 
 
-The documentation will be moved to a new page as specified (e.g. "settings" in the example above). 
-**Important:** The page name can only consist of characters and numbers and the rest of the documentation must follow on a new comment line.
+#### extrapage
 
-    
+The `extrapage` attribute indicates that the documentation should be moved to a new page 
+as specified. 
+
+  ```
+  *' @description{extrapage: "settings"} The macro-economic core of REMIND is a Ramsey-type optimal growth model ...
+  ```
+
 ## Further features
 
 * **Markdown syntax:** Since goxygen translates the code comments into Markdown before creating the other output formats from it, it is possible to use Markdown syntax in your goxygen comments. The markdown output itself is also stored in the documentation folder in the subfolder `markdown`.

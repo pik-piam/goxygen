@@ -1,3 +1,17 @@
+#' flattenPageBlockList
+#'
+#' A helper that processes additional attributes for a given list of code documentation
+#' blocks. Code documentation blocks are described as lists consisting of `content`
+#' containing the documentation and a `cfg` list containing attributes.
+#'
+#' Supports sublists with code documentation per realization.#'
+#'
+#' @param data a list of documentation pieces with type as name of each element
+#' @return a list with two elements (1) `blocks` containing the documentation elements
+#' with type as name of the element and (2) `extraPageBlocks` containing lists for
+#' blocks to be put on an extra pages, sorted by page names
+#'
+#' @author Falk Benke
 flattenPageBlockList <- function(data) {
   extraPageBlocks <- list()
   tmp <- data
@@ -9,7 +23,7 @@ flattenPageBlockList <- function(data) {
     if (names(tmp[i]) == "realizations") {
 
       for (j in seq_along(tmp[[i]])) {
-        extract <- flattenList(tmp[i]$realizations[[j]])
+        extract <- flattenPageBlockList(tmp[i]$realizations[[j]])
         l <- list(extract$blocks)
         names(l) <- names(tmp[i]$realizations[j])
         data <- append(data, l)

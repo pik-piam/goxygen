@@ -3,7 +3,7 @@ message: If you use this software, please cite it using the metadata from this f
 type: software
 title: 'goxygen: In-Code Documentation for ''GAMS'''
 version: 1.4.0
-date-released: '2023-11-15'
+date-released: '2023-11-20'
 abstract: A collection of tools which extract a model documentation from 'GAMS' code
   and comments. In order to use the package you need to install 'pandoc' and 'pandoc-citeproc'
   first (<https://pandoc.org/>).

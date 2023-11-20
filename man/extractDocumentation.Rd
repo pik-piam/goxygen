@@ -16,7 +16,9 @@ reading equations.gms as type realization)}
 \item{comment}{comment chars used for documentation comments}
 }
 \value{
-a list of documentation pieces with type as name of each element
+a nested list of documentation pieces with type as name of each element.
+Each element contains two lists `content` containing the actual documentation
+and `cfg` containing optional attributes passed with the type.
 }
 \description{
 Extracts doxygen-like GAMS documentation. Entries are introduced with an @type at the beginning

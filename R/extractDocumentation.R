@@ -4,12 +4,15 @@
 #' of the line. In case of @realization also GAMS code is read and interpreted, in all other cases
 #' only the specific documentation comment is evaluated.
 #'
+#'
 #' @param path path to the file(s) which should be evaluated
 #' @param start_type set type for first line of code. This can be useful
 #' to extract documentation even if no documentation type has been set (e.g
 #' reading equations.gms as type realization)
 #' @param comment comment chars used for documentation comments
-#' @return a list of documentation pieces with type as name of each element
+#' @return a nested list of documentation pieces with type as name of each element.
+#' Each element contains two lists `content` containing the actual documentation
+#' and `cfg` containing optional attributes passed with the type.
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex
 #' @seealso \code{\link{goxygen}}
