@@ -218,6 +218,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
   for (m in mLoop) {
     realizations <- collectRealizations(m, cc)
     extract <- flattenPageBlockList(realizations)
+
     realizations <- extract$blocks
     extraPageBlocks <- appendExtraPageBlocks(extraPageBlocks, extract$extraPageBlocks)
     data <- append(out[[m]], realizations)

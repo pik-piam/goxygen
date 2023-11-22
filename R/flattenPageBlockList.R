@@ -5,22 +5,24 @@
 #' containing the documentation and a `cfg` list containing attributes.
 #'
 #' If a block entry has the `cgf` attribute `extrapage`, it is moved to a separate list
-#' `extraPageBlocks`.
+#' `extraPageBlocks` in the output, as these need to be rendered separately later.
 #'
-#' Blocks without the `extrapage`attribute are moved to a list `blocks` and multiple
+#' Regular blocks without the `extrapage` attribute are moved to a list `blocks` and multiple
 #' blocks with the same name are merged into one block.
 #'
-#' Cfg attributes other than `extrapage` are currently not supported and therefore ignored.
+#' Cfg attributes other than `extrapage` are currently not supported and therefore
+#' ignored, but a warning is thrown.
 #'
-#' Code documentation blocks are flattened, i.e. a list consisting of `content` and `cfg`
-#' entries is replaced by the data in `cfg`.
+#' After processing the `cfg` attributes, the code documentation blocks are flattened,
+#' i.e. a list consisting of a `content` and `cfg` entry is replaced by the data in `cfg`.
 #'
-#' Supports nesting of blocks in `realizations` with code documentation per realization.
+#' This helper supports nesting of blocks in `realizations` with code documentation
+#' per realization.
 #'
 #' @param data a list of documentation pieces with type as name of each element
-#' @return a list with two elements (1) `blocks` containing the documentation elements
+#' @return a list with two element (1) `blocks` containing the documentation elements
 #' with type as name of the element and (2) `extraPageBlocks` containing lists for
-#' blocks to be put on an extra pages, sorted by page names
+#' blocks to be put on an extra pages, sorted by page names.
 #'
 #' @author Falk Benke
 flattenPageBlockList <- function(data) {
@@ -30,9 +32,11 @@ flattenPageBlockList <- function(data) {
 
   for (i in seq_along(tmp)) {
 
-    # recursive handling of realizations sublists
     if (names(tmp[i]) == "realizations") {
+
+      # recursive handling of realizations sublists
       data[["realizations"]] <- list()
+
       for (j in seq_along(tmp[[i]])) {
         extract <- flattenPageBlockList(tmp[i]$realizations[[j]])
         l <- list(extract$blocks)
@@ -41,10 +45,8 @@ flattenPageBlockList <- function(data) {
         extraPageBlocks <- appendExtraPageBlocks(extraPageBlocks, extract$extraPageBlocks)
       }
 
-      # handle base case
-      # separate extra page blocks from the rest and flatten the lists
     } else {
-
+      # handle base case
       cfg <- tmp[[i]]$cfg
 
       # cfg entries other than extrapage are ignored for now
@@ -57,7 +59,7 @@ flattenPageBlockList <- function(data) {
       names(l) <- names(tmp)[i]
 
       if (!is.null(cfg$extrapage)) {
-        # extra page blocks are sorted in sublists per page
+        # extra page blocks are separated from the rest and sorted in sublists per page
         extraPageBlocks[[cfg$extrapage]] <- append(extraPageBlocks[[cfg$extrapage]], l)
       } else {
         data <- append(data, l)

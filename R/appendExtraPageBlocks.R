@@ -1,12 +1,13 @@
 #' appendExtraPageBlocks
 #'
-#' A helper to merge two nested lists for extra page blocks.
+#' A helper to merge two nested lists describing extra page blocks.
 #' The lists have the page name on the first level and flattened documentation
 #' blocks on the second level. It is ensured that elements for the
 #' same page are grouped in the same list.
 #'
 #' @param blocks a nested list for extra page blocks per page
-#' @param add a seccond nested list for extra page blocks per page to be appended
+#' @param add a seccond nested list for extra page blocks per page to be
+#' appended to the first one
 #'
 #' @author Falk Benke
 appendExtraPageBlocks <- function(blocks, add) {

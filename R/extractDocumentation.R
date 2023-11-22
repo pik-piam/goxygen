@@ -64,7 +64,6 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
           stop(paste0("Failed to parse yaml expression ", rest, "\n", e))
         }
       )
-
     }
 
     if (type == "equations") {
