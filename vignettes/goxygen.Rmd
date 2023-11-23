@@ -37,8 +37,8 @@ setwd(tempdir())
 We take the GAMS code example from this package and save it to `dummymodel-plain`:
 
 ```{r eval=FALSE}
-# copy the folder containing a simple dummy model with goxygen comments 
-file.copy(from = system.file("dummymodel-plain",package="goxygen"), to = ".", recursive = TRUE)
+# copy the folder containing a simple dummy model with goxygen comments
+file.copy(from = system.file("dummymodel-plain", package = "goxygen"), to = ".", recursive = TRUE)
 ```
 
 and execute `goxygen` on this GAMS file to produce the documentation in HTML as well as PDF format.
@@ -53,7 +53,7 @@ goxygen now searches the code for all lines starting with the goxygen tag `*'`, 
 
 The short example GAMS file contains all identifiers available in goxygen. The resulting document starts with a table of contents.
 
-* `@title` Adds the heading with the title to the documentation.
+* `@title` Adds the heading with the title to the documentation. Only the first line will be used.
 
 * `@description` Contains the text describing the model. Start a new paragraph by adding a blank line that starts with `*'`.
 
@@ -72,8 +72,22 @@ The short example GAMS file contains all identifiers available in goxygen. The r
     display v01_intern.l;
     ```
     until the `@code` tag resumes the documentation.
-    
-    
+
+### Additional attributes
+
+Any of the identifiers can be combined with additional attributes, passed as a comma separated list of key/values within curly braces right after the identifier: `@identifier{attribute: value}`. 
+
+As of now, the only supported attribute is `extrapage`. 
+
+#### extrapage
+
+The `extrapage` attribute indicates that the documentation should be moved to a new page 
+as specified. 
+
+  ```
+  *' @description{extrapage: "settings"} The macro-economic core of REMIND is a Ramsey-type optimal growth model ...
+  ```
+
 ## Further features
 
 * **Markdown syntax:** Since goxygen translates the code comments into Markdown before creating the other output formats from it, it is possible to use Markdown syntax in your goxygen comments. The markdown output itself is also stored in the documentation folder in the subfolder `markdown`.
@@ -96,7 +110,7 @@ Goxygen is tailored to extract the documentation from this modular structure and
 
 ```{r eval=FALSE}
 # copy all files and folders containing the modular dummy model
-file.copy(from = system.file("dummymodel",package="gms"), to = ".", recursive = TRUE)
+file.copy(from = system.file("dummymodel", package = "gms"), to = ".", recursive = TRUE)
 ```
 
 Now execute `goxygen` on the modular GAMS model:

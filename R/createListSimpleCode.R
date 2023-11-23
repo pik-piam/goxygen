@@ -15,7 +15,12 @@ createListSimpleCode <- function(path = ".", citation = NULL, mainfile = "main.g
 
   # write doc files
   full <- list()
+
   data <- extractDocumentation(mainfile)
+  data <- flattenPageBlockList(data)
+  extraPageBlocks <- data$extraPageBlocks
+  data <- data$blocks
+
   data$citation <- citation
   full[["index"]] <- createIndexPage(data)
 
@@ -23,11 +28,23 @@ createListSimpleCode <- function(path = ".", citation = NULL, mainfile = "main.g
   for (f in files) {
     fname <- sub("\\.gms$", "", gsub("/", "_", f, fixed = TRUE))
     data <- extractDocumentation(f)
+    extract <- flattenPageBlockList(data)
+    data <- extract$blocks
+
+    extraPageBlocks <- appendExtraPageBlocks(extraPageBlocks, extract$extraPageBlocks)
+
     if (length(data) > 0) {
       if (is.null(data$title)) data$title <- fname
       data$name <- f
       full[[fname]] <- createSimplePage(data)
     }
   }
+
+  for (i in names(extraPageBlocks)) {
+    data <- mergeDocumentation(extraPageBlocks[[i]])
+    data$name <- i
+    full[[i]] <- createSimplePage(data)
+  }
+
   return(full)
 }
