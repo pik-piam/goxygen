@@ -80,13 +80,11 @@ buildHTML <- function(style = "classic", folder = "html", mdfolder = "markdown",
     ref <- bringToFront(ref, "core")
     ref <- bringToFront(ref, "index", "Overview")
 
+    # if name begins with a number, use that number in front of the title
     hasNumber <- grepl("^[0-9]{1,2}_", ref$name)
-    if (sum(hasNumber) >= (nrow(ref) - 2)) {
-      # if all names (expect of one, which might be the index page) begin
-      # with a number, use that number in front of the title
-      number <- as.integer(sub("_.*$", "", ref$name[hasNumber]))
-      ref$title[hasNumber] <- paste0(format(number, width = 2), ". ", ref$title[hasNumber])
-    }
+    number <- as.integer(sub("_.*$", "", ref$name[hasNumber]))
+    ref$title[hasNumber] <- paste0(format(number, width = 2), ". ", ref$title[hasNumber])
+
     return(ref)
   }
   mainNav <- mainNav(mdfolder)
