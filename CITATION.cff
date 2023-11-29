@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
 title: 'goxygen: In-Code Documentation for ''GAMS'''
-version: 1.4.2
+version: 1.4.3
 date-released: '2023-11-29'
 abstract: A collection of tools which extract a model documentation from 'GAMS' code
   and comments. In order to use the package you need to install 'pandoc' and 'pandoc-citeproc'
