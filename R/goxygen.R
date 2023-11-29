@@ -95,6 +95,7 @@ goxygen <- function(path = ".",
 
   if (!dir.exists(docfolder)) dir.create(docfolder, recursive = TRUE)
   if (file.exists("literature.bib")) file.copy("literature.bib", paste0(docfolder, "/literature.bib"), overwrite = TRUE)
+  if (dir.exists(file.path(docfolder, "markdown"))) unlink(file.path(docfolder, "markdown"), recursive = TRUE)
 
   copyimages <- function(docfolder, paths) {
     imagefolder <- paste0(docfolder, "/images")
@@ -140,5 +141,5 @@ goxygen <- function(path = ".",
   if ("html" %in% output) buildHTML(supplementary = "images", citation = citation, style = htmlStyle,
                                     templatefolder = templatefolder)
   if ("tex" %in% output || "pdf" %in% output) buildTEX(pdf = ("pdf" %in% output), citation = citation, style = texStyle,
-                                                      templatefolder = templatefolder)
+                                                       templatefolder = templatefolder)
 }
