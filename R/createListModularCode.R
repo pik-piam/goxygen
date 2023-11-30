@@ -210,7 +210,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, u
 
   # take only all modules into account or also core
   if (includeCore) {
-    mLoop <- sort(names(out))
+    mLoop <- c("core", setdiff(sort(names(out)), "core"))
   } else {
     mLoop <- setdiff(sort(names(out)), "core")
   }
