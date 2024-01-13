@@ -17,6 +17,7 @@ goxygen(
   unitPattern = c("\\\\(", "\\\\)"),
   includeCore = FALSE,
   mainfile = "main.gms",
+  autoDocumentRealizations = TRUE,
   ...
 )
 }
@@ -54,6 +55,10 @@ templates.}
 \item{includeCore}{boolean whether core should be included or not, default=FALSE}
 
 \item{mainfile}{main file of the model}
+
+\item{autoDocumentRealizations}{Boolean indicating whether documentation in realizations
+should be interpreted as equations documentation, if no identifier is set
+(for more info refer to \code{\link{extractDocumentation}}), default=TRUE}
 
 \item{...}{optional arguments to \code{\link[gms]{interfaceplot}}, passed via
 \code{\link[gms]{modules_interfaceplot}}.}
