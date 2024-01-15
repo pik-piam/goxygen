@@ -1,6 +1,6 @@
 # In-Code Documentation for 'GAMS'
 
-R package **goxygen**, version **1.4.3**
+R package **goxygen**, version **1.4.4**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/goxygen)](https://cran.r-project.org/package=goxygen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1411404.svg)](https://doi.org/10.5281/zenodo.1411404) [![R build status](https://github.com/pik-piam/goxygen/workflows/check/badge.svg)](https://github.com/pik-piam/goxygen/actions) [![codecov](https://codecov.io/gh/pik-piam/goxygen/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/goxygen) [![r-universe](https://pik-piam.r-universe.dev/badges/goxygen)](https://pik-piam.r-universe.dev/builds)
 
@@ -48,7 +48,7 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **goxygen** in publications use:
 
-Dietrich J, Karstens K, Klein D, Baumstark L, Benke F (2023). _goxygen: In-Code Documentation for 'GAMS'_. doi:10.5281/zenodo.1411404 <https://doi.org/10.5281/zenodo.1411404>, R package version 1.4.3, <https://github.com/pik-piam/goxygen>.
+Dietrich J, Karstens K, Klein D, Baumstark L, Benke F (2024). _goxygen: In-Code Documentation for 'GAMS'_. doi:10.5281/zenodo.1411404 <https://doi.org/10.5281/zenodo.1411404>, R package version 1.4.4, <https://github.com/pik-piam/goxygen>.
 
 A BibTeX entry for LaTeX users is
 
@@ -56,8 +56,8 @@ A BibTeX entry for LaTeX users is
 @Manual{,
   title = {goxygen: In-Code Documentation for 'GAMS'},
   author = {Jan Philipp Dietrich and Kristine Karstens and David Klein and Lavinia Baumstark and Falk Benke},
-  year = {2023},
-  note = {R package version 1.4.3},
+  year = {2024},
+  note = {R package version 1.4.4},
   doi = {10.5281/zenodo.1411404},
   url = {https://github.com/pik-piam/goxygen},
 }

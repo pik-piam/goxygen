@@ -12,7 +12,8 @@ createListModularCode(
   unitPattern = c("\\\\(", "\\\\)"),
   includeCore = FALSE,
   mainfile = "main.gms",
-  docfolder = "doc"
+  docfolder = "doc",
+  startType = "equations"
 )
 }
 \arguments{
@@ -31,6 +32,11 @@ createListModularCode(
 \item{mainfile}{main file of the model}
 
 \item{docfolder}{folder the documentation should be written to relative to model folder}
+
+\item{startType}{input parameter for \code{\link{extractDocumentation}} to be passed
+when extracting documentation from realizations. Defaults to "equations",
+meaning that documentation in realizations should be interpreted as equations
+documentation, if no identifier is set.}
 }
 \description{
 support function to create documentation of modular GAMS code.

@@ -6,7 +6,7 @@
 #'
 #'
 #' @param path path to the file(s) which should be evaluated
-#' @param start_type set type for first line of code. This can be useful
+#' @param startType set type for first line of code. This can be useful
 #' to extract documentation even if no documentation type has been set (e.g
 #' reading equations.gms as type realization)
 #' @param comment comment chars used for documentation comments
@@ -27,12 +27,12 @@
 #'
 #' @export
 
-extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # nolint
+extractDocumentation <- function(path, startType = NULL, comment = "*'") { # nolint
 
   if (length(path) > 1) {
     out <- list()
     for (p in path) {
-      out <- append(out, extractDocumentation(p, start_type = start_type, comment = comment))
+      out <- append(out, extractDocumentation(p, startType = startType, comment = comment))
     }
     return(out)
   }
@@ -119,8 +119,8 @@ extractDocumentation <- function(path, start_type = NULL, comment = "*'") { # no
   if (!file.exists(path)) return(list())
   x <- readLines(path, warn = FALSE)
   x <- removeComments(x, comment)
-  if (!is.null(start_type)) {
-    x <- c(paste0(comment, " @", start_type, " "), x)
+  if (!is.null(startType)) {
+    x <- c(paste0(comment, " @", startType, " "), x)
   }
 
   regex <- paste0("^", escapeRegex(comment), " @[a-z]*( |(\\{.+\\})|$)")

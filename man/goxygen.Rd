@@ -17,6 +17,7 @@ goxygen(
   unitPattern = c("\\\\(", "\\\\)"),
   includeCore = FALSE,
   mainfile = "main.gms",
+  startType = "equations",
   ...
 )
 }
@@ -54,6 +55,8 @@ templates.}
 \item{includeCore}{boolean whether core should be included or not, default=FALSE}
 
 \item{mainfile}{main file of the model}
+
+\item{startType}{input parameter for \code{\link{createListModularCode}}, default = "equations"}
 
 \item{...}{optional arguments to \code{\link[gms]{interfaceplot}}, passed via
 \code{\link[gms]{modules_interfaceplot}}.}
