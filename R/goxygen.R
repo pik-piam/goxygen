@@ -50,9 +50,7 @@
 #' @param unitPattern pattern that is usedto identify the unit in the description, default =c("\\(","\\)")
 #' @param includeCore boolean whether core should be included or not, default=FALSE
 #' @param mainfile main file of the model
-#' @param autoDocumentRealizations Boolean indicating whether documentation in realizations
-#'        should be interpreted as equations documentation, if no identifier is set
-#'        (for more info refer to \code{\link{extractDocumentation}}), default=TRUE
+#' @param startType input parameter for \code{\link{createListModularCode}}, default = "equations"
 #' @param ... optional arguments to \code{\link[gms]{interfaceplot}}, passed via
 #' \code{\link[gms]{modules_interfaceplot}}.
 #'
@@ -85,7 +83,7 @@ goxygen <- function(path = ".",
                     unitPattern = c("\\(", "\\)"),
                     includeCore = FALSE,
                     mainfile = "main.gms",
-                    autoDocumentRealizations = TRUE,
+                    startType = "equations",
                     ...) {
   local_dir(path)
 
@@ -131,7 +129,7 @@ goxygen <- function(path = ".",
     full <- createListModularCode(cc = cc, interfaces = interfaces, path = ".", citation = citation,
                                   unitPattern = unitPattern, includeCore = includeCore,
                                   mainfile = mainfile, docfolder = docfolder,
-                                  autoDocumentRealizations = autoDocumentRealizations)
+                                  startType = startType)
   } else {
     copyimages(docfolder, paths = list.files(pattern = "\\.(jpg|png)$", recursive = TRUE))
     full <- createListSimpleCode(path = ".", citation = citation, mainfile = mainfile)

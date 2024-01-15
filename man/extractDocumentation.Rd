@@ -4,12 +4,12 @@
 \alias{extractDocumentation}
 \title{extractDocumentation}
 \usage{
-extractDocumentation(path, start_type = NULL, comment = "*'")
+extractDocumentation(path, startType = NULL, comment = "*'")
 }
 \arguments{
 \item{path}{path to the file(s) which should be evaluated}
 
-\item{start_type}{set type for first line of code. This can be useful
+\item{startType}{set type for first line of code. This can be useful
 to extract documentation even if no documentation type has been set (e.g
 reading equations.gms as type realization)}
 

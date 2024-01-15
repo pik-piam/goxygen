@@ -10,9 +10,10 @@
 #' @param includeCore Boolean whether core should be included or not, default=FALSE
 #' @param mainfile main file of the model
 #' @param docfolder folder the documentation should be written to relative to model folder
-#' @param autoDocumentRealizations Boolean indicating whether documentation in realizations
-#'        should be interpreted as equations documentation, if no identifier is set
-#'        (for more info refer to \code{\link{extractDocumentation}}), default=TRUE
+#' @param startType input parameter for \code{\link{extractDocumentation}} to be passed
+#'        when extracting documentation from realizations. Defaults to "equations",
+#'        meaning that documentation in realizations should be interpreted as equations
+#'        documentation, if no identifier is set.
 #' @author Jan Philipp Dietrich
 #' @importFrom stringi stri_extract_all_regex stri_replace_all_regex stri_write_lines
 #' @importFrom gms codeCheck modules_interfaceplot is.modularGAMS
@@ -26,7 +27,7 @@
 createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, # nolint
                                   unitPattern = c("\\(", "\\)"), includeCore = FALSE,
                                   mainfile = "main.gms", docfolder = "doc",
-                                  autoDocumentRealizations = TRUE) {
+                                  startType = "equations") {
 
   local_dir(path)
 
@@ -163,7 +164,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, #
       files <- list.files(path = "core", pattern = "\\.gms")
       paths <- file.path("core", files)
 
-      outSub$realizations[["core"]] <- extractDocumentation(paths, start_type = startType)
+      outSub$realizations[["core"]] <- extractDocumentation(paths, startType = startType)
 
     } else {
       rea <- strsplit(cc$modulesInfo[m, "realizations"], ",")[[1]]
@@ -185,7 +186,7 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, #
         # mentioned files will be added at the end.
         paths <- union(intersect(mentionedPaths, existingPaths), existingPaths)
 
-        outSub$realizations[[r]] <- extractDocumentation(paths, start_type = startType)
+        outSub$realizations[[r]] <- extractDocumentation(paths, startType = startType)
       }
     }
     return(outSub)
@@ -219,8 +220,6 @@ createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, #
   } else {
     mLoop <- setdiff(sort(names(out)), "core")
   }
-
-  startType <- if (isTRUE(autoDocumentRealizations)) "equations" else NULL
 
   for (m in mLoop) {
     realizations <- collectRealizations(m, cc, startType)
