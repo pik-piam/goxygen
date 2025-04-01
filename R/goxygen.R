@@ -62,7 +62,7 @@
 #' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
 #' @importFrom withr local_dir
-#' @seealso \code{\link{codeCheck}},\code{\link[gms]{interfaceplot}}
+#' @seealso \code{\link[gms]{codeCheck}},\code{\link[gms]{interfaceplot}}
 #' @examples
 #' # make sure that pandoc is available
 #' if (check_pandoc()) {

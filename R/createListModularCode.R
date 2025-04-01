@@ -22,7 +22,7 @@
 #' @importFrom yaml as.yaml
 #' @importFrom utils tail toBibtex capture.output
 #' @importFrom withr local_dir
-#' @seealso \code{\link{codeCheck}}
+#' @seealso \code{\link[gms]{codeCheck}}
 
 createListModularCode <- function(cc, interfaces, path = ".", citation = NULL, # nolint
                                   unitPattern = c("\\(", "\\)"), includeCore = FALSE,

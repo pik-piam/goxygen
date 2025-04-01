@@ -7,7 +7,7 @@
 #' @param mainfile main file of the model
 #' @importFrom withr local_dir
 #' @author Jan Philipp Dietrich
-#' @seealso \code{\link{codeCheck}}
+#' @seealso \code{\link[gms]{codeCheck}}
 
 createListSimpleCode <- function(path = ".", citation = NULL, mainfile = "main.gms") {
 

@@ -42,7 +42,7 @@ documentation, if no identifier is set.}
 support function to create documentation of modular GAMS code.
 }
 \seealso{
-\code{\link{codeCheck}}
+\code{\link[gms]{codeCheck}}
 }
 \author{
 Jan Philipp Dietrich

@@ -17,7 +17,7 @@ createListSimpleCode(path = ".", citation = NULL, mainfile = "main.gms")
 support function to create documentation of non-modular GAMS code.
 }
 \seealso{
-\code{\link{codeCheck}}
+\code{\link[gms]{codeCheck}}
 }
 \author{
 Jan Philipp Dietrich

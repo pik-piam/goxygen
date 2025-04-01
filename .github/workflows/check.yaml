@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -23,31 +23,33 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
-            gamstransfer=?ignore
-            any::lucode2
-            any::covr
-            any::madrat
-            any::magclass
-            any::citation
-            any::gms
-            any::goxygen
-            any::GDPuc
+            lucode2
+            covr
+            madrat
+            magclass
+            citation
+            gms
+            goxygen
+            GDPuc
           # piam packages also available on CRAN (madrat, magclass, citation,
           # gms, goxygen, GDPuc) will usually have an outdated binary version
           # available; by using extra-packages we get the newest version
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-
-      - name: Install python dependencies if applicable
+      - name: Run pre-commit checks
+        shell: bash
         run: |
-          [ -f requirements.txt ] && python -m pip install --upgrade pip wheel || true
-          [ -f requirements.txt ] && pip install -r requirements.txt || true
+          python -m pip install pre-commit
+          python -m pip freeze --local
+          pre-commit run --show-diff-on-failure --color=always --all-files
 
       - name: Verify validation key
         shell: Rscript {0}
         run: lucode2:::validkey(stopIfInvalid = TRUE)
+
+      - name: Verify that lucode2::buildLibrary was successful
+        if: github.event_name == 'pull_request'
+        shell: Rscript {0}
+        run: lucode2:::isVersionUpdated()
 
       - name: Checks
         shell: Rscript {0}
@@ -59,6 +61,6 @@ jobs:
         shell: Rscript {0}
         run: |
           nonDummyTests <- setdiff(list.files("./tests/testthat/"), c("test-dummy.R", "_snaps"))
-          if(length(nonDummyTests) > 0) covr::codecov(quiet = FALSE)
+          if(length(nonDummyTests) > 0 && !lucode2:::loadBuildLibraryConfig()[["skipCoverage"]]) covr::codecov(quiet = FALSE)
         env:
           NOT_CRAN: "true"

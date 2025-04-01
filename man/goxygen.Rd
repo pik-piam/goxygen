@@ -100,7 +100,7 @@ if (check_pandoc()) {
 }
 }
 \seealso{
-\code{\link{codeCheck}},\code{\link[gms]{interfaceplot}}
+\code{\link[gms]{codeCheck}},\code{\link[gms]{interfaceplot}}
 }
 \author{
 Jan Philipp Dietrich
