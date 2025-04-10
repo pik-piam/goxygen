@@ -2,11 +2,11 @@ cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
 title: 'goxygen: In-Code Documentation for ''GAMS'''
-version: 1.4.5
-date-released: '2025-04-01'
-abstract: A collection of tools which extract a model documentation from 'GAMS' code
-  and comments. In order to use the package you need to install 'pandoc' and 'pandoc-citeproc'
-  first (<https://pandoc.org/>).
+version: 1.4.6
+date-released: '2025-04-10'
+abstract: A collection of tools which extract a model documentation from GAMS code
+  and comments. In order to use the package you need to install pandoc first (see
+  pandoc.org).
 authors:
 - family-names: Dietrich
   given-names: Jan Philipp

@@ -1,8 +1,8 @@
 Type: Package
 Package: goxygen
 Title: In-Code Documentation for 'GAMS'
-Version: 1.4.5
-Date: 2025-04-01
+Version: 1.4.6
+Date: 2025-04-10
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = "aut"),
@@ -11,11 +11,10 @@ Authors@R: c(
     person("Falk", "Benke", , "benke@pik-potsdam.de", role = "aut")
   )
 Description: A collection of tools which extract a model documentation
-    from 'GAMS' code and comments.  In order to use the package you need
-    to install 'pandoc' and 'pandoc-citeproc' first
-    (<https://pandoc.org/>).
+    from GAMS code and comments.  In order to use the package you need to
+    install pandoc first (see pandoc.org).
 License: BSD_2_clause + file LICENSE
-URL:https://github.com/pik-piam/goxygen,
+URL: https://github.com/pik-piam/goxygen,
     https://doi.org/10.5281/zenodo.1411404
 BugReports: https://github.com/pik-piam/goxygen/issues
 Imports:
@@ -28,7 +27,6 @@ Imports:
 Suggests:
     covr,
     knitr,
-    qgraph,
     rmarkdown,
     testthat
 VignetteBuilder:
