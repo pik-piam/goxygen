@@ -25,8 +25,7 @@ Suggests:
     covr,
     qgraph
 SystemRequirements:
-    pandoc,
-    pandoc-citeproc
+    pandoc
 URL:
     https://github.com/pik-piam/goxygen,
     https://doi.org/10.5281/zenodo.1411404
