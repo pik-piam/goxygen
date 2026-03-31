@@ -1,8 +1,8 @@
 Type: Package
 Package: goxygen
 Title: In-Code Documentation for 'GAMS'
-Version: 1.4.6
-Date: 2025-04-10
+Version: 1.5.0
+Date: 2026-03-31
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = "aut"),
@@ -33,5 +33,6 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: no
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 SystemRequirements: pandoc
+Config/Needs/website: tidyverse/tidytemplate
