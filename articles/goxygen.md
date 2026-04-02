@@ -1,0 +1,175 @@
+# Creating GAMS model documentations with goxygen
+
+## Purpose and Functionality
+
+Goxygen provides tools to extract a model documentation from GAMS code,
+including comments, code, and even GAMS equations, the latter of which
+are converted into latex code. This allows having GAMS code and
+explanatory text side by side in the same gms files, which makes it
+easier to keep the comments up to date with the code. The goxygen output
+is returned in HTML, Markdown, and PDF format.
+
+In order to use the package you need to install pandoc and
+pandoc-citeproc first (<https://pandoc.org/>), if it is not already
+available on your system.
+
+Goxygen can extract the documentation from plain GAMS code (see [plain
+example](#plain)) or from GAMS models that have a modularized structure
+as described in Dietrich et al. ([2019](#ref-dietrich_magpie4)) (see
+[modular example](#modular)).
+
+Before testing please switch to a folder in which the test models can be
+copied and the documentation can be extracted (e.g. a temporary
+directory).
+
+``` r
+setwd(tempdir())
+```
+
+## Running goxygen on plain GAMS code
+
+We take the GAMS code example from this package and save it to
+`dummymodel-plain`:
+
+``` r
+# copy the folder containing a simple dummy model with goxygen comments
+file.copy(from = system.file("dummymodel-plain", package = "goxygen"), to = ".", recursive = TRUE)
+```
+
+and execute `goxygen` on this GAMS file to produce the documentation in
+HTML as well as PDF format.
+
+``` r
+goxygen::goxygen(path = "dummymodel-plain/", cff = "HOWTOCITE.cff")
+```
+
+goxygen now searches the code for all lines starting with the goxygen
+tag `*'`, interpretes the goxygen identifiers, and compiles the
+documentation into the format specified (html, tex, pdf). Please find
+the goxygen output in the folder `dummymodel-plain/doc`.
+
+## Goxygen syntax
+
+The short example GAMS file contains all identifiers available in
+goxygen. The resulting document starts with a table of contents.
+
+- `@title` Adds the heading with the title to the documentation. Only
+  the first line will be used.
+
+- `@description` Contains the text describing the model. Start a new
+  paragraph by adding a blank line that starts with `*'`.
+
+- `@authors` List the authors of the model here.
+
+- `@limitations` Explain the limitation of the model.
+
+- `@code` All following lines of the model code will be displayed in the
+  documentation output as code blocks. Lines starting with `*'` will be
+  displayed as regular text.
+
+- `@equations` starts the equation section where goxygen converts GAMS
+  equations into LaTeX code so that they are displayed nicely in the
+  output.
+
+- `@stop` Everything following will be ignored until the next identifier
+  is mentioned again. In this case the following code is not included in
+  the documentation output:
+
+      *' Even goxygen comments are ignored.
+      display v01_intern.l;
+
+  until the `@code` tag resumes the documentation.
+
+### Additional attributes
+
+Any of the identifiers can be combined with additional attributes,
+passed as a comma separated list of key/values within curly braces right
+after the identifier: `@identifier{attribute: value}`.
+
+As of now, the only supported attribute is `extrapage`.
+
+#### extrapage
+
+The `extrapage` attribute indicates that the documentation should be
+moved to a new page as specified.
+
+    *' @description{extrapage: "settings"} The macro-economic core of REMIND is a Ramsey-type optimal growth model ...
+
+## Further features
+
+- **Markdown syntax:** Since goxygen translates the code comments into
+  Markdown before creating the other output formats from it, it is
+  possible to use Markdown syntax in your goxygen comments. The markdown
+  output itself is also stored in the documentation folder in the
+  subfolder `markdown`.
+
+- **Including images:** For example, in `1_equations.gms` we included an
+  image using Markdown syntax.
+
+- **Logo:** Any file in your model’s main folder named `logo.png` (or
+  other image formats) will be included in the documentation as model
+  logo.
+
+- **References:** To add literature references to the documentation
+  please save a bibtex file `literature.bib` in the main folder of the
+  model and link the references using `@<id>` in your goxygen
+  comments.`<id>` stands for the name of the corresponding bibtex entry.
+
+- **CITATION.cff:** Add meta information to your model, such as authors,
+  name of the model, license etc. by adding a `CITATION.cff` file to
+  your model’s main folder. This helps others to cite your model
+  correctly and goxygen includes this meta information in the
+  documentation (e.g. it will extract the model title and list of model
+  authors from that file). If you use a different filename than
+  `CITATION.cff` please provide the name `cff = MYCITATION.cff`.
+
+- **Internal links:** If you have [modular code](#modular) and want to
+  link a module in the text use square brackets and the name of the
+  module, e.g. `\[007_bond\]`. In case of [plain code](#plain) use the
+  name of the gms file you want to link, e.g. `\[equations\]`. The only
+  exception is the file specified as main file of the model, which will
+  always be referred to as `\[index\]`.
+
+## Running goxygen on modularized GAMS code
+
+This was a simple example of a GAMS model in a single file with a plain
+structure. As soon as model and code get more complex it is helpful to
+structure the model in a modular way, for example as described by
+Dietrich et al. ([2019](#ref-dietrich_magpie4)). This modular structure
+emulates in GAMS what would be functions and environments in other
+programming languages, since GAMS does not offer this feature. The
+separation is achieved via structural separation of the code and naming
+conventions. A module comprises the code of a content area that can be
+clearly separated from other content areas topic-wise and interacts with
+other modules only via clearly defined interfaces. The modular structure
+is clearly visible in the code through the naming convention mentioned
+and through the folder and file structure.
+
+Goxygen is tailored to extract the documentation from this modular
+structure and to compile it to a clearly arranged documentation. Goxygen
+identifies modules and their interfaces, generates a interface plots
+that depict the interactions between modules, and lists the inputs and
+outputs of modules. For each module goxygen creates a new chapter in the
+documentation. We will demonstrate this using the simple example model
+from the `gms` package:
+
+``` r
+# copy all files and folders containing the modular dummy model
+file.copy(from = system.file("dummymodel", package = "gms"), to = ".", recursive = TRUE)
+```
+
+Now execute `goxygen` on the modular GAMS model:
+
+``` r
+goxygen::goxygen(path = "dummymodel/", cff = "HOWTOCITE.cff")
+```
+
+Please find the goxygen output in the folder `dummymodel/doc`.
+
+## References
+
+Dietrich, J. P., B. L. Bodirsky, F. Humpenöder, I. Weindl, M.
+Stevanović, K. Karstens, U. Kreidenweis, et al. 2019. “MAgPIE 4 –
+a Modular Open-Source Framework for Modeling Global Land Systems.”
+*Geoscientific Model Development* 12 (4): 1299–1317.
+<https://doi.org/10.5194/gmd-12-1299-2019>.
