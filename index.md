@@ -1,6 +1,6 @@
 # In-Code Documentation for ‘GAMS’
 
-R package **goxygen**, version **1.5.0**
+R package **goxygen**, version **1.5.1**
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/goxygen)](https://cran.r-project.org/package=goxygen)
@@ -22,6 +22,7 @@ For installation of the most recent package version an additional
 repository has to be added in R:
 
 ``` r
+
 options(repos = c(CRAN = "@CRAN@", pik = "https://rse.pik-potsdam.de/r/packages"))
 ```
 
@@ -33,6 +34,7 @@ After that the most recent version of the package can be installed using
 `install.packages`:
 
 ``` r
+
 install.packages("goxygen")
 ```
 
@@ -40,6 +42,7 @@ Package updates can be installed using `update.packages` (make sure that
 the additional repository has been added before running that command):
 
 ``` r
+
 update.packages()
 ```
 
@@ -50,6 +53,7 @@ the package and how to use it. You can load it with the following
 command (the package needs to be installed):
 
 ``` r
+
 vignette("goxygen") # Creating GAMS model documentations with goxygen
 ```
 
@@ -64,7 +68,7 @@ To cite package **goxygen** in publications use:
 
 Dietrich J, Karstens K, Klein D, Baumstark L, Benke F (2026). “goxygen:
 In-Code Documentation for ‘GAMS’.” <doi:10.5281/zenodo.1411404>
-<https://doi.org/10.5281/zenodo.1411404>, Version: 1.5.0,
+<https://doi.org/10.5281/zenodo.1411404>, Version: 1.5.1,
 <https://github.com/pik-piam/goxygen>.
 
 A BibTeX entry for LaTeX users is
@@ -74,9 +78,9 @@ A BibTeX entry for LaTeX users is
  title = {goxygen: In-Code Documentation for 'GAMS'},
  author = {Jan Philipp Dietrich and Kristine Karstens and David Klein and Lavinia Baumstark and Falk Benke},
  doi = {10.5281/zenodo.1411404},
- date = {2026-03-31},
+ date = {2026-09-16},
  year = {2026},
  url = {https://github.com/pik-piam/goxygen},
- note = {Version: 1.5.0},
+ note = {Version: 1.5.1},
 }
 ```

@@ -158,19 +158,19 @@ if (check_pandoc()) {
 }
 #> 
 #>  Running codeCheck...
-#>  Finished data collection...            (time elapsed:  0.009)
-#>  Naming conventions check done...       (time elapsed:  0.009)
+#>  Finished data collection...            (time elapsed:  0.011)
+#>  Naming conventions check done...       (time elapsed:  0.011)
 #>   Running checkAppearance...
 #>   Start variable matching...            (time elapsed:  0.001)
 #>   Finished variable matching...         (time elapsed:  0.001)
 #>   Start var capitalization check...     (time elapsed:  0.002)
 #>   Finished var capitalization check...  (time elapsed:  0.003)
-#>  Investigated variable appearances...   (time elapsed:  0.013)
-#>  Appearance and usage check done...     (time elapsed:  0.014)
-#>  Switch Appearance check done...        (time elapsed:  0.015)
-#>  Interface collection and check done... (time elapsed:  0.015)
-#>  Input folder check done...             (time elapsed:  0.016)
-#>  Description check done...              (time elapsed:  0.016)
+#>  Investigated variable appearances...   (time elapsed:  0.015)
+#>  Appearance and usage check done...     (time elapsed:  0.016)
+#>  Switch Appearance check done...        (time elapsed:  0.017)
+#>  Interface collection and check done... (time elapsed:  0.017)
+#>  Input folder check done...             (time elapsed:  0.018)
+#>  Description check done...              (time elapsed:  0.018)
 #>  All codeCheck tests passed!
 #> Warning: The package qgraph is required for creating interface plots!
 #> Warning: The package qgraph is required for creating interface plots!

@@ -29,6 +29,7 @@ Jan Philipp Dietrich
 ## Examples
 
 ``` r
+
   x <- "eq_1 .. v_a =e= sum(j,v_b(j)*((1-s_c)+sum(cell(i,j),v_d(i)/f_d(i))));"
   cat(gamsequation2tex(x))
 #> \begin{multline*}

@@ -23,6 +23,7 @@ copied and the documentation can be extracted (e.g. a temporary
 directory).
 
 ``` r
+
 setwd(tempdir())
 ```
 
@@ -32,6 +33,7 @@ We take the GAMS code example from this package and save it to
 `dummymodel-plain`:
 
 ``` r
+
 # copy the folder containing a simple dummy model with goxygen comments
 file.copy(from = system.file("dummymodel-plain", package = "goxygen"), to = ".", recursive = TRUE)
 ```
@@ -40,6 +42,7 @@ and execute `goxygen` on this GAMS file to produce the documentation in
 HTML as well as PDF format.
 
 ``` r
+
 goxygen::goxygen(path = "dummymodel-plain/", cff = "HOWTOCITE.cff")
 ```
 
@@ -154,6 +157,7 @@ documentation. We will demonstrate this using the simple example model
 from the `gms` package:
 
 ``` r
+
 # copy all files and folders containing the modular dummy model
 file.copy(from = system.file("dummymodel", package = "gms"), to = ".", recursive = TRUE)
 ```
@@ -161,6 +165,7 @@ file.copy(from = system.file("dummymodel", package = "gms"), to = ".", recursive
 Now execute `goxygen` on the modular GAMS model:
 
 ``` r
+
 goxygen::goxygen(path = "dummymodel/", cff = "HOWTOCITE.cff")
 ```
 
@@ -168,8 +173,7 @@ Please find the goxygen output in the folder `dummymodel/doc`.
 
 ## References
 
-Dietrich, J. P., B. L. Bodirsky, F. Humpenöder, I. Weindl, M.
-Stevanović, K. Karstens, U. Kreidenweis, et al. 2019. “MAgPIE 4 –
+Dietrich, J. P., B. L. Bodirsky, F. Humpenöder, et al. 2019. “MAgPIE 4 –
 a Modular Open-Source Framework for Modeling Global Land Systems.”
-*Geoscientific Model Development* 12 (4): 1299–1317.
+*Geoscientific Model Development* 12 (4): 1299–317.
 <https://doi.org/10.5194/gmd-12-1299-2019>.
